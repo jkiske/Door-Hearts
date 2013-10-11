@@ -1,18 +1,30 @@
 var _und = require("underscore");
-var io = require("socket.io").listen(1222);
+var io = require("socket.io")
 var http = require('http');
+var fs = require('fs');
+var $ = require('jquery');
+var express = require('express');
 
 var game = require("./game");
 
- 
 
-io.set("log level", 1);
+// This serves static content on port 8888
+var app = express()
+var server = http.createServer(app)
+server.listen(8888);
+app.use(express.static(__dirname + '/assets'));
 
-io.sockets.on('connection', function (client) {
+
+// This is where we initialize the websocket for javascript callbacks
+socket = io.listen(8080);
+
+socket.set("log level", 1);
+
+socket.sockets.on('connection', function (client) {
 	client.on('addPlayer', function(player){
 		players[client.id] = player;
 		console.log("Player " + player + "with id: " + client.id + "has connected.");
-		console.log(Object.size(players));
+		console.log(_und.size(players));
 		for(var key in players) {
 		    console.log("Players: " + key + ": " + players[key]);
 		}
@@ -25,7 +37,7 @@ io.sockets.on('connection', function (client) {
 		    console.log("Remaining players: " + key + ": " + players[key]);
 		}
 		//reset pack
-		pack = game.shufflePack(game.createPack());
+		pack = game.shuffleDeck(game.createDeck());
 	    });
  
 	client.on('dealCards', function(){
@@ -39,3 +51,4 @@ io.sockets.on('connection', function (client) {
 var players = {};
 var start = false;
 var deck = game.shuffleDeck(game.createDeck());
+
