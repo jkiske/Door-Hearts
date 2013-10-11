@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="jquery.js"></script>
+  <script>
+    var ready = false;
+    $("#deal").attr("disabled", "disabled");
+    $("welcome").hide();
+    var socket = io.connect("http://1.1.1.1:1222");
+    $("#ready").click(function() {
+    var player = $("#player").val();
+    console.log(player);
+    console.log('called');
+    socket.emit("addPlayer", player);
+    ready = true;
+    $("#deal").removeAttr("disabled");
+    $("#ready").attr("disabled", "disabled");
+    $("#player").remove();
+    $("#welcome").show();
+    $("#welcome").text("Welcome, " + player)
+    console.log("Ready:" + ready);
+    });
+ 
+  $("#deal").click(function() {
+  if (ready) {
+  console.log("dealing cards");
+  socket.emit("dealCards");
+  socket.emit("getOpponents");
+  }
+  });
+ 
+  socket.on("showCards", function(cards){
+  if (ready) {
+  $("#cards").text(cards);
+  socket.on("displayOpponents", function(opponent){
+  $("#opponents").text("Your opponent is: " + opponent);
+  });
+  }
+  });
+ 
+  socket.on("remainingCards", function(remaining){
+  if (ready) {
+  $("#pack").text();
+  $("#pack").text("Remaining cards are: " + remaining);
+}
+});
+});</script>
+<body>
+<h1>This is the client</h1>
+<input type="text" id="player"><br />
+<p id="welcome"></p>
+<input type="button" id="ready" value="I'm ready">
+<input type="button" id="deal" value="Deal cards">
+<p id="opponents"></p>
+<p id="cards"></p><p id="pack"></p>
+</body>
+</html>
