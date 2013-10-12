@@ -6,7 +6,6 @@ $(document).ready(function(){
     var socket = io.connect("http://localhost:8080");
 
     $("#ready").click(function() {
-	alert("clicked");
 	var player = $("#player").val();
 	console.log(player);
 	console.log('called');
