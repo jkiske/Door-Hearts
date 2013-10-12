@@ -39,7 +39,7 @@
 .playingCards a.card:hover, .playingCards a.card:active, .playingCards a.card:focus,
 .playingCards label.card:hover,
 .playingCards strong .card {
-    bottom: 1em;
+    bottom: 0.5em;
 }
 .playingCards label.card {
     cursor: pointer;
@@ -460,7 +460,7 @@
 .playingCards ul.hand,
 .playingCards ul.deck {
     list-style-type: none;
-    padding: 0;
+    /* changed padding: 0; */
     margin: 0 0 1.5em 0;
     position: relative;
     clear: both;
