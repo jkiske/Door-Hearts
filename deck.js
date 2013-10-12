@@ -13,7 +13,7 @@ var Deck = function() {
     var count = 0;
     for (i = 0; i <= 3; ++i) { 
 	for (j = 1; j <= index; ++j) {
-	    cards[count++] = j + suits[i];
+	    cards[count++] = {suit: suits[i], rank: j};
 	}
     }
 
@@ -64,22 +64,9 @@ var Deck = function() {
 	}
 	return drawnCards;
     }
-
-    /**
-     * Plays a card
-     * 
-     * @param hand the hand to remove a card from
-     * @param index which card to remove
-     * @return the hand with the card removed
-     **/
-    function playCard(hand, index) {
-	hand.splice(index, 1);
-	return hand;
-    }
     return {
 	shuffle: shuffle,
 	draw: draw,
-	playCard: playCard,
 	cards: cards
     }
 }();

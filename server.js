@@ -42,7 +42,7 @@ socket.sockets.on('connection', function (client) {
 	    console.log("Remaining players: " + key + ": " + players[key]);
 	}
 	//reset deck
-	deck = Deck.shuffle()
+	//deck = Deck.shuffle()
     });
     
     client.on('dealCards', function(){

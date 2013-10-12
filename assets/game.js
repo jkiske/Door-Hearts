@@ -29,7 +29,24 @@ $(document).ready(function(){
 
     socket.on("showCards", function(cards){
 	if (ready) {
-	    $("#cards").text(cards);
+	    var suitmap = {"H":"suithearts" , "C":"suitclubs", 
+			   "S":"suitspades", "D":"suitdiamonds"};
+	    var cardmap = {1:"A", 11: "J", 12:"Q", 13:"K"};
+
+	    var json = $.parseJSON(cards);
+	    $.each(json, function(key, value) {
+		var suit = suitmap[value["suit"]];
+		
+		if (value["rank"] in cardmap)
+		    var rank = cardmap[value["rank"]];
+		else
+		    var rank = value["rank"];
+
+		$("#cards").append("<div class = \" card " + suit + "\"> <p> " + rank + " </p> </div>");
+		
+	    });
+
+	    
 	    socket.on("displayOpponents", function(opponent){
 		$("#opponents").text("Your opponent is: " + opponent);
 	    });
