@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <title>Doerr Hearts</title>
@@ -12,9 +12,9 @@
   <script src="js/jquery-2.0.3.min.js"></script>
   <script src="js/game.js"></script>
 
-
   <link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
   <link href="css/cards.css" rel="stylesheet" media="screen" />
+  <link href="css/main.css" rel="stylesheet" media="screen" />
 
   <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!--[if lt IE 9]>
@@ -24,12 +24,36 @@
 </head> 
 
 <body>
-  <input type="text" id="player"><br />
-  <p id="welcome"></p>
-  <input type="button" id="ready" value="I'm ready">
-  <input type="button" id="deal" value="Deal cards">
-  <p id="opponents"></p>
-  <div id="cards" class="hand"></div>
-  <p id="pack"></p>
+  <div class = "container">
+    <div class = "well">
+    <input type="text" id="player"><br />
+      <div class="row">
+	<div class = "col-md-12">
+	  <p id="welcome"></p>
+	</div>
+      </div>
+      <div class = "row">
+	<div class = "col-md-1">
+	  <input type="button" id="ready" value="I'm ready">
+	</div>
+	<div class = "col-md-1">
+	  <input type="button" id="deal" value="Deal cards">
+	</div>
+      </div>
+    </div>
+    <p id="opponents"></p>
+    <div class = "row">
+      <div class = "col-md-12">
+	<div class="playingCards">
+	  <ul id="cards" class="table"></ul>
+	</div>
+      </div>
+    </div>
+    <div class = "row">
+      <div class = "col-md-12">
+	<p id="pack"></p>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

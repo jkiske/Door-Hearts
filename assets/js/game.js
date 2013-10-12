@@ -29,21 +29,29 @@ $(document).ready(function(){
 
     socket.on("showCards", function(cards){
 	if (ready) {
-	    var suitmap = {"H":"suithearts" , "C":"suitclubs", 
-			   "S":"suitspades", "D":"suitdiamonds"};
-	    var cardmap = {1:"A", 11: "J", 12:"Q", 13:"K"};
+	    var suitmap = {"H":"hearts" , "C":"clubs", 
+			   "S":"spades", "D":"diams"};
+	    var cardmap = {1:"a", 11: "j", 12:"q", 13:"k"};
 
 	    var json = $.parseJSON(cards);
 	    $.each(json, function(key, value) {
 		var suit = suitmap[value["suit"]];
-		
-		if (value["rank"] in cardmap)
-		    var rank = cardmap[value["rank"]];
-		else
-		    var rank = value["rank"];
+		var includeSuit = true;
 
-		$("#cards").append("<div class = \" card " + suit + "\"> <p> " + rank + " </p> </div>");
-		
+		if (value["rank"] in cardmap) {
+		    var rank = cardmap[value["rank"]];
+		    if (rank == "a")
+			includeSuit = false;
+		} else {
+		    var rank = value["rank"].toString();
+		    includeSuit = false;
+		}
+
+		$("#cards").append(
+		    "<li> <a class = \"card rank-" + rank + " " + suit + "\" href=\"#\">\n \
+			<span class=\"rank\">" + rank.toUpperCase() + "</span> \
+			<span class=\"suit\">" + (includeSuit ? ("&" + suit + ";") : "")  + "</span> \
+			</a> <li>");
 	    });
 
 	    
