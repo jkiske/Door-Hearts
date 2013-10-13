@@ -12,6 +12,7 @@ var _deck = require("./deck");
 var app = express();
 var server = http.createServer(app);
 server.listen(80);
+
 app.use(express.static(__dirname + '/assets'));
 
 app.get('/', function (req, res) {
@@ -20,7 +21,7 @@ app.get('/', function (req, res) {
 
 
 // This is where we initialize the websocket for javascript callbacks
-socket = io.listen(8080);
+socket = io.listen(server);
 socket.set("log level", 1);
 
 var deck = new _deck.Deck();
