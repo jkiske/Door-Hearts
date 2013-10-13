@@ -5,7 +5,7 @@ var fs = require('fs');
 var $ = require('jquery');
 var express = require('express');
 
-var game = require("./Deck");
+var _deck = require("./Deck");
 
 
 // This serves static content on port 8888
@@ -19,7 +19,7 @@ app.use(express.static(__dirname + '/assets'));
 socket = io.listen(8080);
 socket.set("log level", 1);
 
-var deck = game.Deck
+var deck = new _deck.Deck();
 deck.shuffle();
 
 var players = {};
@@ -50,7 +50,12 @@ socket.sockets.on('connection', function (client) {
 	client.emit('showCards', JSON.stringify(cards));
 	socket.sockets.emit("remainingCards", deck.cards.length)
     });
+    
+    client.on('newDeck', function() {
+	deck = new _deck.Deck();
+	console.log(deck);
+	deck.shuffle();
+	socket.sockets.emit("remainingCards", deck.cards.length);
+	
+    });
 });
-
-
-

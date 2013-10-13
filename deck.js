@@ -69,7 +69,7 @@ var Deck = function() {
 	draw: draw,
 	cards: cards
     }
-}();
+};
 
 /** 
  * Export the functions so node.js knows they exist

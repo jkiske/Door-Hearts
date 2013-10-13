@@ -27,6 +27,13 @@ $(document).ready(function(){
 	}
     });
 
+    $("#newdeck").click(function() {
+	if (ready) {
+	    console.log("asking for new deck");
+	    socket.emit("newDeck");
+	}
+    });
+
     socket.on("showCards", function(cards){
 	if (ready) {
 	    var suitmap = {"H":"hearts" , "C":"clubs", 
