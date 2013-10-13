@@ -14,6 +14,10 @@ var server = http.createServer(app);
 server.listen(8888);
 app.use(express.static(__dirname + '/assets'));
 
+app.get('/', function (req, res) {
+  res.sendfile(__dirname + '/assets/index.html');
+});
+
 
 // This is where we initialize the websocket for javascript callbacks
 socket = io.listen(8080);
