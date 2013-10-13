@@ -11,7 +11,9 @@ var _deck = require("./deck");
 // This serves static content on port 8888
 var app = express();
 var server = http.createServer(app);
-server.listen(80);
+var port = process.env.PORT || 5000;
+
+server.listen(port);
 
 app.use(express.static(__dirname + '/assets'));
 
