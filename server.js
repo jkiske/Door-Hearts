@@ -5,7 +5,7 @@ var fs = require('fs');
 var $ = require('jquery');
 var express = require('express');
 
-var _deck = require("./Deck");
+var _deck = require("./deck");
 
 
 // This serves static content on port 8888
