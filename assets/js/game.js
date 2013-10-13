@@ -3,7 +3,7 @@ $(document).ready(function(){
 
     $("#deal").attr("disabled", "disabled");
     $("welcome").hide();
-    var socket = io.connect("http://door-hearts.herokuapp.com:8080");
+    var socket = io.connect("http://door-hearts.herokuapp.com");
 
     $("#ready").click(function() {
 	var player = $("#player").val();
