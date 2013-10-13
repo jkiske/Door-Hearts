@@ -47,13 +47,15 @@ socket.sockets.on('connection', function (client) {
     
     client.on('dealCards', function(){
 	var cards = deck.draw(13, "", true);
+	cards = _und.sortBy(cards, function(card) { 
+	    return deck.sortValue(card);
+	});
 	client.emit('showCards', JSON.stringify(cards));
 	socket.sockets.emit("remainingCards", deck.cards.length)
     });
     
     client.on('newDeck', function() {
 	deck = new _deck.Deck();
-	console.log(deck);
 	deck.shuffle();
 	socket.sockets.emit("remainingCards", deck.cards.length);
 	

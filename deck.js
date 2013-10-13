@@ -17,7 +17,6 @@ var Deck = function() {
 	}
     }
 
-
     /**
      * Shuffles a deck by moving the end card to a random position
      *
@@ -64,9 +63,22 @@ var Deck = function() {
 	}
 	return drawnCards;
     }
+
+    /**
+     * Returns the "value" of a card. This is used for sorting.
+     **/
+    function sortValue(card) {
+	var suitVals = {"C":0, "D":1, "S":2, "H":3};
+	//Give each suit a value for sorting
+	var suitVal = suitVals[card["suit"]]*13;
+	//Aces are high
+	var rankVal = card["rank"] == 1 ? 13 : card["rank"] - 1;
+	return rankVal + suitVal;
+    }
     return {
 	shuffle: shuffle,
 	draw: draw,
+	sortValue: sortValue,
 	cards: cards
     }
 };
