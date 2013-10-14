@@ -55,10 +55,11 @@ $(document).ready(function(){
 		}
 
 		$("#cards").append(
-		    "<li> <a class = \"card rank-" + rank + " " + suit + "\" href=\"#\">\n \
+		    "<li> <a id=\"" + value["suit"] + value["rank"] + "\" \
+                        class = \"card rank-" + rank + " " + suit + "\" href=\"#\">\n \
 			<span class=\"rank\">" + rank.toUpperCase() + "</span> \
-			<span class=\"suit\">" + (includeSuit ? ("&" + suit + ";") : "")  + "</span> \
-			</a> <li>");
+			<span class=\"suit\">" + (includeSuit ? ("&" + suit + ";") : "")  +
+			"</span>\n</a> <li>");
 	    });
 
 	    
