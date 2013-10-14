@@ -50,12 +50,23 @@ socket.sockets.on('connection', function (client) {
     });
     
     client.on('dealCards', function(){
-	var cards = deck.draw(13, "", true);
-	cards = _und.sortBy(cards, function(card) { 
-	    return deck.sortValue(card);
-	});
-	client.emit('showCards', JSON.stringify(cards));
-	socket.sockets.emit("remainingCards", deck.cards.length)
+	if (client.id in players) {
+	    var player = players[client.id];
+	    if (_und.size(player.cards) < 13) {
+		var cards = deck.draw(13, "", true);
+		cards = _und.sortBy(cards, function(card) {
+		    return deck.sortValue(card);
+		});
+
+		players[client.id].cards = cards;
+		console.log("Added cards to player " + players[client.id].name);
+
+		client.emit('showCards', JSON.stringify(cards));
+		socket.sockets.emit("remainingCards", deck.cards.length)
+	    } else {
+		console.log("Player " + player.name + " already has 13 cards");
+	    }
+	}
     });
     
     client.on('newDeck', function() {
