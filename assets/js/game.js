@@ -34,6 +34,26 @@ $(document).ready(function(){
 	}
     });
 
+    $("#newdeck").click(function() {
+	if (ready) {
+	    console.log("asking for new deck");
+	    socket.emit("newDeck");
+	}
+    });
+
+    $("#newtable").click(function() {
+	var table_name = $("#table_name").val();
+	
+	console.log("creating new table");
+	socket.emit("newTable", table_name);
+	
+    });
+
+    socket.on("makeTable", function(table_id) {
+	console.log("Made new table " + table_id);
+	
+    });
+
     socket.on("showCards", function(cards){
 	if (ready) {
 	    var suitmap = {"H":"hearts" , "C":"clubs", 

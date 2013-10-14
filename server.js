@@ -7,6 +7,9 @@ var express = require('express');
 
 var _deck = require("./deck");
 
+var _player = require("./player");
+var _table = require("./table");
+
 
 // This serves static content on port 8888
 var app = express();
@@ -30,9 +33,14 @@ var deck = new _deck.Deck();
 deck.shuffle();
 
 var players = {};
-var start = false;
+var tables = {};
+
+var waiting_room = 'waiting room';
 
 socket.sockets.on('connection', function (client) {
+    //When someone connects put them in the waiting room
+    client.join(waiting_room);
+
     client.on('addPlayer', function(player){
 	var playerObj = new _player.Player(player, client.id);
 	players[client.id] = playerObj;
@@ -58,8 +66,8 @@ socket.sockets.on('connection', function (client) {
 		    return deck.sortValue(card);
 		});
 
-		players[client.id].cards = cards;
-		console.log("Added cards to player " + players[client.id].name);
+		player.cards = cards;
+		console.log("Added cards to player " + player.name);
 
 		client.emit('showCards', JSON.stringify(cards));
 		socket.sockets.emit("remainingCards", deck.cards.length)
@@ -74,5 +82,29 @@ socket.sockets.on('connection', function (client) {
 	deck.shuffle();
 	socket.sockets.emit("remainingCards", deck.cards.length);
 	
+    });
+
+    client.on('newTable', function() {
+	var table = new _table.Table();
+	client.leave(waiting_room);
+	client.join(table.id);
+	
+	tables[table.id] = table;
+	client.emit("makeTable", table.id);
+
+	console.log("Made new table " + table.id);
+    });
+
+    client.on('sit', function(name, table_id, position) {
+	var player = new _player.Player(name, client.id);
+	player.position = position;
+	player.table = table_id;
+	
+	if (table_id in tables) {
+	    var table = tables[table_id];
+	    table.players[player.id] =  player;
+	} else {
+	    console.log("No table with id " + table_id);
+	}
     });
 });

@@ -2,8 +2,9 @@ var Player = function (n, id) {
     var name = name;
     var id = id;
     var table;
-    var deck = {};
-
+    var cards = {};
+    var score;
+    var position; //N, S, E, W
     /**
      * Removes a card from the players deck
      *
@@ -38,6 +39,9 @@ var Player = function (n, id) {
 	name: n,
 	id: id,
 	table: table,
+	score: score,
+	cards: cards,
+	position: position,
 	removeCard: removeCard,
 	joinTable: joinTable
     }

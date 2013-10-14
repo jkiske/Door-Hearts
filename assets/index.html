@@ -42,21 +42,63 @@
 	<div class = "col-md-2">
 	  <div class="btn btn-default" id="newdeck"> New Deck </div>
 	</div>
+	<div class = "col-md-2">
+	  <div class="btn btn-default" id="newtable"> New Table </div>
+	</div>
       </div>
     </div>
-    <p id="opponents"></p>
+
     <div class = "row">
-      <div class = "col-md-10 col-md-offset-1">
+      <div class = "col-md-11 col-md-offset-1">
+	<div class="playingCards">
+	  <ul id="topcards" class="table">
+	    <div class="card rank-7 spades">
+	      <span class="rank">7</span>
+	      <span class="suit"></span>
+	    </div>
+	  </ul>
+	</div>
+      </div>
+    </div>
+    
+    <div class = "row">
+      <div class = "col-md-2">
+	<div class="playingCards rotate90">
+	  <ul id="leftcards" class="table">
+	    <div class="card rank-7 spades">
+	      <span class="rank">7</span>
+	      <span class="suit"></span>
+	    </div>
+	  </ul>
+	</div>
+      </div>
+      <div class = "col-md-2 col-md-offset-8">
+	<div class="playingCards rotate270">
+	  <ul id="rightcards" class="table">
+	    <div class="card rank-7 spades">
+	      <span class="rank">7</span>
+	      <span class="suit"></span>
+	    </div>
+	  </ul>
+	</div>
+      </div>
+    </div>
+
+    </div>
+     <div class = "row">
+      <div class = "col-md-10 col-md-offset-2">
 	<div class="playingCards">
 	  <ul id="cards" class="table"></ul>
 	</div>
       </div>
     </div>
+
     <div class = "row">
       <div class = "col-md-12">
 	<p id="pack"></p>
       </div>
     </div>
+
   </div>
 </body>
 </html>
