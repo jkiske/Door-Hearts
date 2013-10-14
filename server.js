@@ -34,22 +34,19 @@ var start = false;
 
 socket.sockets.on('connection', function (client) {
     client.on('addPlayer', function(player){
-	players[client.id] = player;
-	console.log("Player " + player + "with id: " + client.id + "has connected.");
-	console.log(_und.size(players));
-	for(var key in players) {
-	    console.log("Players: " + key + ": " + players[key]);
-	}
+	var playerObj = new _player.Player(player, client.id);
+	players[client.id] = playerObj;
+	console.log("Player " + playerObj.name + " with id: " + playerObj.id  + "has connected.");
+	console.log("Total Players: " + _und.size(players));
     });
     
     client.on('disconnect', function(){
-	console.log("Player with id: " + client.id + "has disconnected");
-	delete players[client.id];
-	for(var key in players) {
-	    console.log("Remaining players: " + key + ": " + players[key]);
+	if (client.id in players) {
+	    var player = players[client.id];
+	    console.log("Player " + player.name + " with id: " + player.id  + "has disconnected.");
+	    delete players[client.id];
+	    console.log("Total Players: " + _und.size(players));
 	}
-	//reset deck
-	//deck = Deck.shuffle()
     });
     
     client.on('dealCards', function(){
