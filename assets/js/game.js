@@ -74,12 +74,13 @@ $(document).ready(function(){
 		    includeSuit = false;
 		}
 
-		$("#cards").append(
+		$("#bottomcards").append(
 		    "<li> <a id=\"" + value["suit"] + value["rank"] + "\" \
                         class = \"card rank-" + rank + " " + suit + "\" href=\"#\">\n \
 			<span class=\"rank\">" + rank.toUpperCase() + "</span> \
 			<span class=\"suit\">" + (includeSuit ? ("&" + suit + ";") : "")  +
 			"</span>\n</a> <li>");
+
 	    });
 
 	    
