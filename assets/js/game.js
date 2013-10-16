@@ -49,8 +49,14 @@ $(document).ready(function(){
 	
     });
 
-    socket.on("makeTable", function(table_id) {
-	console.log("Made new table " + table_id);
+    socket.on("joinTable", function(table) {
+
+	var players = _values(table["players"]);
+	$.each(players, function(player) {
+	    console.log(player.name);
+	});
+	console.log("Made new table " + table["id"]);
+
 	
     });
 
