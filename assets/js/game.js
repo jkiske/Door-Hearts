@@ -81,10 +81,6 @@ $(document).ready(function(){
 			<span class=\"suit\">" + (includeSuit ? ("&" + suit + ";") : "")  +
 			"</span>\n</a></li>");
 
-		$("#topcards").append("<li><div class = \"card back\"></div></li>");
-		$("#leftcards").append("<li><div class = \"card back\"></div></li>");
-		$("#rightcards").append("<li><div class = \"card back\"></div></li>");
-
 	    });
 
 	    
