@@ -79,7 +79,11 @@ $(document).ready(function(){
                         class = \"card rank-" + rank + " " + suit + "\" href=\"#\">\n \
 			<span class=\"rank\">" + rank.toUpperCase() + "</span> \
 			<span class=\"suit\">" + (includeSuit ? ("&" + suit + ";") : "")  +
-			"</span>\n</a> <li>");
+			"</span>\n</a></li>");
+
+		$("#topcards").append("<li><div class = \"card back\"></div></li>");
+		$("#leftcards").append("<li><div class = \"card back\"></div></li>");
+		$("#rightcards").append("<li><div class = \"card back\"></div></li>");
 
 	    });
 

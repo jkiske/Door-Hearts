@@ -18,6 +18,12 @@ body {
 #bottomcards{
     margin-top: 7em;
 }
+#leftcards .card{
+    margin-right: -2em;
+}
+#rightcards .card{
+   margin-right: -2em;
+}
 
 .rotate90 {
     transform:rotate(90deg);
