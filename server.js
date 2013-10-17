@@ -58,22 +58,20 @@ socket.sockets.on('connection', function (client) {
     });
     
     client.on('dealCards', function(){
-	if (client.id in players) {
-	    var player = players[client.id];
-	    if (_und.size(player.cards) < 13) {
-		var cards = deck.draw(13, "", true);
-		cards = _und.sortBy(cards, function(card) {
-		    return deck.sortValue(card);
-		});
+	var player = players[client.id];
+	if (_und.size(player.cards) < 13) {
+	    var cards = deck.draw(13, "", true);
+	    cards = _und.sortBy(cards, function(card) {
+		return deck.sortValue(card);
+	    });
 
-		player.cards = cards;
-		console.log("Added cards to player " + player.name);
+	    player.cards = cards;
+	    console.log("Added cards to player " + player.name);
 
-		client.emit('showCards', JSON.stringify(cards));
-		socket.sockets.emit("remainingCards", deck.cards.length)
-	    } else {
-		console.log("Player " + player.name + " already has 13 cards");
-	    }
+	    client.emit('showCards', JSON.stringify(cards));
+	    socket.sockets.emit("remainingCards", deck.cards.length)
+	} else {
+	    console.log("Player " + player.name + " already has 13 cards");
 	}
     });
     
@@ -90,7 +88,7 @@ socket.sockets.on('connection', function (client) {
 	client.join(table.id);
 	
 	tables[table.id] = table;
-	cqlient.emit("joinTable", JSON.stringify(table));
+	client.emit("joinTable", JSON.stringify(table));
 	socket.sockets.in(waiting_room).emit("addTableToTable", JSON.stringify(table))
 	console.log("Made new table " + table.id);
     });
