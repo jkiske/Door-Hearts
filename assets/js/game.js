@@ -5,9 +5,8 @@ $(document).ready(function(){
     $('#game').hide();
 
     $("#deal").click(function() {
-    	console.log("dealing cards");
+	console.log("dealing cards");
     	socket.emit("dealCards");
-    	socket.emit("getOpponents");
     });
 
     // $("#newdeck").click(function() {
@@ -48,6 +47,26 @@ $(document).ready(function(){
 					 '</div></td>' +
 					 '</tr>');
 	
+    });
+
+    $("#name").on('input', function() {
+	var namedom = $("#name");
+	var playbtn = $("#play");
+	if (namedom.val().length > 0) {
+	    playbtn.removeClass("disabled");
+	} else {
+	    playbtn.addClass("disabled");
+	}
+    });
+
+    $("#play").click(function() {
+	var namedom = $("#name");
+        var playbtn = $("#play");
+	if (namedom.val().length > 0) {
+	    socket.emit("addPlayer", namedom.val());
+	}
+	$("#newplayer").hide();
+	socket.emit("dealCards");
     });
 
     //Deal the cards to each player
