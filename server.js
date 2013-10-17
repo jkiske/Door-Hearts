@@ -85,16 +85,14 @@ socket.sockets.on('connection', function (client) {
     });
 
     client.on('newTable', function() {
-	if (client.id in players) {
-	    var table = new _table.Table();
-	    client.leave(waiting_room);
-	    client.join(table.id);
-	    
-	    tables[table.id] = table;
-	    client.emit("joinTable", JSON.stringify(table));
-
-	    console.log("Made new table " + table.id);
-	}
+	var table = new _table.Table();
+	client.leave(waiting_room);
+	client.join(table.id);
+	
+	tables[table.id] = table;
+	cqlient.emit("joinTable", JSON.stringify(table));
+	socket.sockets.in(waiting_room).emit("addTableToTable", JSON.stringify(table))
+	console.log("Made new table " + table.id);
     });
 
     client.on('sit', function(name, table_id, position) {

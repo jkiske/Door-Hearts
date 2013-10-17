@@ -34,13 +34,6 @@ $(document).ready(function(){
 	}
     });
 
-    $("#newdeck").click(function() {
-	if (ready) {
-	    console.log("asking for new deck");
-	    socket.emit("newDeck");
-	}
-    });
-
     $("#newtable").click(function() {
 	var table_name = $("#table_name").val();
 	
@@ -49,17 +42,29 @@ $(document).ready(function(){
 	
     });
 
+    //Switch views to the table view
     socket.on("joinTable", function(table) {
+	
+//	var players = _.values(table["players"]);
+//	$.each(players, function(player) {
+//	    console.log(player.name);
+//	});
+	console.log("Made new table " + table["id"]);	
+    });
 
-	var players = _values(table["players"]);
-	$.each(players, function(player) {
-	    console.log(player.name);
-	});
-	console.log("Made new table " + table["id"]);
-
+    //Add a new table to all the users that are still looking for one
+    socket.on("addTableToTable", function(table) {
+	$('#tabletable-id tbody').append('<tr>' + 
+					 '<td>Players</td>' +
+					 '<td>Round</td>' +
+					 '<td><div class="text-center btn btn-sm btn-primary">' +
+					 '<span class="glyphicon glyphicon-chevron-right"></span>' +
+					 '</div></td>' +
+					 '</tr>');
 	
     });
 
+    //Deal the cards to each player
     socket.on("showCards", function(cards){
 	if (ready) {
 	    var suitmap = {"H":"hearts" , "C":"clubs", 
@@ -102,4 +107,6 @@ $(document).ready(function(){
 	    $("#pack").text("Remaining cards are: " + remaining);
 	}
     });
+
+
 });
