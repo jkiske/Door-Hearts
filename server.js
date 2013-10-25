@@ -41,6 +41,13 @@ socket.sockets.on('connection', function (client) {
     //When someone connects put them in the waiting room
     client.join(waiting_room);
 
+    //Let the new client know which tables are available
+    _und.each(_und.values(tables), 
+	      function(table) {
+		  client.emit("addTableToTable", JSON.stringify(table));
+	      }
+	     );
+
     client.on('addPlayer', function(player){
 	var playerObj = new _player.Player(player, client.id);
 	players[client.id] = playerObj;

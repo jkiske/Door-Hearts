@@ -18,12 +18,11 @@ $(document).ready(function(){
 
     //Tell the server to create a new table
     $("#newtable").click(function() {
-	var table_name = $("#table_name").val();
-	
 	console.log("creating new table");
-	socket.emit("newTable", table_name);
+	socket.emit("newTable");
 	
     });
+
 
     //Switch views to the table view
     socket.on("joinTable", function(table_json) {
@@ -39,14 +38,26 @@ $(document).ready(function(){
 
     //Add a new table to all the users that are still looking for one
     socket.on("addTableToTable", function(table) {
+	var table = $.parseJSON(table)
+	var players = _.values(table['players']);
+	var round = table['round'];
+	var t_id = table['id'];
+	console.log(table);
 	$('#tabletable-id tbody').append('<tr>' + 
-					 '<td>Players</td>' +
-					 '<td>Round</td>' +
-					 '<td><div class="text-center btn btn-sm btn-primary">' +
+					 '<td>' + players + '</td>' +
+					 '<td>' + round + '</td>' +
+					 '<td><div  id = "' + t_id + '" class=' + 
+					 '"joinbtn text-center btn btn-sm btn-primary">' +
 					 '<span class="glyphicon glyphicon-chevron-right"></span>' +
 					 '</div></td>' +
 					 '</tr>');
 	
+	//Tell join an existing table
+	$("#"+t_id+"").click(function() {
+	    console.log("joining table " + t_id);
+	    socket.emit("joinTable", t_id); 
+	});
+
     });
 
     $("#name").on('input', function() {
