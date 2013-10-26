@@ -2,38 +2,33 @@ $(document).ready(function(){
 
     var socket = io.connect("http://door-hearts.herokuapp.com");
 
+    // Hide the game at the start
     $('#game').hide();
+    
+    // -------------------------------- Name logic ----------------------------- //
+    function validateName() {	
+	var namedom = $("#playername");
+	var buttons = $(".joinbtn,#newtable");
+	if (namedom.val().length > 0) {
+	    buttons.removeClass("disabled");
+	} else {
+	    buttons.addClass("disabled");
+	}
+	return namedom.val().length > 0;
+    }
+    // When we start, check see if we should disable links
+    validateName();
 
-    $("#deal").click(function() {
-	console.log("dealing cards");
-    	socket.emit("dealCards");
-    });
+    //When we change the name field, disable/enable links
+    $("#playername").on('input', validateName);
 
-    // $("#newdeck").click(function() {
-    // 	if (ready) {
-    // 	    console.log("asking for new deck");
-    // 	    socket.emit("newDeck");
-    // 	}
-    // });
-
-    //Tell the server to create a new table
+    
+    // -------------------------------- Joining Tables ----------------------------- //
     $("#newtable").click(function() {
-	console.log("creating new table");
-	socket.emit("newTable");
-	
-    });
-
-
-    //Switch views to the table view
-    socket.on("joinTable", function(table_json) {
-	$('#tableslist').hide();
-	$('#game').show();
-	var table = $.parseJSON(table_json);
-	var players = _.values(table["players"]);
-	$.each(players, function(player) {
-	    console.log(player.name);
-	});
-	console.log("Made new table " + table["id"]);	
+	if (validateName() == true) {
+	    console.log("creating new table");
+	    socket.emit("newTable", $("#playername").val());
+	}
     });
 
     //Add a new table to all the users that are still looking for one
@@ -52,31 +47,33 @@ $(document).ready(function(){
 					 '</div></td>' +
 					 '</tr>');
 	
+	//When we add a new table, check to see if we should make links inactive
+	validateName();
 	//Tell join an existing table
 	$("#"+t_id+"").click(function() {
-	    console.log("joining table " + t_id);
-	    socket.emit("joinTable", t_id); 
+	    if (validateName() == true) {
+		socket.emit("joinTable", t_id, $("#playername").val()); 
+	    }
 	});
-
+    });
+    
+    // -------------------------------- Switching Views ----------------------------- //
+    //Switch views to the table view
+    socket.on("joinTable", function(table_json) {
+	$('#tableslist').hide();
+	$('#game').show();
+	var table = $.parseJSON(table_json);
+	var players = _.values(table["players"]);
+	$.each(players, function(player) {
+	    console.log(player.name);
+	});
+	console.log("Made new table " + table["id"]);	
     });
 
-    $("#name").on('input', function() {
-	var namedom = $("#name");
-	var playbtn = $("#play");
-	if (namedom.val().length > 0) {
-	    playbtn.removeClass("disabled");
-	} else {
-	    playbtn.addClass("disabled");
-	}
-    });
+
+    // -------------------------------- Game ----------------------------- //
 
     $("#play").click(function() {
-	var namedom = $("#name");
-        var playbtn = $("#play");
-	if (namedom.val().length > 0) {
-	    socket.emit("addPlayer", namedom.val());
-	}
-	$("#newplayer").hide();
 	socket.emit("dealCards");
     });
 
@@ -114,13 +111,5 @@ $(document).ready(function(){
 
 	});
     });
-
-    // socket.on("remainingCards", function(remaining){
-    // 	if (ready) {
-    // 	    $("#pack").text();
-    // 	    $("#pack").text("Remaining cards are: " + remaining);
-    // 	}
-    // });
-
 
 });

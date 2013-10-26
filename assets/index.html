@@ -1,144 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-  <title>Door Hearts</title>
+  <head>
+    <title>Door Hearts</title>
 
-  <meta charset=utf-8 />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
- 
+    <meta charset=utf-8 />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
+    <link href="css/cards.css" rel="stylesheet" media="screen" />
+    <link href="css/main.css" rel="stylesheet" media="screen" />
+  </head> 
+
+  <body>
+    <div class = "container">
+      <div id = "tableslist">
+	<div class = "col-md-6 col-md-offset-3 well login">
+	  <div class="form row">
+	    <div class="col-md-8 col-md-offset-2">
+              <input class="text-center form-control input-lg" placeholder="Enter Name" type="text" id="playername">
+            </div>
+	  </div>
+	</div>
+	
+	<div class = "row" id = "tableslist"> 
+	  <div class = "col-md-6 col-md-offset-3">
+	    <div class = "panel panel-primary">
+	      <div class="panel-heading">
+		<div class="panel-title">
+		  <h3>Games</h3>
+		</div>
+	      </div>
+	      <table class="table table-hover" id="tabletable-id">
+		<thead>
+		  <tr>
+		    <th>Players</th>
+		    <th>Round</th>
+		    <th width="50px">
+		      <div class="text-center btn btn-sm btn-success" id="newtable">
+			<span class="glyphicon glyphicon-plus"></span>
+		      </div>		  
+		    </th>
+		  </tr>
+		</thead>
+		
+		<tbody>
+		</tbody>
+
+	      </table>
+	    </div>
+	  </div>
+	</div>
+      </div>
+      <div id="game">
+	<div class = "row"> 
+
+	  <!-- Top cards -->
+	  <div class = "col-md-12" id="topplayer">
+	    <div class = "text-center">
+	      <img src="images\placeholder.png" alt="..." class="img-circle">
+	    </div>
+	  </div>
+
+	</div>
+
+	<div class = "row">
+
+	  <!-- Left Hand-->
+	  <div class = "col-md-4" id="leftplayer">
+	    <div class = "pull-left">
+	      <img src="images\placeholder.png" alt="..." class="img-circle">
+	    </div>
+	  </div>
+
+	  <!-- Center Stack -->
+	  <div class = "col-md-4" id="center">
+	    <div class="text-center">
+	      <div class = "btn btn-primary btn-lg" id="play">Play</div>
+	      <div id = "middle cards"> </div>
+	    </div>
+	  </div>
+
+	  <!-- Right Hand -->
+	  <div class = "col-md-4" id="rightplayer">
+	    <div class = "pull-right">
+	      <img src="images\placeholder.png" alt="..." class="img-circle">
+	    </div>
+	  </div>
+
+	</div>
+
+	<!-- My cards -->
+	<div class = "row">
+	  <div class = "col-md-10 col-md-offset-1">
+	    <div class="playingCards">
+	      <ul id="bottomcards" class="table"></ul>
+	    </div>
+	  </div>
+	</div>
+
+	<div class = "row">
+	  <div class = "col-md-12">
+	    <p id="pack"></p>
+	  </div>
+	</div>
+      </div>
+
+    </div>
+  </body>
+
   <script src="/socket.io/socket.io.js"></script>
 
   <script src="js/underscore.min.js"></script>
   <script src="js/jquery-2.0.3.min.js"></script>  
   <script src="js/game.js"></script>
 
-  <link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
-  <link href="css/cards.css" rel="stylesheet" media="screen" />
-  <link href="css/main.css" rel="stylesheet" media="screen" />
-
-  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-  <!--[if lt IE 9]>
-  <script src="../../assets/js/html5shiv.js"></script>script>
-  <script src="../../assets/js/respond.min.js"></script>script>
-  <![endif]-->
-</head> 
-
-<body>
-  <div class = "container">
-    <!--div class = "well">
-    <input type="text" id="player"><br />
-      <div class="row">
-	<div class = "col-md-12">
-	  <p id="welcome"></p>
-	</div>
-      </div>
-      <div class = "row">
-	<div class = "col-md-2">
-	  <div class="btn btn-default" id="ready"> I'm ready </div>
-	</div>
-	<div class = "col-md-2">
-	  <div class="btn btn-default" id="deal"> Deal cards </div>
-	</div>
-	<div class = "col-md-2">
-	  <div class="btn btn-default" id="newdeck"> New Deck </div>
-	</div>
-	<div class = "col-md-2">
-	  <div class="btn btn-default" id="newtable"> New Table </div>
-	</div>
-      </div>
-    </div-->
-
-    <div class = "row" id = "tableslist"> 
-      <div class = "col-md-6 col-md-offset-3">
-	<div class = "panel panel-primary">
-	  <div class="panel-heading">
-	    <div class="panel-title">
-	      <h3>Games</h3>
-	    </div>
-	  </div>
-	  <table class="table table-hover" id="tabletable-id">
-            <thead>
-	      <tr>
-		<th>Players</th>
-		<th>Round</th>
-		<th width="50px">
-		  <div class="text-center btn btn-sm btn-success" id="newtable">
-		    <span class="glyphicon glyphicon-plus"></span>
-		  </div>		  
-		</th>
-	      </tr>
-	    </thead>
-	    
-	    <tbody>
-	    </tbody>
-
-	  </table>
-	</div>
-      </div>
-    </div>
-    <div id="game">
-      <div class = "row"> 
-
-	<!-- Top cards -->
-	<div class = "col-md-12" id="topplayer">
-	  <div class = "text-center">
-	    <img src="images\placeholder.png" alt="..." class="img-circle">
-	  </div>
-	</div>
-
-      </div>
-
-      <div class = "row">
-
-	<!-- Left Hand-->
-	<div class = "col-md-4" id="leftplayer">
-	  <div class = "pull-left">
-	    <img src="images\placeholder.png" alt="..." class="img-circle">
-	  </div>
-	</div>
-
-	<!-- Center Stack -->
-	<div class = "col-md-4" id="center">
-	  <div id="newplayer">
-	    <br/> <br/>
-	    <div class = "text-center">
-	      <form role="form">
-		<div class="form-group">
-		  <input class="form-control" id="name" placeholder="Enter Name">
-		</div>
-	      </form>
-	      <div class = "btn btn-primary btn-lg disabled" id="play">Play</div>
-	    </div>
-	  </div>
-	  <div id = "middle cards"> </div>
-	</div>
-
-	<!-- Right Hand -->
-	<div class = "col-md-4" id="rightplayer">
-	  <div class = "pull-right">
-	    <img src="images\placeholder.png" alt="..." class="img-circle">
-	  </div>
-	</div>
-
-      </div>
-
-      <!-- My cards -->
-      <div class = "row">
-	<div class = "col-md-10 col-md-offset-1">
-	  <div class="playingCards">
-	    <ul id="bottomcards" class="table"></ul>
-	  </div>
-	</div>
-      </div>
-
-      <div class = "row">
-	<div class = "col-md-12">
-	  <p id="pack"></p>
-	</div>
-      </div>
-    </div>
-
-  </div>
-</body>
 </html>

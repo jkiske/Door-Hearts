@@ -48,22 +48,39 @@ socket.sockets.on('connection', function (client) {
 	      }
 	     );
 
-    client.on('addPlayer', function(player){
+
+    // Global table logic
+    function joinTable(client, table_id) {
+        client.join(table_id);
+        var table = tables[table_id];
+        client.emit("joinTable", JSON.stringify(tables[table_id]));
+    }
+    
+    function addPlayer(client, player) {
 	var playerObj = new _player.Player(player, client.id);
 	players[client.id] = playerObj;
 	console.log("Player " + playerObj.name + " with id: " + playerObj.id  + "has connected.");
 	console.log("Total Players: " + _und.size(players));
+    }
+    
+    client.on('joinTable', function(table_id, playerName) {
+	addPlayer(client, playerName);
+        joinTable(client, table_id);
+     });
+ 
+    client.on('newTable', function(playerName) {
+	var table = new _table.Table();
+	tables[table.id] = table;
+
+	client.leave(waiting_room);
+	socket.sockets.in(waiting_room).emit("addTableToTable", JSON.stringify(table))
+	console.log("Made new table " + table.id);
+	
+	addPlayer(client, playerName);
+	joinTable(client, table['id']);
     });
     
-    client.on('disconnect', function(){
-	if (client.id in players) {
-	    var player = players[client.id];
-	    console.log("Player " + player.name + " with id: " + player.id  + "has disconnected.");
-	    delete players[client.id];
-	    console.log("Total Players: " + _und.size(players));
-	}
-    });
-    
+    // Individual table logic
     client.on('dealCards', function(){
 	var player = players[client.id];
 	if (_und.size(player.cards) < 13) {
@@ -88,28 +105,16 @@ socket.sockets.on('connection', function (client) {
 	socket.sockets.emit("remainingCards", deck.cards.length);
 	
     });
-
-    client.on('newTable', function() {
-	var table = new _table.Table();
-	client.leave(waiting_room);
-	client.join(table.id);
-	
-	tables[table.id] = table;
-	client.emit("joinTable", JSON.stringify(table));
-	socket.sockets.in(waiting_room).emit("addTableToTable", JSON.stringify(table))
-	console.log("Made new table " + table.id);
-    });
-
-    client.on('sit', function(name, table_id, position) {
-	var player = new _player.Player(name, client.id);
-	player.position = position;
-	player.table = table_id;
-	
-	if (table_id in tables) {
-	    var table = tables[table_id];
-	    table.players[player.id] =  player;
-	} else {
-	    console.log("No table with id " + table_id);
+    
+    //Disconnect
+    client.on('disconnect', function(){
+	if (client.id in players) {
+	    var player = players[client.id];
+	    console.log("Player " + player.name + " with id: " + player.id  + "has disconnected.");
+	    delete players[client.id];
+	    console.log("Total Players: " + _und.size(players));
 	}
     });
+    
+
 });
