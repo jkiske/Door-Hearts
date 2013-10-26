@@ -29,9 +29,6 @@ app.get('/', function (req, res) {
 socket = io.listen(server);
 socket.set("log level", 1);
 
-var deck = new _deck.Deck();
-deck.shuffle();
-
 var players = {};
 var tables = {};
 
@@ -52,37 +49,77 @@ socket.sockets.on('connection', function (client) {
     // Global table logic
     function joinTable(client, table_id) {
         client.join(table_id);
+	client.leave(waiting_room);
         var table = tables[table_id];
         client.emit("joinTable", JSON.stringify(tables[table_id]));
     }
     
-    function addPlayer(client, player) {
+    //Creates a new player and associates 
+    function makePlayer(client, player) {
 	var playerObj = new _player.Player(player, client.id);
 	players[client.id] = playerObj;
 	console.log("Player " + playerObj.name + " with id: " + playerObj.id  + "has connected.");
-	console.log("Total Players: " + _und.size(players));
+	return playerObj;
+    }
+
+    function makeTable() {
+	var table = new _table.Table();
+	var deck = new _deck.Deck();
+	deck.shuffle();
+	table.deck = deck;
+
+	// Add the table to the list of global tables
+	tables[table.id] = table;
+	
+	return table;
+    }
+    
+    function firstOpenPosition(table) {
+	for (var pos in table.positions) {
+	    if (table.positions[pos] == null)
+		return pos;
+	}
+	return undefined;
     }
     
     client.on('joinTable', function(table_id, playerName) {
-	addPlayer(client, playerName);
+	var player = makePlayer(client, playerName);
+	var table = tables[table_id];
+
+	player.table = table.id;
+	table.players[playerName] = player;
+
+	player.position = firstOpenPosition(table);
+	table.positions[player.position] = player;
+
+	console.log(table);
+	console.log(player);
+	
         joinTable(client, table_id);
+	
      });
  
     client.on('newTable', function(playerName) {
-	var table = new _table.Table();
-	tables[table.id] = table;
+	var player = makePlayer(client, playerName);
+	var table = makeTable();
 
-	client.leave(waiting_room);
-	socket.sockets.in(waiting_room).emit("addTableToTable", JSON.stringify(table))
-	console.log("Made new table " + table.id);
-	
-	addPlayer(client, playerName);
+	table.players[playerName] = player;
+	player.table = table.id;
+
+	player.position = firstOpenPosition(table);
+	table.positions[player.position] = player;
+
 	joinTable(client, table['id']);
+
+	socket.sockets.in(waiting_room).emit("addTableToTable", JSON.stringify(table))
+
     });
     
     // Individual table logic
     client.on('dealCards', function(){
 	var player = players[client.id];
+	var table = tables[player.table];
+	console.log(table);
 	if (_und.size(player.cards) < 13) {
 	    var cards = deck.draw(13, "", true);
 	    cards = _und.sortBy(cards, function(card) {

@@ -1,8 +1,9 @@
 var Table = function() {
     var players = {};
+    var positions={"N": null, "S": null, "E": null, "W": null};
     var id = createGuid();
     var round = 0;
-    
+    var deck;
 
     function createGuid() {
 	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -14,7 +15,9 @@ var Table = function() {
     return {
 	players: players,
 	id: id,
-	round: round
+	round: round,
+	deck: deck,
+	positions: positions
     }
 }
 

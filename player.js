@@ -3,7 +3,7 @@ var Player = function (n, id) {
     var id = id;
     var table;
     var cards = {};
-    var score;
+    var score = 0;
     var position; //N, S, E, W
     /**
      * Removes a card from the players deck
