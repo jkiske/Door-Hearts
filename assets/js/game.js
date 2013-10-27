@@ -67,6 +67,13 @@ $(document).ready(function(){
 	var table = $.parseJSON(table);	
 	var row = $("#"+table.id).closest("tr");
 	row.replaceWith(rowHtml(table));
+
+	// When we re-add the row we have to reattach the handler
+	$("#"+table.id).click(function() {
+	    if (validateName() == true) {
+		socket.emit("joinTable", table.id, $("#playername").val()); 
+	    }
+	});
     });
 
     socket.on("removeTableRow", function(table_id) {
