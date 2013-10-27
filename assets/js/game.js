@@ -37,9 +37,9 @@ $(document).ready(function(){
 	var players = _.values(table['players']);
 	var round = table['round'];
 	var t_id = table['id'];
-	console.log(table);
+	var player_names = _.pluck(players, "name").join(", ");
 	$('#tabletable-id tbody').append('<tr>' + 
-					 '<td>' + players + '</td>' +
+					 '<td>' + player_names + '</td>' +
 					 '<td>' + round + '</td>' +
 					 '<td><div  id = "' + t_id + '" class=' + 
 					 '"joinbtn text-center btn btn-sm btn-primary">' +
