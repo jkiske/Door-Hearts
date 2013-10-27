@@ -83,15 +83,12 @@ $(document).ready(function(){
     
     // -------------------------------- Switching Views ----------------------------- //
     //Switch views to the table view
-    socket.on("joinTable", function(table_json) {
+    socket.on("joinTable", function(table) {
 	$('#tableslist').hide();
 	$('#game').show();
-	var table = $.parseJSON(table_json);
-	var players = _.values(table["players"]);
-	$.each(players, function(player) {
-	    console.log(player.name);
-	});
-	console.log("Made new table " + table["id"]);	
+
+	//var table = $.parseJSON(table);
+	//var players = _.values(table.players);
     });
 
 
@@ -101,6 +98,25 @@ $(document).ready(function(){
 	$("#play").hide();
 	$("#played-cards").removeClass("hidden");
 	socket.emit("dealCards");
+    });
+
+    socket.on("updatePositions", function(your_pos, all_pos) {
+	var your_pos = $.parseJSON(your_pos);
+	var all_pos = $.parseJSON(all_pos);
+
+	var dir_map = ["bottom", "right", "top", "left"];
+	var pos_map =["N", "W", "S", "E"];
+	//Rotate the table around based on our position
+	pos_map = _.rotate(pos_map, _.indexOf(pos_map, your_pos));
+
+	var pos_dir_map =  _.object(pos_map, dir_map);
+	_.each(all_pos, function (name, pos) {
+	    var rel_dir = pos_dir_map[pos];
+	    var name = name == null ? "Open" : name;
+	    console.log(rel_dir + "is player: " + name);
+	    $("#"+rel_dir+"name").text(name);
+	});
+
     });
 
     //Deal the cards to each player
@@ -138,4 +154,15 @@ $(document).ready(function(){
 	});
     });
 
+});
+
+_.mixin({
+    rotate: function(array, n, guard) {
+	var head, tail;
+        n = (n == null) || guard ? 1 : n;
+        n = n % array.length;
+        tail = array.slice(n);
+	head = array.slice(0, n);
+	return tail.concat(head);
+    }
 });

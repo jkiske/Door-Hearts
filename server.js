@@ -48,10 +48,29 @@ socket.sockets.on('connection', function (client) {
 
     // Global table logic
     function joinTable(client, table_id) {
+        var table = tables[table_id];
+	var player = players[client.id];
+
+	//Back out if we fail to find the table or player
+	if (player === undefined || table === undefined)
+	    return;
+
         client.join(table_id);
 	client.leave(waiting_room);
-        var table = tables[table_id];
-        client.emit("joinTable", JSON.stringify(tables[table_id]));
+
+	//Tell this client to join the table
+        client.emit("joinTable", JSON.stringify(table));
+	//Tell all the clients in the room that there is a new player
+	var clients = socket.sockets.clients(table_id);
+	_und.each(clients, function(c) {
+	    //Send the client his position
+	    var client_pos = players[c.id].position;
+	    var other_pos = table.positions;
+
+	    c.emit("updatePositions", 
+		   JSON.stringify(client_pos),
+		   JSON.stringify(other_pos));
+	});
     }
     
     //Creates a new player and associates 
@@ -90,7 +109,7 @@ socket.sockets.on('connection', function (client) {
 	    table.players[playerName] = player;
 
 	    player.position = firstOpenPosition(table);
-	    table.positions[player.position] = player;
+	    table.positions[player.position] = player.name;
 
             joinTable(client, table.id);
 
@@ -106,7 +125,7 @@ socket.sockets.on('connection', function (client) {
 	player.table = table.id;
 
 	player.position = firstOpenPosition(table);
-	table.positions[player.position] = player;
+	table.positions[player.position] = player.name;
 
 	joinTable(client, table.id);
 
@@ -119,7 +138,6 @@ socket.sockets.on('connection', function (client) {
 	var table = tables[player.table];
 	var deck = table.deck;
 
-	console.log(table);
 	if (_und.size(player.cards) < 13) {
 	    var cards = deck.draw(13, "", true);
 	    cards = _und.sortBy(cards, function(card) {
@@ -140,20 +158,22 @@ socket.sockets.on('connection', function (client) {
     client.on('disconnect', function(){
 	if (client.id in players) {
 	    var player = players[client.id];
-	    var table = tables[player.table];
-	    table.positions[player.position] = null;
-
-	    delete table.players[player.name];
-
 	    delete players[client.id];
 
-	    // If that was the last player in the room, delete the room
-	    if (_und.size(table.players) == 0) {
-		delete tables[table.id];
-		socket.sockets.in(waiting_room).emit("removeTableRow", table.id);
-	    } else {
-		//Otherwise, just remove the username from the row
-		socket.sockets.in(waiting_room).emit("updateTableRow", JSON.stringify(table));
+	    var table = tables[player.table];
+	    if (table !== undefined) {
+		table.positions[player.position] = null;
+
+		delete table.players[player.name];
+
+		// If that was the last player in the room, delete the room
+		if (_und.size(table.players) == 0) {
+		    delete tables[table.id];
+		    socket.sockets.in(waiting_room).emit("removeTableRow", table.id);
+		} else {
+		    //Otherwise, just remove the username from the row
+		    socket.sockets.in(waiting_room).emit("updateTableRow", JSON.stringify(table));
+		}
 	    }
 	}
     });
