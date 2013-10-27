@@ -74,6 +74,8 @@ $(document).ready(function(){
     // -------------------------------- Game ----------------------------- //
 
     $("#play").click(function() {
+	$("#play").hide();
+	$("#played-cards").removeClass("hidden");
 	socket.emit("dealCards");
     });
 

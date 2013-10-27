@@ -12,7 +12,6 @@ body {
   left: 0;
 }
 
-
 .rotate90 {
     transform:rotate(90deg);
     -ms-transform:rotate(90deg); /* IE 9 */
@@ -31,6 +30,30 @@ body {
     -webkit-transform:rotate(-90deg); /* Safari and Chrome */
 }
 
+/* Middle cards style and margins */
+#played-cards{
+    font-size: 1.1em;
+    margin-top: 1em;
+}
+
+#top-played-card{
+    margin-top:-1em;
+    margin-left:6em;
+}
+#left-played-card{
+    margin-top:.5em;
+    margin-left:-5em;
+}
+#right-played-card{
+    margin-top:.5em;
+    margin-left:.3em;
+}
+#bottom-played-card{
+    margin-top:2.2em;
+    margin-left:-5em;
+}
+
+/* Inset login box */
 .login{
     -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.5);
     box-shadow: inset 0 1px 1px rgba(0,0,0,0.5);
