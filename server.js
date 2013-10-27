@@ -58,7 +58,6 @@ socket.sockets.on('connection', function (client) {
     function makePlayer(client, player) {
 	var playerObj = new _player.Player(player, client.id);
 	players[client.id] = playerObj;
-	console.log("Player " + playerObj.name + " with id: " + playerObj.id  + "has connected.");
 	return playerObj;
     }
 
@@ -91,12 +90,8 @@ socket.sockets.on('connection', function (client) {
 
 	player.position = firstOpenPosition(table);
 	table.positions[player.position] = player;
-
-	console.log(table);
-	console.log(player);
 	
-        joinTable(client, table_id);
-	
+        joinTable(client, table.id);
      });
  
     client.on('newTable', function(playerName) {
@@ -109,16 +104,17 @@ socket.sockets.on('connection', function (client) {
 	player.position = firstOpenPosition(table);
 	table.positions[player.position] = player;
 
-	joinTable(client, table['id']);
+	joinTable(client, table.id);
 
 	socket.sockets.in(waiting_room).emit("addTableToTable", JSON.stringify(table))
-
     });
     
     // Individual table logic
     client.on('dealCards', function(){
 	var player = players[client.id];
 	var table = tables[player.table];
+	var deck = table.deck;
+
 	console.log(table);
 	if (_und.size(player.cards) < 13) {
 	    var cards = deck.draw(13, "", true);
@@ -139,17 +135,21 @@ socket.sockets.on('connection', function (client) {
     client.on('newDeck', function() {
 	deck = new _deck.Deck();
 	deck.shuffle();
-	socket.sockets.emit("remainingCards", deck.cards.length);
-	
+	socket.sockets.emit("remainingCards", deck.cards.length);	
     });
     
     //Disconnect
     client.on('disconnect', function(){
 	if (client.id in players) {
 	    var player = players[client.id];
-	    console.log("Player " + player.name + " with id: " + player.id  + "has disconnected.");
+	    var table = tables[player.table];
+	    table.positions[player.position] = null;
+
+	    delete table.players[player.name];
 	    delete players[client.id];
-	    console.log("Total Players: " + _und.size(players));
+
+	    console.log("Player " + player.name + "has disconnected from table with players " +
+			JSON.stringify(table.players));
 	}
     });
     
