@@ -41,7 +41,7 @@ socket.sockets.on('connection', function (client) {
     //Let the new client know which tables are available
     _und.each(_und.values(tables), 
 	      function(table) {
-		  client.emit("addTableToTable", JSON.stringify(table));
+		  client.emit("addTableRow", JSON.stringify(table));
 	      }
 	     );
 
@@ -82,16 +82,20 @@ socket.sockets.on('connection', function (client) {
     }
     
     client.on('joinTable', function(table_id, playerName) {
-	var player = makePlayer(client, playerName);
-	var table = tables[table_id];
+	if (table_id in tables) {
+	    var player = makePlayer(client, playerName);
+	    var table = tables[table_id];
 
-	player.table = table.id;
-	table.players[playerName] = player;
+	    player.table = table.id;
+	    table.players[playerName] = player;
 
-	player.position = firstOpenPosition(table);
-	table.positions[player.position] = player;
-	
-        joinTable(client, table.id);
+	    player.position = firstOpenPosition(table);
+	    table.positions[player.position] = player;
+
+            joinTable(client, table.id);
+
+	    socket.sockets.in(waiting_room).emit("updateTableRow", JSON.stringify(table));
+	}
      });
  
     client.on('newTable', function(playerName) {
@@ -106,7 +110,7 @@ socket.sockets.on('connection', function (client) {
 
 	joinTable(client, table.id);
 
-	socket.sockets.in(waiting_room).emit("addTableToTable", JSON.stringify(table))
+	socket.sockets.in(waiting_room).emit("addTableRow", JSON.stringify(table))
     });
     
     // Individual table logic
@@ -132,12 +136,6 @@ socket.sockets.on('connection', function (client) {
 	}
     });
     
-    client.on('newDeck', function() {
-	deck = new _deck.Deck();
-	deck.shuffle();
-	socket.sockets.emit("remainingCards", deck.cards.length);	
-    });
-    
     //Disconnect
     client.on('disconnect', function(){
 	if (client.id in players) {
@@ -146,10 +144,17 @@ socket.sockets.on('connection', function (client) {
 	    table.positions[player.position] = null;
 
 	    delete table.players[player.name];
+
 	    delete players[client.id];
 
-	    console.log("Player " + player.name + "has disconnected from table with players " +
-			JSON.stringify(table.players));
+	    // If that was the last player in the room, delete the room
+	    if (_und.size(table.players) == 0) {
+		delete tables[table.id];
+		socket.sockets.in(waiting_room).emit("removeTableRow", table.id);
+	    } else {
+		//Otherwise, just remove the username from the row
+		socket.sockets.in(waiting_room).emit("updateTableRow", JSON.stringify(table));
+	    }
 	}
     });
     

@@ -24,6 +24,22 @@ $(document).ready(function(){
 
     
     // -------------------------------- Joining Tables ----------------------------- //
+    function rowHtml(table) {
+	var players = _.values(table['players']);
+	var round = table['round'];
+	var t_id = table['id'];
+	var player_names = _.pluck(players, "name").join(", ");
+
+	return '<tr>' +
+	    '<td>' + player_names + '</td>' +
+	    '<td>' + round + '</td>' +
+	    '<td><div  id = "' + t_id + '" class=' +
+	    '"joinbtn text-center btn btn-sm btn-primary">' +
+	    '<span class="glyphicon glyphicon-chevron-right"></span>' +
+	    '</div></td>' +
+	    '</tr>';
+
+    }
     $("#newtable").click(function() {
 	if (validateName() == true) {
 	    console.log("creating new table");
@@ -32,30 +48,31 @@ $(document).ready(function(){
     });
 
     //Add a new table to all the users that are still looking for one
-    socket.on("addTableToTable", function(table) {
+    socket.on("addTableRow", function(table) {
 	var table = $.parseJSON(table)
-	var players = _.values(table['players']);
-	var round = table['round'];
-	var t_id = table['id'];
-	var player_names = _.pluck(players, "name").join(", ");
-	$('#tabletable-id tbody').append('<tr>' + 
-					 '<td>' + player_names + '</td>' +
-					 '<td>' + round + '</td>' +
-					 '<td><div  id = "' + t_id + '" class=' + 
-					 '"joinbtn text-center btn btn-sm btn-primary">' +
-					 '<span class="glyphicon glyphicon-chevron-right"></span>' +
-					 '</div></td>' +
-					 '</tr>');
+	$('#tabletable-id tbody').append(rowHtml(table));
 	
 	//When we add a new table, check to see if we should make links inactive
 	validateName();
-	//Tell join an existing table
-	$("#"+t_id+"").click(function() {
+
+	// If we click the button, join that table
+	$("#"+table.id).click(function() {
 	    if (validateName() == true) {
-		socket.emit("joinTable", t_id, $("#playername").val()); 
+		socket.emit("joinTable", table.id, $("#playername").val()); 
 	    }
 	});
     });
+
+    socket.on("updateTableRow", function(table) {
+	var table = $.parseJSON(table);	
+	var row = $("#"+table.id).closest("tr");
+	row.replaceWith(rowHtml(table));
+    });
+
+    socket.on("removeTableRow", function(table_id) {
+	$("#"+table_id).closest("tr").remove();
+    });
+
     
     // -------------------------------- Switching Views ----------------------------- //
     //Switch views to the table view
