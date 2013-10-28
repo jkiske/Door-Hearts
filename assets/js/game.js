@@ -102,6 +102,8 @@ $(document).ready(function(){
 
     socket.on("updatePositions", function(your_pos, all_pos) {
 	var your_pos = $.parseJSON(your_pos);
+
+	//A map from position to {name: ?, score: ?}
 	var all_pos = $.parseJSON(all_pos);
 
 	var dir_map = ["bottom", "right", "top", "left"];
@@ -110,11 +112,12 @@ $(document).ready(function(){
 	pos_map = _.rotate(pos_map, _.indexOf(pos_map, your_pos));
 
 	var pos_dir_map =  _.object(pos_map, dir_map);
-	_.each(all_pos, function (name, pos) {
+	_.each(all_pos, function (player, pos) {
 	    var rel_dir = pos_dir_map[pos];
-	    var name = name == null ? "Open" : name;
-	    console.log(rel_dir + "is player: " + name);
-	    $("#"+rel_dir+"name").text(name);
+	    var name = (player.name == null ? "Open" : player.name);
+	    var score = (player.score == undefined ? "0" : player.score);
+	    console.log(rel_dir + "is player: " + name + ": " + score);
+	    $("#"+rel_dir+"name").text(name + ": "+ score);
 	});
 
     });

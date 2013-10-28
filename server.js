@@ -62,11 +62,19 @@ socket.sockets.on('connection', function (client) {
         client.emit("joinTable", JSON.stringify(table));
 	//Tell all the clients in the room that there is a new player
 	var clients = socket.sockets.clients(table_id);
+
+	// Put all of the other players into a map - pos:{name: ?, score: ?}
+	var table_players = _und.values(table.players);
+	var other_pos = {};
+	// Iterate through the table's players and put them in the map
+	_und.each(table_players, function(player) {
+	    other_pos[player.position] = _und.pick(player, "name", "score");
+	});
+	console.log(JSON.stringify(other_pos));
+
 	_und.each(clients, function(c) {
 	    //Send the client his position
 	    var client_pos = players[c.id].position;
-	    var other_pos = table.positions;
-
 	    c.emit("updatePositions", 
 		   JSON.stringify(client_pos),
 		   JSON.stringify(other_pos));
