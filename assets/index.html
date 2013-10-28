@@ -15,7 +15,7 @@
   <body>
     <div class = "container">
       <div id = "tableslist">
-	<div class = "col-md-6 col-md-offset-3 well login">
+	<div class = "col-md-6 col-md-offset-3 user-box">
 	  <div class="form row">
 	    <div class="col-md-8 col-md-offset-2">
               <input class="text-center form-control input-lg" placeholder="Enter Name" type="text" id="playername">
@@ -58,9 +58,11 @@
 	  <!-- Top cards -->
 	  <div class = col-md-12">
 	    <div class = "text-center" id="topplayer">
-	      <div class = "well login text-center">
+	      <div class = "text-center user-box">
+		<h3 class="name-box top-name-box">
+		  <span id="topname" class="label label-primary">Open</span>
+		</h3>
 		<img src="images\placeholder.png" alt="..." class="img-circle">
-		<h3><span id="topname" class="label label-primary">Open</span></h3>
 	      </div>
 	    </div>
 	  </div>
@@ -71,9 +73,9 @@
 	  <!-- Left Hand-->
 	  <div class = "col-md-3" id="leftplayer">
 	    <div class = "pull-left">
-	      <div class = "well login text-center">
+	      <div class = "text-center user-box">
+		<h3 class="name-box"><span id="leftname" class="label label-warning">Open</span></h3>
 		<img src="images\placeholder.png" alt="..." class="img-circle">
-		<h3><span id="leftname" class="label label-warning">Open</span></h3>
 	      </div>
 	    </div>
 	  </div>
@@ -114,9 +116,9 @@
 	  <!-- Right Hand -->
 	  <div class = "col-md-3" id="rightplayer">
 	    <div class = "pull-right">
-	      <div class = "well login text-center">
+	      <div class = "text-center user-box">
+		<h3 class="name-box"><span id="rightname" class="label label-success">Open</span></h3>
 		<img src="images\placeholder.png" alt="..." class="img-circle">
-		<h3><span id="rightname" class="label label-success">Open</span></h3>
 	      </div>
 	    </div>
 	  </div>
@@ -124,11 +126,13 @@
 	</div>
 
 	<!-- My cards -->
+	<div class="row text-center">
+	  <h3 class="name-box my-name-box">
+	    <span id="bottomname" class="label label-danger"></span>
+	  </h3>
+	</div>
 	<div class = "row">
 	  <div class = "col-md-10 col-md-offset-1">
-	    <div class="text-center">
-	      <h3><span id="bottomname" class="label label-danger"></span></h3>
-	    </div>
 	    <div class="playingCards">
 	      <ul id="bottomcards" class="table"></ul>
 	    </div>
