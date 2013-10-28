@@ -7,8 +7,8 @@
 	"jquery": "~1.8.3",
 	"jsdom": "~0.8.6",
 	"socket.io": "~0.9.16",
-	"underscore": "~1.5.2"
-
+	"underscore": "~1.5.2",
+	"newrelic": "*"
     },
     "engines": {
 	"node": "~0.10.20"
