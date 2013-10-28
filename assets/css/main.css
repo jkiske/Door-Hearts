@@ -1,9 +1,8 @@
 body { 
-  background: url('../images/big-heart.png'), -webkit-radial-gradient(top center, ellipse cover, rgba(255,255,255,0.2) 0%,rgba(0,0,0,0.6) 100%), url('../images/felt.jpg');
+  background: url('../images/big-heart.png'), -webkit-radial-gradient(top center, ellipse cover, rgba(255,255,255,0.2) 0%,rgba(0,0,0,0.6) 100%), url('../images/felt.jpg'), #4d9843;
   background-repeat: no-repeat, repeat, repeat;
   background-attachment:fixed;
   background-position:center, top left, top left;
-
 
   margin: 0;
   padding-top: 25px;
