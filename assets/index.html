@@ -69,8 +69,41 @@
 	  </div>
 	</div>
 
-	<div class = "row">
+	<!-- Center Stack -->
+	<div id="center">
+	  <div class = "btn btn-primary btn-lg" id="play">Play</div>
+	  <div id="played-cards" class="playingCards hidden">
+	    <ul class="table">
+	      <li>
+		<div id="top-played-card" class="card rank-10 clubs" href="#">
+		  <span class="rank">10</span>
+		  <span class="suit"></span>
+		</div>
+	      </li>
+	      <li>
+		<div id="left-played-card" class="card rank-10 clubs rotate270" href="#">
+		  <span class="rank">10</span>
+		  <span class="suit"></span>
+		</div>
+	      </li>
+	      <li>
+		<div id="right-played-card" class="card rank-10 clubs rotate90" href="#">
+		  <span class="rank">10</span>
+		  <span class="suit"></span>
+		</div>
+	      </li>
+	      <li>
+		<div id="bottom-played-card" class="card rank-10 clubs rotate180" href="#">
+		  <span class="rank">10</span>
+		  <span class="suit"></span>
+		</div>
+	      </li>
+	    </ul>
+	  </div>
+	</div>
+    
 
+	<div class = "row">
 	  <!-- Left Hand-->
 	  <div class = "col-xs-3" id="leftplayer">
 	    <div class = "pull-left">
@@ -80,40 +113,8 @@
 	      </div>
 	    </div>
 	  </div>
-
-	  <!-- Center Stack -->
-	  <div class = "col-xs-6" id="center">
-	    <div class = "btn btn-primary btn-lg" id="play">Play</div>
-	    <div id="played-cards" class="playingCards hidden">
-	      <ul class="table">
-		<li>
-		  <div id="top-played-card" class="card rank-10 clubs" href="#">
-		    <span class="rank">10</span>
-		    <span class="suit"></span>
-		  </div>
-		</li>
-		<li>
-		  <div id="left-played-card" class="card rank-10 clubs rotate270" href="#">
-		    <span class="rank">10</span>
-		    <span class="suit"></span>
-		  </div>
-		</li>
-		<li>
-		  <div id="right-played-card" class="card rank-10 clubs rotate90" href="#">
-		    <span class="rank">10</span>
-		    <span class="suit"></span>
-		  </div>
-		</li>
-		<li>
-		  <div id="bottom-played-card" class="card rank-10 clubs rotate180" href="#">
-		    <span class="rank">10</span>
-		    <span class="suit"></span>
-		  </div>
-		</li>
-	      </ul>
-	    </div>
-	  </div>
-    
+	  <!-- filler space for cards and play button -->
+	  <div class = "col-xs-6"></div>
 	  <!-- Right Hand -->
 	  <div class = "col-xs-3" id="rightplayer">
 	    <div class = "pull-right">
