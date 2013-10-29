@@ -1,18 +1,13 @@
 var _und = require("underscore");
+var _deck = require("./deck");
 
 var Table = function() {
     var players = {};
     var positions={"N": null, "S": null, "E": null, "W": null};
-    var id = createGuid();
+    var id = _und.uniqueId('tableid_');
     var round = 0;
-    var deck;
-
-    function createGuid() {
-	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
-            return v.toString(16);
-	});
-    }
+    var deck = new _deck.Deck();
+    deck.shuffle();
 
     /* Returns the table with 'safe' values */
     function safe() {
@@ -24,13 +19,22 @@ var Table = function() {
 	return {players: player_names, round: round, id: id};
     }
 
+    function firstOpenPosition() {
+        for (var pos in this.positions) {
+            if (this.positions[pos] == null)
+                return pos;
+        }
+        return undefined;
+    }
+
     return {
 	players: players,
 	id: id,
 	round: round,
 	deck: deck,
 	positions: positions,
-	safe: safe
+	safe: safe,
+	firstOpenPosition: firstOpenPosition
     }
 }
 

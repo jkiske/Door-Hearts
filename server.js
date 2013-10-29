@@ -45,64 +45,7 @@ socket.sockets.on('connection', function (client) {
 	      }
 	     );
 
-
-    // Global table logic
-    function joinTable(client, table_id) {
-        var table = tables[table_id];
-	var player = players[client.id];
-
-	//Back out if we fail to find the table or player
-	if (player === undefined || table === undefined)
-	    return;
-
-        client.join(table_id);
-	client.leave(waiting_room);
-
-	//Tell this client to join the table
-        client.emit("joinTable", JSON.stringify(table.safe()));
-	//Tell all the clients in the room that there is a new player
-	var clients = socket.sockets.clients(table_id);
-
-	// Put all of the other players into a map - position:{name: ?, score: ?}
-	var table_players = _und.values(table.players);
-	var other_pos = _und.filterAndIndexBy(table_players, "position", ["name", "score"]);
-
-	_und.each(clients, function(c) {
-	    //Send the client his position
-	    var client_pos = players[c.id].position;
-	    c.emit("updatePositions", JSON.stringify(client_pos),
-		                      JSON.stringify(other_pos));
-	});
-    }
-
-    //Creates a new player and associates
-    function makePlayer(client, player) {
-	var playerObj = new _player.Player(player, client.id);
-	players[client.id] = playerObj;
-	return playerObj;
-    }
-
-    function makeTable() {
-	var table = new _table.Table();
-	var deck = new _deck.Deck();
-	deck.shuffle();
-	table.deck = deck;
-
-	// Add the table to the list of global tables
-	tables[table.id] = table;
-
-	return table;
-    }
-
-    function firstOpenPosition(table) {
-	for (var pos in table.positions) {
-	    if (table.positions[pos] == null)
-		return pos;
-	}
-	return undefined;
-    }
-
-    client.on('joinTable', function(table_id, playerName) {
+    function joinTable(table_id, playerName) {
 	if (table_id in tables) {
 	    var player = makePlayer(client, playerName);
 	    var table = tables[table_id];
@@ -110,30 +53,46 @@ socket.sockets.on('connection', function (client) {
 	    player.table = table.id;
 	    table.players[playerName] = player;
 
-	    player.position = firstOpenPosition(table);
+	    player.position = table.firstOpenPosition();
 	    table.positions[player.position] = player.name;
 
-            joinTable(client, table.id);
-
-	    socket.sockets.in(waiting_room).emit("updateTableRow",
-						 JSON.stringify(table.safe()));
+            notifyUsersOfJoin(player, table);
 	}
-     });
+    }
+
+    function notifyUsersOfJoin(player, table) {
+	client.join(table.id);
+	client.leave(waiting_room);
+
+	//Tell this client to join the table
+        client.emit("joinTable", JSON.stringify(table.safe()));
+
+	// Put all of the other players into a map - position:{name: ?, score: ?}
+	var table_players = _und.values(table.players);
+	var other_pos = _und.filterAndIndexBy(table_players, "position", ["name", "score"]);
+
+	//Tell all the clients at the table that there is a new player
+	var clients = socket.sockets.clients(table.id);
+	_und.each(clients, function(c) {
+	    //Send the client his position
+	    var client_pos = players[c.id].position;
+	    c.emit("updatePositions", JSON.stringify(client_pos),
+		                      JSON.stringify(other_pos));
+	});
+
+	//Tell all the clients in the waiting room that there is an update
+	socket.sockets.in(waiting_room).emit("updateTableRow",
+					     JSON.stringify(table.safe()));
+    }
+
+    client.on('joinTable', joinTable);
 
     client.on('newTable', function(playerName) {
-	var player = makePlayer(client, playerName);
 	var table = makeTable();
-
-	table.players[playerName] = player;
-	player.table = table.id;
-
-	player.position = firstOpenPosition(table);
-	table.positions[player.position] = player.name;
-
-	joinTable(client, table.id);
-
+	//Tell all the clients in the waiting room that there is an update
 	socket.sockets.in(waiting_room).emit("addTableRow",
-					     JSON.stringify(table.safe()))
+					     JSON.stringify(table.safe()));
+	joinTable(table.id, playerName);
     });
 
     // Individual table logic
@@ -213,3 +172,23 @@ _und.mixin({
 	return newObj;
     }
 });
+
+/**
+ * Simple method to create and associate a player with an id
+ */
+function makePlayer(client, name) {
+    var player = new _player.Player(name, client.id);
+    // Add the player to the list of global players
+    players[client.id] = player;
+    return player;
+}
+
+/**
+ * Simple method to create and associate a table with an id
+ */
+function makeTable() {
+    var table = new _table.Table();
+    // Add the table to the list of global tables
+    tables[table.id] = table;
+    return table;
+}
