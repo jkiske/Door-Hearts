@@ -25,10 +25,9 @@ $(document).ready(function(){
     
     // -------------------------------- Joining Tables ----------------------------- //
     function rowHtml(table) {
-	var players = _.values(table['players']);
+	var player_names = table['players'].join(", ");
 	var round = table['round'];
 	var t_id = table['id'];
-	var player_names = _.pluck(players, "name").join(", ");
 
 	return '<tr>' +
 	    '<td>' + player_names + '</td>' +

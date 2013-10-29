@@ -39,9 +39,9 @@ socket.sockets.on('connection', function (client) {
     client.join(waiting_room);
 
     //Let the new client know which tables are available
-    _und.each(_und.values(tables), 
+    _und.each(_und.values(tables),
 	      function(table) {
-		  client.emit("addTableRow", JSON.stringify(table));
+		  client.emit("addTableRow", JSON.stringify(table.safe()));
 	      }
 	     );
 
@@ -59,7 +59,7 @@ socket.sockets.on('connection', function (client) {
 	client.leave(waiting_room);
 
 	//Tell this client to join the table
-        client.emit("joinTable", JSON.stringify(table));
+        client.emit("joinTable", JSON.stringify(table.safe()));
 	//Tell all the clients in the room that there is a new player
 	var clients = socket.sockets.clients(table_id);
 
@@ -74,8 +74,8 @@ socket.sockets.on('connection', function (client) {
 		                      JSON.stringify(other_pos));
 	});
     }
-    
-    //Creates a new player and associates 
+
+    //Creates a new player and associates
     function makePlayer(client, player) {
 	var playerObj = new _player.Player(player, client.id);
 	players[client.id] = playerObj;
@@ -90,10 +90,10 @@ socket.sockets.on('connection', function (client) {
 
 	// Add the table to the list of global tables
 	tables[table.id] = table;
-	
+
 	return table;
     }
-    
+
     function firstOpenPosition(table) {
 	for (var pos in table.positions) {
 	    if (table.positions[pos] == null)
@@ -101,7 +101,7 @@ socket.sockets.on('connection', function (client) {
 	}
 	return undefined;
     }
-    
+
     client.on('joinTable', function(table_id, playerName) {
 	if (table_id in tables) {
 	    var player = makePlayer(client, playerName);
@@ -115,10 +115,11 @@ socket.sockets.on('connection', function (client) {
 
             joinTable(client, table.id);
 
-	    socket.sockets.in(waiting_room).emit("updateTableRow", JSON.stringify(table));
+	    socket.sockets.in(waiting_room).emit("updateTableRow",
+						 JSON.stringify(table.safe()));
 	}
      });
- 
+
     client.on('newTable', function(playerName) {
 	var player = makePlayer(client, playerName);
 	var table = makeTable();
@@ -131,9 +132,10 @@ socket.sockets.on('connection', function (client) {
 
 	joinTable(client, table.id);
 
-	socket.sockets.in(waiting_room).emit("addTableRow", JSON.stringify(table))
+	socket.sockets.in(waiting_room).emit("addTableRow",
+					     JSON.stringify(table.safe()))
     });
-    
+
     // Individual table logic
     client.on('dealCards', function(){
 	var player = players[client.id];
@@ -155,7 +157,7 @@ socket.sockets.on('connection', function (client) {
 	    console.log("Player " + player.name + " already has 13 cards");
 	}
     });
-    
+
     //Disconnect
     client.on('disconnect', function(){
 	if (client.id in players) {
@@ -174,12 +176,13 @@ socket.sockets.on('connection', function (client) {
 		    socket.sockets.in(waiting_room).emit("removeTableRow", table.id);
 		} else {
 		    //Otherwise, just remove the username from the row
-		    socket.sockets.in(waiting_room).emit("updateTableRow", JSON.stringify(table));
+		    socket.sockets.in(waiting_room).emit("updateTableRow",
+							 JSON.stringify(table.safe()));
 		}
 	    }
 	}
     });
-    
+
 
 });
 

@@ -1,3 +1,5 @@
+var _und = require("underscore");
+
 var Table = function() {
     var players = {};
     var positions={"N": null, "S": null, "E": null, "W": null};
@@ -12,12 +14,23 @@ var Table = function() {
 	});
     }
 
+    /* Returns the table with 'safe' values */
+    function safe() {
+	var players = _und.values(this.players);
+	var player_names = _und.pluck(players, "name");
+
+	var round = this.round;
+	var id = this.id;
+	return {players: player_names, round: round, id: id};
+    }
+
     return {
 	players: players,
 	id: id,
 	round: round,
 	deck: deck,
-	positions: positions
+	positions: positions,
+	safe: safe
     }
 }
 
