@@ -63,21 +63,15 @@ socket.sockets.on('connection', function (client) {
 	//Tell all the clients in the room that there is a new player
 	var clients = socket.sockets.clients(table_id);
 
-	// Put all of the other players into a map - pos:{name: ?, score: ?}
+	// Put all of the other players into a map - position:{name: ?, score: ?}
 	var table_players = _und.values(table.players);
-	var other_pos = {};
-	// Iterate through the table's players and put them in the map
-	_und.each(table_players, function(player) {
-	    other_pos[player.position] = _und.pick(player, "name", "score");
-	});
-	console.log(JSON.stringify(other_pos));
+	var other_pos = _und.filterAndIndexBy(table_players, "position", ["name", "score"]);
 
 	_und.each(clients, function(c) {
 	    //Send the client his position
 	    var client_pos = players[c.id].position;
-	    c.emit("updatePositions", 
-		   JSON.stringify(client_pos),
-		   JSON.stringify(other_pos));
+	    c.emit("updatePositions", JSON.stringify(client_pos),
+		                      JSON.stringify(other_pos));
 	});
     }
     
@@ -187,4 +181,32 @@ socket.sockets.on('connection', function (client) {
     });
     
 
+});
+
+
+/**
+ * This function takes a list of the same objects, reindexes by an
+ * index, and keeps only certain properties of the object. Index must
+ * be unique for each object.
+ *
+ * Usage:
+ *
+ * var obj = {Jeff: {id: 1, pos: 'N', foo:'foo', other: 1},
+ *            Michael: {id: 2, pos: 'S', foo:'bar', other: 2}}
+ *
+ * objIndexBy(obj, "id", ["pos", "foo"])
+ * > {1: {pos: N, foo: foo}, 2: {pos: S, foo: bar}}
+ */
+_und.mixin({
+    filterAndIndexBy: function(obj, index, filter) {
+	// Put all of the other players into a map - pos:{name: ?, score: ?}
+	var vals = _und.values(obj);
+	var newObj = {};
+	// Iterate through the table's players and put them in the map
+	_und.each(vals, function(val) {
+	    var args = _und.union(val, filter);
+	    newObj[val[index]] = _und.pick.apply(this, args);
+	});
+	return newObj;
+    }
 });
