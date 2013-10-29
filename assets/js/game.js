@@ -42,7 +42,9 @@ $(document).ready(function(){
     }
     $("#newtable").click(function() {
 	if (validateName() == true) {
-	    console.log("creating new table");
+	    //Prevent being able to double-click new game
+	    var buttons = $(".joinbtn,#newtable");
+	    buttons.addClass("disabled");
 	    socket.emit("newTable", $("#playername").val());
 	}
     });
@@ -58,6 +60,9 @@ $(document).ready(function(){
 	// If we click the button, join that table
 	$("#"+table.id).click(function() {
 	    if (validateName() == true) {
+		//Prevent being able to double-click new game
+		var buttons = $(".joinbtn,#newtable");
+		buttons.addClass("disabled");
 		socket.emit("joinTable", table.id, $("#playername").val()); 
 	    }
 	});
