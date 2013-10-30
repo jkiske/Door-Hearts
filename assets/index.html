@@ -6,55 +6,67 @@
 
     <meta charset=utf-8 />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
     <link href="css/cards.css" rel="stylesheet" media="screen" />
     <link href="css/main.css" rel="stylesheet" media="screen" />
-  </head> 
+  </head>
 
   <body>
     <div class = "container">
       <div id = "tableslist">
 	<div class = "row">
 	  <div class = "col-xs-12 col-md-6 col-md-offset-3 user-box">
-	    <div class="form">
-	      <div class="col-xs-12 col-md-8 col-md-offset-2">
-		<input class="text-center form-control input-lg" placeholder="Enter Name" type="text" id="playername">
-              </div>
-	    </div>
-	  </div>
-	</div>
-	<div class = "row">
-	  <div class = "col-xs-12 col-md-6 col-md-offset-3">
-	    <div class = "panel panel-primary">
-	      <div class="panel-heading">
-		<div class="panel-title">
-		  <h3>Games</h3>
+
+	    <div class = "row">
+	      <div class = "col-xs-12">
+		<div class="alert alert-dismissable alert-warning fade in">
+		  <span id="name-taken"></span>
+		  <button type="button" class="close" aria-hidden="true">&times;</button>
 		</div>
 	      </div>
-	      <table class="table table-hover" id="tabletable-id">
-		<thead>
-		  <tr>
-		    <th>Players</th>
-		    <th>Round</th>
-		    <th width="50px">
-		      <div class="text-center btn btn-sm btn-success" id="newtable">
-			<span class="glyphicon glyphicon-plus"></span>
-		      </div>		  
-		    </th>
-		  </tr>
-		</thead>
-		
-		<tbody>
-		</tbody>
+	    </div>
 
-	      </table>
+	    <div class="row">
+	      <div class="form">
+		<div class="col-xs-12 col-md-8 col-md-offset-2">
+		  <input class="text-center form-control input-lg" placeholder="Enter Name" type="text" id="playername">
+		</div>
+	      </div>
+	    </div>
+	  </div>
+	  <div class = "row">
+	    <div class = "col-xs-12 col-md-6 col-md-offset-3">
+	      <div class = "panel panel-primary">
+		<div class="panel-heading">
+		  <div class="panel-title">
+		    <h3>Games</h3>
+		  </div>
+		</div>
+		<table class="table table-hover" id="tabletable-id">
+		  <thead>
+		    <tr>
+		      <th>Players</th>
+		      <th>Round</th>
+		      <th width="50px">
+			<div class="text-center btn btn-sm btn-success" id="newtable">
+			  <span class="glyphicon glyphicon-plus"></span>
+			</div>
+		      </th>
+		    </tr>
+		  </thead>
+
+		  <tbody>
+		  </tbody>
+
+		</table>
+	      </div>
 	    </div>
 	  </div>
 	</div>
       </div>
       <div id="game">
-	<div class = "row"> 
+	<div class = "row">
 
 	  <!-- Top cards -->
 	  <div class = "col-xs-12">
@@ -147,7 +159,8 @@
   <script src="/socket.io/socket.io.js"></script>
 
   <script src="js/underscore.min.js"></script>
-  <script src="js/jquery-2.0.3.min.js"></script>  
+  <script src="js/jquery-2.0.3.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
   <script src="js/game.js"></script>
 
 </html>

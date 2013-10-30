@@ -46,21 +46,28 @@ socket.sockets.on('connection', function (client) {
 	     );
 
     function joinTable(table_id, playerName) {
-	if (table_id in tables) {
-	    var player = makePlayer(client, playerName);
-	    var table = tables[table_id];
+	var all_names = _und.pluck(_und.values(players), "name");
+	if (_und.contains(all_names, playerName)) {
+	    //Don't allow duplicate players
+	    client.emit("duplicateName", playerName);
+	} else {
+	    if (table_id in tables) {
+		var player = makePlayer(client, playerName);
+		var table = tables[table_id];
 
-	    player.table = table.id;
-	    table.players[playerName] = player;
+		player.table = table.id;
+		table.players[playerName] = player;
 
-	    player.position = table.firstOpenPosition();
-	    table.positions[player.position] = player.name;
+		player.position = table.firstOpenPosition();
+		table.positions[player.position] = player.name;
 
-            notifyUsersOfJoin(player, table);
+		notifyUsersOfJoin(player, table);
+	    }
 	}
     }
 
     function notifyUsersOfJoin(player, table) {
+
 	client.join(table.id);
 	client.leave(waiting_room);
 

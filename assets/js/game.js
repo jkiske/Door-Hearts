@@ -62,20 +62,22 @@ $(document).ready(function(){
 		//Prevent being able to double-click new game
 		var buttons = $(".joinbtn,#newtable");
 		buttons.addClass("disabled");
-		socket.emit("joinTable", table.id, $("#playername").val()); 
+		socket.emit("joinTable", table.id, $("#playername").val());
 	    }
 	});
     });
 
     socket.on("updateTableRow", function(table) {
-	var table = $.parseJSON(table);	
+	var table = $.parseJSON(table);
 	var row = $("#"+table.id).closest("tr");
 	row.replaceWith(rowHtml(table));
 
 	// When we re-add the row we have to reattach the handler
 	$("#"+table.id).click(function() {
 	    if (validateName() == true) {
-		socket.emit("joinTable", table.id, $("#playername").val()); 
+		var buttons = $(".joinbtn,#newtable");
+		buttons.addClass("disabled");
+		socket.emit("joinTable", table.id, $("#playername").val());
 	    }
 	});
     });
@@ -84,7 +86,19 @@ $(document).ready(function(){
 	$("#"+table_id).closest("tr").remove();
     });
 
-    
+    var alertDialog = $("#name-taken");
+    alertDialog.parent().hide();
+    $('.alert .close').on("click", function() {
+	$(this).parent().hide();
+    });
+    socket.on("duplicateName", function(name) {
+	//Clear the text
+	alertDialog.text("");
+	alertDialog.append("<strong>" + name +
+			   "</strong> is already playing. Please choose another name");
+	alertDialog.parent().show();
+    });
+
     // -------------------------------- Switching Views ----------------------------- //
     //Switch views to the table view
     socket.on("joinTable", function(table) {
