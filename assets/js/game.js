@@ -136,9 +136,9 @@ $(document).ready(function() {
     socket.on("updatePositions", function(your_pos, all_pos) {
         var dir_map = ["bottom", "right", "top", "left"];
         var pos_map = ["N", "W", "S", "E"];
+
         //Rotate the table around based on our position
         pos_map = _.rotate(pos_map, _.indexOf(pos_map, your_pos));
-
         var pos_dir_map = _.object(pos_map, dir_map);
         //Add players that exist
         _.each(all_pos, function(player, pos) {

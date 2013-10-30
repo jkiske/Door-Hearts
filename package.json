@@ -10,9 +10,10 @@
     "underscore": "~1.5.2",
     "sockjs": "~0.3.8",
     "primus.io": "~2.0.1",
-    "primus-multiplex": "~1.1.2"
+    "newrelic": "*"
   },
   "engines": {
     "node": "~0.10.20"
   }
 }
+
