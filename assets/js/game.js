@@ -1,12 +1,11 @@
 $(document).ready(function(){    
-
     var socket = io.connect("http://door-hearts.herokuapp.com");
 
     // Hide the game at the start
     $('#game').hide();
-    
+
     // -------------------------------- Name logic ----------------------------- //
-    function validateName() {	
+    function validateName() {
 	var namedom = $("#playername");
 	var buttons = $(".joinbtn,#newtable");
 	if (namedom.val().length > 0) {
@@ -22,7 +21,7 @@ $(document).ready(function(){
     //When we change the name field, disable/enable links
     $("#playername").on('input', validateName);
 
-    
+
     // -------------------------------- Joining Tables ----------------------------- //
     function rowHtml(table) {
 	var player_names = table['players'].join(", ");
@@ -52,7 +51,7 @@ $(document).ready(function(){
     socket.on("addTableRow", function(table) {
 	var table = $.parseJSON(table)
 	$('#tabletable-id tbody').append(rowHtml(table));
-	
+
 	//When we add a new table, check to see if we should make links inactive
 	validateName();
 
@@ -142,7 +141,7 @@ $(document).ready(function(){
 
     //Deal the cards to each player
     socket.on("showCards", function(cards){
-	var suitmap = {"H":"hearts" , "C":"clubs", 
+	var suitmap = {"H":"hearts" , "C":"clubs",
 		       "S":"spades", "D":"diams"};
 	var cardmap = {1:"a", 11: "j", 12:"q", 13:"k"};
 
@@ -165,7 +164,7 @@ $(document).ready(function(){
 		    "<a id=\"" + value["suit"] + value["rank"] + "\"" +
 		    "class = \"card rank-"+rank+" " + suit + "\" href=\"#\">\n" +
 		    "<span class=\"rank\">" + rank.toUpperCase() + "</span>" +
-		    "<span class=\"suit\">" + 
+		    "<span class=\"suit\">" +
 		    (includeSuit ? ("&" + suit + ";") : "") +
 		    "</span>" +
 		    "</a>" +
