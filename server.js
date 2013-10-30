@@ -50,6 +50,7 @@ socket.sockets.on('connection', function (client) {
 	if (_und.contains(all_names, playerName)) {
 	    //Don't allow duplicate players
 	    client.emit("duplicateName", playerName);
+	    return false;
 	} else {
 	    if (table_id in tables) {
 		var player = makePlayer(client, playerName);
@@ -62,8 +63,10 @@ socket.sockets.on('connection', function (client) {
 		table.positions[player.position] = player.name;
 
 		notifyUsersOfJoin(player, table);
+		return true;
 	    }
 	}
+	return false;
     }
 
     function notifyUsersOfJoin(player, table) {
@@ -99,7 +102,14 @@ socket.sockets.on('connection', function (client) {
 	//Tell all the clients in the waiting room that there is an update
 	socket.sockets.in(waiting_room).emit("addTableRow",
 					     JSON.stringify(table.safe()));
-	joinTable(table.id, playerName);
+
+	//Check to see if we successfully joined
+	var did_join = joinTable(table.id, playerName);
+	if (!did_join) {
+	    socket.sockets.in(waiting_room).emit("removeTableRow", table.id);
+	    //Delete the table if there was an error
+	    delete tables[table.id];
+	}
     });
 
     // Individual table logic

@@ -1,4 +1,4 @@
-$(document).ready(function(){    
+$(document).ready(function(){
     var socket = io.connect("http://door-hearts.herokuapp.com");
 
     // Hide the game at the start
