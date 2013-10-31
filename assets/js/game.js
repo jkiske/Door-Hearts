@@ -162,7 +162,7 @@ $(document).ready(function(){
 	    $("#bottomcards").append(
 		"<li>" +
 		    "<a id=\"" + value["suit"] + value["rank"] + "\"" +
-		    "class = \"card rank-"+rank+" " + suit + "\" href=\"#\">\n" +
+		    "class = \"card rank-"+rank+" " + suit + "\">\n" +
 		    "<span class=\"rank\">" + rank.toUpperCase() + "</span>" +
 		    "<span class=\"suit\">" +
 		    (includeSuit ? ("&" + suit + ";") : "") +
@@ -170,8 +170,12 @@ $(document).ready(function(){
 		    "</a>" +
 		"</li>"
 	    );
-
 	});
+
+	$("a.card").click(function() {
+	    console.log("Clicked " + $(this).attr("id"));
+	});
+
     });
 
 });
