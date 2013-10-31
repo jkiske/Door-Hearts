@@ -7,7 +7,6 @@ var $ = require('jquery');
 var express = require('express');
 
 var _deck = require("./deck");
-
 var _player = require("./player");
 var _table = require("./table");
 
