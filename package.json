@@ -1,16 +1,19 @@
 {
-    "name": "doorhearts",
-    "version": "0.0.1",
-    "private": true,
-    "dependencies": {
-	"express": "~3.4.0",
-	"jquery": "~1.8.3",
-	"jsdom": "~0.8.6",
-	"socket.io": "~0.9.16",
-	"underscore": "~1.5.2"
-
-    },
-    "engines": {
-	"node": "~0.10.20"
-    }
+  "name": "doorhearts",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "express": "~3.4.0",
+    "jquery": "~1.8.3",
+    "jsdom": "~0.8.6",
+    "socket.io": "~0.9.16",
+    "underscore": "~1.5.2",
+    "primus": "~1.4.4",
+    "sockjs": "~0.3.8",
+    "primus-rooms": "~1.1.1",
+    "primus-emitter": "~2.0.0"
+  },
+  "engines": {
+    "node": "~0.10.20"
+  }
 }

@@ -1,5 +1,5 @@
-$(document).ready(function() {
-    var socket = io.connect("http://localhost:8888");
+$(document).ready(function(){
+    var socket = Primus.connect("http://localhost:8888");
 
     var state = 'waiting'; // waiting, trading, playing
     var _players = {};
@@ -14,7 +14,6 @@ $(document).ready(function() {
     $('#game').hide();
 
     // -------------------------------- Name logic ----------------------------- //
-
     function validateName() {
         var namedom = $("#playername");
         var buttons = $(".joinbtn,#newtable");
@@ -33,7 +32,6 @@ $(document).ready(function() {
 
 
     // -------------------------------- Joining Tables ----------------------------- //
-
     function rowHtml(table) {
         var player_names = table['players'].join(", ");
         var round = table['round'];
@@ -50,12 +48,12 @@ $(document).ready(function() {
 
     }
     $("#newtable").click(function() {
-        if (validateName() == true) {
-            //Prevent being able to double-click new game
-            var buttons = $(".joinbtn,#newtable");
-            buttons.addClass("disabled");
-            socket.emit("newTable", $("#playername").val());
-        }
+	if (validateName() == true) {
+	    //Prevent being able to double-click new game
+	    var buttons = $(".joinbtn,#newtable");
+	    buttons.addClass("disabled");
+	    socket.write("newTable", $("#playername").val());
+	}
     });
 
     //Add a new table to all the users that are still looking for one
@@ -66,15 +64,15 @@ $(document).ready(function() {
         //When we add a new table, check to see if we should make links inactive
         validateName();
 
-        // If we click the button, join that table
-        $("#" + table.id).click(function() {
-            if (validateName() == true) {
-                //Prevent being able to double-click new game
-                var buttons = $(".joinbtn,#newtable");
-                buttons.addClass("disabled");
-                socket.emit("joinTable", table.id, $("#playername").val());
-            }
-        });
+	// If we click the button, join that table
+	$("#"+table.id).click(function() {
+	    if (validateName() == true) {
+		//Prevent being able to double-click new game
+		var buttons = $(".joinbtn,#newtable");
+		buttons.addClass("disabled");
+		socket.write("joinTable", table.id, $("#playername").val());
+	    }
+	});
     });
 
     socket.on("updateTableRow", function(table) {
@@ -82,14 +80,14 @@ $(document).ready(function() {
         var row = $("#" + table.id).closest("tr");
         row.replaceWith(rowHtml(table));
 
-        // When we re-add the row we have to reattach the handler
-        $("#" + table.id).click(function() {
-            if (validateName() == true) {
-                var buttons = $(".joinbtn,#newtable");
-                buttons.addClass("disabled");
-                socket.emit("joinTable", table.id, $("#playername").val());
-            }
-        });
+	// When we re-add the row we have to reattach the handler
+	$("#"+table.id).click(function() {
+	    if (validateName() == true) {
+		var buttons = $(".joinbtn,#newtable");
+		buttons.addClass("disabled");
+		socket.write("joinTable", table.id, $("#playername").val());
+	    }
+	});
     });
 
     socket.on("removeTableRow", function(table_id) {
