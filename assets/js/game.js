@@ -1,5 +1,5 @@
 $(document).ready(function(){
-    var socket = io.connect("http://localhost:8888");
+    var socket = Primus.connect("http://localhost:8888");
 
     // Hide the game at the start
     $('#game').hide();
@@ -43,7 +43,7 @@ $(document).ready(function(){
 	    //Prevent being able to double-click new game
 	    var buttons = $(".joinbtn,#newtable");
 	    buttons.addClass("disabled");
-	    socket.emit("newTable", $("#playername").val());
+	    socket.write("newTable", $("#playername").val());
 	}
     });
 
@@ -61,7 +61,7 @@ $(document).ready(function(){
 		//Prevent being able to double-click new game
 		var buttons = $(".joinbtn,#newtable");
 		buttons.addClass("disabled");
-		socket.emit("joinTable", table.id, $("#playername").val());
+		socket.write("joinTable", table.id, $("#playername").val());
 	    }
 	});
     });
@@ -76,7 +76,7 @@ $(document).ready(function(){
 	    if (validateName() == true) {
 		var buttons = $(".joinbtn,#newtable");
 		buttons.addClass("disabled");
-		socket.emit("joinTable", table.id, $("#playername").val());
+		socket.write("joinTable", table.id, $("#playername").val());
 	    }
 	});
     });
@@ -114,7 +114,7 @@ $(document).ready(function(){
     $("#play").click(function() {
 	$("#play").hide();
 	$("#played-cards").removeClass("hidden");
-	socket.emit("dealCards");
+	socket.write("dealCards");
     });
 
     socket.on("updatePositions", function(your_pos, all_pos) {
