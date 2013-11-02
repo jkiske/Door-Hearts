@@ -11,7 +11,9 @@
     "primus": "~1.4.4",
     "sockjs": "~0.3.8",
     "primus-rooms": "~1.1.1",
-    "primus-emitter": "~2.0.0"
+    "primus-emitter": "1.1.x",
+    "primus.io": "~1.1.1",
+    "primus-multiplex": "~1.1.2"
   },
   "engines": {
     "node": "~0.10.20"

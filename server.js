@@ -4,9 +4,7 @@ var $ = require('jquery');
 
 var http = require('http');
 var express = require('express');
-var Primus = require("primus");
-var Rooms = require('primus-rooms');
-var Emitter = require('primus-emitter');
+var Primus = require("primus.io");
 
 var _deck = require("./deck");
 var _player = require("./player");
@@ -25,8 +23,6 @@ var server = http.createServer(app);
 
 // This is where we initialize the websocket for javascript callbacks
 var primus = new Primus(server, {transformer: 'sockjs', parser: 'JSON'});
-primus.use('rooms', Rooms);
-primus.use('emitter', Emitter);
 //primus.save(__dirname +'/primus.js');
 
 var port = 8888;
@@ -41,10 +37,11 @@ primus.on('connection', function (client) {
     //When someone connects put them in the waiting room
     client.join(waiting_room);
 
+    console.log("Client joined: " + client.id);
     //Let the new client know which tables are available
     _und.each(_und.values(tables),
 	      function(table) {
-		  client.send("addTableRow", table.safe());
+		  client.emit("addTableRow", table.safe());
 	      }
 	     );
 
@@ -52,7 +49,7 @@ primus.on('connection', function (client) {
 	var all_names = _und.pluck(_und.values(players), "name");
 	if (_und.contains(all_names, playerName)) {
 	    //Don't allow duplicate players
-	    client.send("duplicateName", playerName);
+	    client.emit("duplicateName", playerName);
 	    return false;
 	} else {
 	    if (table_id in tables) {
@@ -69,7 +66,7 @@ primus.on('connection', function (client) {
 		client.leave(waiting_room);
 
 		//Tell this client to join the table
-		client.send("joinTable", table.safe());
+		client.emit("joinTable", table.safe());
 
 		updatePlayerPositions(table);
 		return true;
@@ -87,13 +84,13 @@ primus.on('connection', function (client) {
 	//Tell all the clients at the table that there is a new player
 	var clients = primus.room(table.id).clients();
 	_und.each(clients, function(c) {
-	    //Send the client his position
+	    //Emit the client his position
 	    var client_pos = players[c.id].position;
-	    c.send("updatePositions", client_pos, other_pos);
+	    c.emit("updatePositions", client_pos, other_pos);
 	});
 
 	//Tell all the clients in the waiting room that there is an update
-	primus.in(waiting_room).send("updateTableRow", table.safe());
+	primus.in(waiting_room).emit("updateTableRow", table.safe());
     }
 
     client.on('joinTable', joinTable);
@@ -101,12 +98,12 @@ primus.on('connection', function (client) {
     client.on('newTable', function(playerName) {
 	var table = makeTable();
 	//Tell all the clients in the waiting room that there is an update
-	primus.in(waiting_room).send("addTableRow", table.safe());
+	primus.in(waiting_room).emit("addTableRow", table.safe());
 
 	//Check to see if we successfully joined
 	var did_join = joinTable(table.id, playerName);
 	if (!did_join) {
-	    primus.in(waiting_room).send("removeTableRow", table.id);
+	    primus.in(waiting_room).emit("removeTableRow", table.id);
 	    //Delete the table if there was an error
 	    delete tables[table.id];
 	}
@@ -127,7 +124,7 @@ primus.on('connection', function (client) {
 	    player.cards = cards;
 	    console.log("Added cards to player " + player.name);
 
-	    client.send('showCards', cards);
+	    client.emit('showCards', cards);
 	} else {
 	    console.log("Player " + player.name + " already has 13 cards");
 	}
@@ -151,10 +148,10 @@ primus.on('disconnection', function(client){
 	    // If that was the last player in the room, delete the room
 	    if (_und.size(table.players) == 0) {
 		delete tables[table.id];
-		primus.in(waiting_room).send("removeTableRow", table.id);
+		primus.in(waiting_room).emit("removeTableRow", table.id);
 	    } else {
 		//Otherwise, remove the username from the row
-		primus.in(waiting_room).send("updateTableRow", table.safe());
+		primus.in(waiting_room).emit("updateTableRow", table.safe());
 		//And let everone in the room know that person left
 		updatePlayerPositions(table);
 	    }
