@@ -4,9 +4,7 @@ var $ = require('jquery');
 
 var http = require('http');
 var express = require('express');
-var Primus = require("primus");
-var Rooms = require('primus-rooms');
-var Emitter = require('primus-emitter');
+var Primus = require("primus.io");
 
 var _deck = require("./deck");
 var _player = require("./player");
@@ -28,9 +26,6 @@ var primus = new Primus(server, {
     transformer: 'sockjs',
     parser: 'JSON'
 });
-primus.use('rooms', Rooms);
-primus.use('emitter', Emitter);
-//primus.save(__dirname +'/primus.js');
 
 var port = 8888;
 server.listen(port);
@@ -44,9 +39,9 @@ primus.on('connection', function(client) {
     //When someone connects put them in the waiting room
     client.join(waiting_room);
 
+    console.log("Client joined: " + client.id);
     //Let the new client know which tables are available
     _und.each(_und.values(tables),
-
         function(table) {
             client.send("addTableRow", table.safe());
         }
@@ -77,7 +72,7 @@ primus.on('connection', function(client) {
 
                 updatePlayerPositions(table);
                 if (_und.size(table.players) == 4) {
-                    socket.sockets. in (table.id).emit("startGame");
+                    primus.room(table.id).send("startGame");
                     table.round++;
                     table.state = "trading";
                 }
@@ -85,10 +80,10 @@ primus.on('connection', function(client) {
             }
         }
         return false;
+
     }
 
     function updatePlayerPositions(table) {
-
         // Put all of the other players into a map - position:{name: ?, score: ?}
         var table_players = _und.values(table.players);
         var other_pos = _und.filterAndIndexBy(table_players, "position", ["name", "score"]);
@@ -102,21 +97,21 @@ primus.on('connection', function(client) {
         });
 
         //Tell all the clients in the waiting room that there is an update
-        primus. in (waiting_room).send("updateTableRow", table.safe());
+        primus.room(waiting_room).send("updateTableRow", table.safe());
     }
 
     client.on('joinTable', joinTable);
 
     client.on('newTable', function(playerName) {
-
         var table = makeTable();
         //Tell all the clients in the waiting room that there is an update
-        primus. in (waiting_room).send("addTableRow", table.safe());
+        console.log(_und.functions(primus.room(waiting_room)));
+        primus.room(waiting_room).send("addTableRow", table.safe());
 
         //Check to see if we successfully joined
         var did_join = joinTable(table.id, playerName);
         if (!did_join) {
-            primus. in (waiting_room).send("removeTableRow", table.id);
+            primus.room(waiting_room).send("removeTableRow", table.id);
             //Delete the table if there was an error
             delete tables[table.id];
         }
@@ -184,10 +179,10 @@ primus.on('disconnection', function(client) {
             // If that was the last player in the room, delete the room
             if (_und.size(table.players) == 0) {
                 delete tables[table.id];
-                primus. in (waiting_room).send("removeTableRow", table.id);
+                primus.room(waiting_room).send("removeTableRow", table.id);
             } else {
                 //Otherwise, remove the username from the row
-                primus. in (waiting_room).send("updateTableRow", table.safe());
+                primus.room(waiting_room).send("updateTableRow", table.safe());
                 //And let everone in the room know that person left
                 updatePlayerPositions(table);
             }

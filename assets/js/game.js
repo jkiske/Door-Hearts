@@ -1,4 +1,4 @@
-$(document).ready(function(){
+$(document).ready(function() {
     var socket = Primus.connect("http://localhost:8888");
 
     var state = 'waiting'; // waiting, trading, playing
@@ -14,6 +14,7 @@ $(document).ready(function(){
     $('#game').hide();
 
     // -------------------------------- Name logic ----------------------------- //
+
     function validateName() {
         var namedom = $("#playername");
         var buttons = $(".joinbtn,#newtable");
@@ -30,8 +31,8 @@ $(document).ready(function(){
     //When we change the name field, disable/enable links
     $("#playername").on('input', validateName);
 
-
     // -------------------------------- Joining Tables ----------------------------- //
+
     function rowHtml(table) {
         var player_names = table['players'].join(", ");
         var round = table['round'];
@@ -48,46 +49,44 @@ $(document).ready(function(){
 
     }
     $("#newtable").click(function() {
-	if (validateName() == true) {
-	    //Prevent being able to double-click new game
-	    var buttons = $(".joinbtn,#newtable");
-	    buttons.addClass("disabled");
-	    socket.write("newTable", $("#playername").val());
-	}
+        if (validateName() == true) {
+            //Prevent being able to double-click new game
+            var buttons = $(".joinbtn,#newtable");
+            buttons.addClass("disabled");
+            socket.send("newTable", $("#playername").val());
+        }
     });
 
     //Add a new table to all the users that are still looking for one
     socket.on("addTableRow", function(table) {
-        var table = $.parseJSON(table)
         $('#tabletable-id tbody').append(rowHtml(table));
 
         //When we add a new table, check to see if we should make links inactive
         validateName();
 
-	// If we click the button, join that table
-	$("#"+table.id).click(function() {
-	    if (validateName() == true) {
-		//Prevent being able to double-click new game
-		var buttons = $(".joinbtn,#newtable");
-		buttons.addClass("disabled");
-		socket.write("joinTable", table.id, $("#playername").val());
-	    }
-	});
+        // If we click the button, join that table
+        $("#" + table.id).click(function() {
+            if (validateName() == true) {
+                //Prevent being able to double-click new game
+                var buttons = $(".joinbtn,#newtable");
+                buttons.addClass("disabled");
+                socket.send("joinTable", table.id, $("#playername").val());
+            }
+        });
     });
 
     socket.on("updateTableRow", function(table) {
-        var table = $.parseJSON(table);
         var row = $("#" + table.id).closest("tr");
         row.replaceWith(rowHtml(table));
 
-	// When we re-add the row we have to reattach the handler
-	$("#"+table.id).click(function() {
-	    if (validateName() == true) {
-		var buttons = $(".joinbtn,#newtable");
-		buttons.addClass("disabled");
-		socket.write("joinTable", table.id, $("#playername").val());
-	    }
-	});
+        // When we re-add the row we have to reattach the handler
+        $("#" + table.id).click(function() {
+            if (validateName() == true) {
+                var buttons = $(".joinbtn,#newtable");
+                buttons.addClass("disabled");
+                socket.send("joinTable", table.id, $("#playername").val());
+            }
+        });
     });
 
     socket.on("removeTableRow", function(table_id) {
@@ -119,7 +118,7 @@ $(document).ready(function(){
 
     socket.on('startGame', function() {
         if (_.size(_players) == 4) {
-            socket.emit("dealCards");
+            socket.send("dealCards");
             $("#played-cards").removeClass("hidden");
 
             state = 'trading';
@@ -133,12 +132,8 @@ $(document).ready(function(){
         text_div.append(text);
     }
 
+    //all_pos: A map from position to {name: ?, score: ?}
     socket.on("updatePositions", function(your_pos, all_pos) {
-        your_pos = $.parseJSON(your_pos);
-
-        //A map from position to {name: ?, score: ?}
-        all_pos = $.parseJSON(all_pos);
-
         var dir_map = ["bottom", "right", "top", "left"];
         var pos_map = ["N", "W", "S", "E"];
         //Rotate the table around based on our position
@@ -172,8 +167,7 @@ $(document).ready(function(){
     socket.on("showCards", showCards);
 
     function showCards(cards) {
-        _cards = $.parseJSON(cards);
-        _cards = _.sortBy(_cards, function(card) {
+        _cards = _.sortBy(cards, function(card) {
             return sortValue(card);
         });
 
@@ -223,7 +217,7 @@ $(document).ready(function(){
                             if (openSlots.length == 2) {
                                 //Tell the server that we aren't ready yet
                                 console.log("I'm changing my mind!");
-                                socket.emit("passCards", null);
+                                socket.send("passCards", null);
                             }
                         }
                     });
@@ -251,7 +245,7 @@ $(document).ready(function(){
             var selected_cards_ids = selected_cards.map(function() {
                 return idToCard(this.id);
             });
-            socket.emit("passCards", $.makeArray(selected_cards_ids));
+            socket.send("passCards", $.makeArray(selected_cards_ids));
         }
     };
 
@@ -269,7 +263,7 @@ $(document).ready(function(){
         handCard.closest('li').remove();
 
         if (shouldEmit)
-            socket.emit('submitCard', suit + rank);
+            socket.send('submitCard', suit + rank);
     }
 
     function moveCardToHand(card) {
@@ -280,7 +274,7 @@ $(document).ready(function(){
 
         _cards[_cards.length] = card_obj;
 
-        showCards(JSON.stringify(_cards));
+        showCards(_cards);
     }
 
     function cardIndex(card) {
@@ -292,12 +286,6 @@ $(document).ready(function(){
         });
         return hand_index;
     }
-
-    socket.on("opponentPlayedCard", function(name, card) {
-        var card = $.parseJSON(card);
-        var name = $.parseJSON(name);
-        console.log("Player " + name + "played card " + card);
-    });
 });
 
 var suitmap = {

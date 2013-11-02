@@ -8,10 +8,9 @@
     "jsdom": "~0.8.6",
     "socket.io": "~0.9.16",
     "underscore": "~1.5.2",
-    "primus": "~1.4.4",
     "sockjs": "~0.3.8",
-    "primus-rooms": "~1.1.1",
-    "primus-emitter": "~2.0.0"
+    "primus.io": "~2.0.1",
+    "primus-multiplex": "~1.1.2"
   },
   "engines": {
     "node": "~0.10.20"
