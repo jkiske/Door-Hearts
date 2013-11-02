@@ -1,4 +1,3 @@
-require("newrelic");
 var _und = require("underscore");
 var io = require("socket.io")
 var http = require('http');
@@ -13,9 +12,9 @@ var _table = require("./table");
 // This serves static content on port 8888
 var app = express();
 var server = http.createServer(app);
-var port = process.env.PORT || 5000;
-
+var port = 8888;
 server.listen(port);
+
 
 app.use(express.static(__dirname + '/assets'));
 
