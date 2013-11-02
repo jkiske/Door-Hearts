@@ -129,12 +129,19 @@ $(document).ready(function(){
 	pos_map = _.rotate(pos_map, _.indexOf(pos_map, your_pos));
 
 	var pos_dir_map =  _.object(pos_map, dir_map);
+	//Add players that exist
 	_.each(all_pos, function (player, pos) {
 	    var rel_dir = pos_dir_map[pos];
 	    var name = (player.name == null ? "Open" : player.name);
 	    var score = (player.score == undefined ? "0" : player.score);
 	    console.log(rel_dir + "is player: " + name + ": " + score);
 	    $("#"+rel_dir+"name").text(name + ": "+ score);
+	});
+	//Set ever other position to empty
+	_.each(pos_dir_map, function(rel_dir, pos) {
+	    if (_.contains(_.keys(all_pos), pos) == false) {
+		$("#"+rel_dir+"name").text("Open");
+	    }
 	});
 
     });

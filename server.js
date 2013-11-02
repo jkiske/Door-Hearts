@@ -60,20 +60,20 @@ socket.sockets.on('connection', function (client) {
 		player.position = table.firstOpenPosition();
 		table.positions[player.position] = player.name;
 
-		notifyUsersOfJoin(player, table);
+		client.join(table.id);
+		client.leave(waiting_room);
+
+		//Tell this client to join the table
+		client.emit("joinTable", JSON.stringify(table.safe()));
+
+		updatePlayerPositions(table);
 		return true;
 	    }
 	}
 	return false;
     }
 
-    function notifyUsersOfJoin(player, table) {
-
-	client.join(table.id);
-	client.leave(waiting_room);
-
-	//Tell this client to join the table
-        client.emit("joinTable", JSON.stringify(table.safe()));
+    function updatePlayerPositions(table) {
 
 	// Put all of the other players into a map - position:{name: ?, score: ?}
 	var table_players = _und.values(table.players);
@@ -143,15 +143,18 @@ socket.sockets.on('connection', function (client) {
 		table.positions[player.position] = null;
 
 		delete table.players[player.name];
+		client.leave(table.id);
 
 		// If that was the last player in the room, delete the room
 		if (_und.size(table.players) == 0) {
 		    delete tables[table.id];
 		    socket.sockets.in(waiting_room).emit("removeTableRow", table.id);
 		} else {
-		    //Otherwise, just remove the username from the row
+		    //Otherwise, remove the username from the row
 		    socket.sockets.in(waiting_room).emit("updateTableRow",
 							 JSON.stringify(table.safe()));
+		    //And let everone in the room know that person left
+		    updatePlayerPositions(table);
 		}
 	    }
 	}
