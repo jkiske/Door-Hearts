@@ -31,7 +31,7 @@ server.listen(port);
 var players = {};
 var tables = {};
 
-var waiting_room = 'waiting room';
+var waiting_room = 'waiting_room';
 
 primus.on('connection', function (client) {
     //When someone connects put them in the waiting room
@@ -82,11 +82,11 @@ primus.on('connection', function (client) {
 	var other_pos = _und.filterAndIndexBy(table_players, "position", ["name", "score"]);
 
 	//Tell all the clients at the table that there is a new player
-	var clients = primus.room(table.id).clients();
-	_und.each(clients, function(c) {
+	var clients = client.in(table.id).clients();
+	_und.each(clients, function(id) {
 	    //Emit the client his position
-	    var client_pos = players[c.id].position;
-	    c.emit("updatePositions", client_pos, other_pos);
+	    var client_pos = players[id].position;
+	    primus[id].emit("updatePositions", client_pos, other_pos);
 	});
 
 	//Tell all the clients in the waiting room that there is an update
