@@ -90,9 +90,9 @@ primus.on('connection', function(client) {
 
         //Tell all the clients at the table that there is a new player
         var clients = primus.room(table.id).clients();
-        _und.each(clients, function(c) {
+        _und.each(clients, function(id) {
             //Send the client his position
-            var client_pos = players[c.id].position;
+            var client_pos = players[id].position;
             c.send("updatePositions", client_pos, other_pos);
         });
 
