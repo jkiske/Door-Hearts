@@ -1,6 +1,11 @@
 $(document).ready(function(){
     var socket = io.connect("http://localhost:8888");
 
+    var bottomCard = $('#bottom-played-card');
+    var leftCard = $('#left-played-card');
+    var rightCard = $('#right-played-card');
+    var topCard = $('#top-played-card');
+
     // Hide the game at the start
     $('#game').hide();
 
@@ -148,44 +153,73 @@ $(document).ready(function(){
 
     //Deal the cards to each player
     socket.on("showCards", function(cards){
-	var suitmap = {"H":"hearts" , "C":"clubs",
-		       "S":"spades", "D":"diams"};
-	var cardmap = {1:"a", 11: "j", 12:"q", 13:"k"};
-
-	var json = $.parseJSON(cards);
-	$.each(json, function(key, value) {
-	    var suit = suitmap[value["suit"]];
-	    var includeSuit = true;
-
-	    if (value["rank"] in cardmap) {
-		var rank = cardmap[value["rank"]];
-		if (rank == "a")
-		    includeSuit = false;
-	    } else {
-		var rank = value["rank"].toString();
-		includeSuit = false;
-	    }
-
-	    $("#bottomcards").append(
-		"<li>" +
-		    "<a id=\"" + value["suit"] + value["rank"] + "\"" +
-		    "class = \"card rank-"+rank+" " + suit + "\">\n" +
-		    "<span class=\"rank\">" + rank.toUpperCase() + "</span>" +
-		    "<span class=\"suit\">" +
-		    (includeSuit ? ("&" + suit + ";") : "") +
-		    "</span>" +
-		    "</a>" +
-		"</li>"
-	    );
+	var cards = $.parseJSON(cards);
+	console.log(cards);
+	$.each(cards, function(key, value) {
+	    $("#bottomcards").append('<li>' +
+				     createCard(value['suit'], value['rank'], 'a') +
+				     '</li>'
+				    );
 	});
 
-	$("a.card").click(function() {
-	    console.log("Clicked " + $(this).attr("id"));
-	});
+	$("a.card").click(cardClick);
 
     });
+    function cardClick() {
+	card = $(this);
+	exchangeCard(bottomCard, card);
+	socket.emit('selectCard', card.attr('id'));
+    }
 
 });
+
+function exchangeCard(card, newCard) {
+    //Get the rank/suit information
+    var id = newCard.attr('id');
+    var suit = id.slice(0,1);
+    //Slice only becasue card can be A10
+    var rank = id.slice(1);
+    if (rank in inv_rankmap) {
+	rank = inv_rankmap[rank];
+    }
+    
+    //Delete the old card and replace it with the new one
+    var card_child = card.children()[0];
+    card_child.remove();
+    card.append(createCard(suit, rank, 'div'));
+
+    //Show it!
+    if (card.hasClass('hide-card')) {
+	card.removeClass('hide-card');
+    }
+}
+
+var suitmap = {"H":"hearts" , "C":"clubs",
+	       "S":"spades", "D":"diams"};
+var rankmap = {1:"a", 11: "j", 12:"q", 13:"k"};
+var inv_rankmap = _.invert(rankmap);
+
+function createCard(suit, rank, tag) {
+    var full_suit = suitmap[suit];
+    var includeSuit = true;
+
+    if (rank in rankmap) {
+	var rank = rankmap[rank];
+	if (rank == "a")
+	    includeSuit = false;
+    } else {
+	var rank = rank.toString();
+	includeSuit = false;
+    }
+
+    return "<" + tag + " id=\"" + suit + rank + "\" " +
+	"class=\"card rank-"+ rank + " " + full_suit + "\">\n" +
+	"<span class=\"rank\">" + rank.toUpperCase() + "</span>" +
+	"<span class=\"suit\">" +
+	(includeSuit ? ("&" + full_suit + ";") : "") +
+	"</span>" +
+	"</" + tag + ">";
+}
 
 _.mixin({
     rotate: function(array, n, guard) {
