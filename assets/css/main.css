@@ -75,6 +75,14 @@ body {
     visibility: visible;
 }
 
+/* Bottom cards */
+#bottomcards{
+    position: absolute;
+    left: 50%;
+    /* Calculate margin-left in js */
+    margin-top: 10px;
+}
+
 /* Inset login box */
 .login{
     -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.5);

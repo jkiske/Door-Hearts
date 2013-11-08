@@ -165,6 +165,9 @@ $(document).ready(function(){
 			       '</li>'
 			      );
 	});
+        var bottomCard = $('#bottomcards li');
+
+	bottomCards.css("margin-left", bottomCard.length * - bottomCard.width() / 2 - 56);
 
 	$("a.card").click(cardClick);
 
