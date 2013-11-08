@@ -124,11 +124,22 @@ socket.sockets.on('connection', function (client) {
 
 	    player.cards = cards;
 	    console.log("Added cards to player " + player.name);
-
 	    client.emit('showCards', JSON.stringify(cards));
-	    socket.sockets.emit("remainingCards", deck.cards.length)
 	} else {
 	    console.log("Player " + player.name + " already has 13 cards");
+	}
+    });
+
+    client.on('submitCard', function(card) {
+	var card_suit = card.slice(0,1);
+	var card_rank = card.slice(1)-0; //Convert to an int?
+	var player = players[client.id];
+	if (player !== undefined) {
+	    var player_card = _und.where(player.cards, {suit:card_suit, rank:card_rank});
+	    //remove the card from the players deck
+	    //TODO: check if the card is in the players hand
+	    player.cards = _und.difference(player.cards, player_card);
+	    client.emit('showCards', JSON.stringify(player.cards));
 	}
     });
 

@@ -5,20 +5,6 @@ var Player = function (n, id) {
     var cards = {};
     var score = 0;
     var position; //N, S, E, W
-    /**
-     * Removes a card from the players deck
-     *
-     * @return the card
-     * throws an error if the card is not in the deck
-     **/
-    function removeCard(card) {
-	if (card in deck) {
-	    array.splice(deck.indexOf(card), 1);
-	} else {
-	    throw "Card: " + card  + " not in deck: " + deck;
-	}
-	return card;
-    }
 
     /**
      * Associates a player with a table
@@ -42,7 +28,6 @@ var Player = function (n, id) {
 	score: score,
 	cards: cards,
 	position: position,
-	removeCard: removeCard,
 	joinTable: joinTable
     }
 };

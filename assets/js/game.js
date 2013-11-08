@@ -155,11 +155,15 @@ $(document).ready(function(){
     socket.on("showCards", function(cards){
 	var cards = $.parseJSON(cards);
 	console.log(cards);
+	var bottomCards = $('#bottomcards');
+
+	//Delete the children and replace them
+	bottomCards.children().remove();
 	$.each(cards, function(key, value) {
-	    $("#bottomcards").append('<li>' +
-				     createCard(value['suit'], value['rank'], 'a') +
-				     '</li>'
-				    );
+	    bottomCards.append('<li>' +
+			       createCard(value['suit'], value['rank'], 'a') +
+			       '</li>'
+			      );
 	});
 
 	$("a.card").click(cardClick);
@@ -168,31 +172,34 @@ $(document).ready(function(){
     function cardClick() {
 	card = $(this);
 	exchangeCard(bottomCard, card);
-	socket.emit('selectCard', card.attr('id'));
     }
+
+    function exchangeCard(card, newCard) {
+	//Get the rank/suit information
+	var id = newCard.attr('id');
+	var suit = id.slice(0,1);
+	//Slice only becasue card can be A10
+	var rank = id.slice(1);
+	if (rank in inv_rankmap) {
+	    rank = inv_rankmap[rank];
+	}
+
+	//Delete the old card and replace it with the new one
+	var card_child = card.children()[0];
+	card_child.remove();
+	card.append(createCard(suit, rank, 'div'));
+
+	//Show it!
+	if (card.hasClass('hide-card')) {
+	    card.removeClass('hide-card');
+	}
+
+	socket.emit('submitCard', suit+rank);
+
+    }
+
 
 });
-
-function exchangeCard(card, newCard) {
-    //Get the rank/suit information
-    var id = newCard.attr('id');
-    var suit = id.slice(0,1);
-    //Slice only becasue card can be A10
-    var rank = id.slice(1);
-    if (rank in inv_rankmap) {
-	rank = inv_rankmap[rank];
-    }
-    
-    //Delete the old card and replace it with the new one
-    var card_child = card.children()[0];
-    card_child.remove();
-    card.append(createCard(suit, rank, 'div'));
-
-    //Show it!
-    if (card.hasClass('hide-card')) {
-	card.removeClass('hide-card');
-    }
-}
 
 var suitmap = {"H":"hearts" , "C":"clubs",
 	       "S":"spades", "D":"diams"};
