@@ -1,6 +1,8 @@
 $(document).ready(function(){
     var socket = io.connect("http://localhost:8888");
 
+    var state = 'waiting'; // waiting, trading, playing
+
     var bottomCard = $('#bottom-played-card');
     var leftCard = $('#left-played-card');
     var rightCard = $('#right-played-card');
@@ -121,6 +123,7 @@ $(document).ready(function(){
 	$("#played-cards").removeClass("hidden");
 	socket.emit("dealCards");
 
+	state = 'trading';
 	$('#myModal').modal({backdrop:'static'});
     });
 
@@ -172,7 +175,19 @@ $(document).ready(function(){
 	bottomCards.css("margin-left", measureCard.length * - measureCard.width() / 2 - 56);
 
 	$("a.card").click(function() {
-	    exchangeCard(bottomCard, $(this), true);
+	    if (state == 'trading') {
+		var openSlots = $('.empty-card-slot');
+		if (openSlots.length > 0) {
+		    var slot = $(openSlots[0]);
+		    exchangeCard(slot, $(this), false);
+		    slot.removeClass('empty-card-slot');
+		    slot.addClass('filled-card-slot');
+		}
+	    }
+	    else if (state == 'playing') {
+		exchangeCard(bottomCard, $(this), true);
+		bottomCard.removeClass('hide-card');
+	    }
 	});
     });
 
@@ -199,10 +214,6 @@ $(document).ready(function(){
 
 	card.append(createCard(suit, rank, 'div'));
 
-	//Show it!
-	if (card.hasClass('hide-card')) {
-	    card.removeClass('hide-card');
-	}
 	if (shouldEmit)
 	    socket.emit('submitCard', suit+rank);
     }
