@@ -74,7 +74,6 @@ socket.sockets.on('connection', function (client) {
     }
 
     function updatePlayerPositions(table) {
-
 	// Put all of the other players into a map - position:{name: ?, score: ?}
 	var table_players = _und.values(table.players);
 	var other_pos = _und.filterAndIndexBy(table_players, "position", ["name", "score"]);
@@ -140,6 +139,11 @@ socket.sockets.on('connection', function (client) {
 	    //TODO: check if the card is in the players hand
 	    player.cards = _und.difference(player.cards, player_card);
 	    client.emit('showCards', JSON.stringify(player.cards));
+
+	    //Send to all players except the emitting socket
+	    client.broadcast.to(player.table).emit("opponentPlayedCard", 
+						       JSON.stringify(player.name),
+						       JSON.stringify(card));
 	}
     });
 

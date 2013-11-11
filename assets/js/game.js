@@ -165,19 +165,22 @@ $(document).ready(function(){
 			       '</li>'
 			      );
 	});
-        var bottomCard = $('#bottomcards li');
+        var measureCard = $('#bottomcards li');
+	// Magic numbers to center stack
+	bottomCards.css("margin-left", measureCard.length * - measureCard.width() / 2 - 56);
 
-	bottomCards.css("margin-left", bottomCard.length * - bottomCard.width() / 2 - 56);
-
-	$("a.card").click(cardClick);
-
+	$("a.card").click(function() {
+	    exchangeCard(bottomCard, $(this), true);
+	});
     });
-    function cardClick() {
-	card = $(this);
-	exchangeCard(bottomCard, card);
-    }
 
-    function exchangeCard(card, newCard) {
+    socket.on("opponentPlayedCard", function(name, card) {
+	var card = $.parseJSON(card);
+	var name = $.parseJSON(name);
+	console.log("Player " +name + "played card " + card);
+    });
+
+    function exchangeCard(card, newCard, shouldEmit) {
 	//Get the rank/suit information
 	var id = newCard.attr('id');
 	var suit = id.slice(0,1);
@@ -188,20 +191,19 @@ $(document).ready(function(){
 	}
 
 	//Delete the old card and replace it with the new one
-	var card_child = card.children()[0];
-	card_child.remove();
+	var card_children = card.children()
+	if (card_children.length > 0)
+	    card_children[0].remove();
+
 	card.append(createCard(suit, rank, 'div'));
 
 	//Show it!
 	if (card.hasClass('hide-card')) {
 	    card.removeClass('hide-card');
 	}
-
-	socket.emit('submitCard', suit+rank);
-
+	if (shouldEmit)
+	    socket.emit('submitCard', suit+rank);
     }
-
-
 });
 
 var suitmap = {"H":"hearts" , "C":"clubs",
