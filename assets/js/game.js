@@ -124,7 +124,7 @@ $(document).ready(function(){
 	socket.emit("dealCards");
 
 	state = 'trading';
-	$('#myModal').modal({backdrop:'static'});
+	$('#pass-btn').removeClass('hidden');
     });
 
     socket.on("updatePositions", function(your_pos, all_pos) {
@@ -181,7 +181,13 @@ $(document).ready(function(){
 		    var slot = $(openSlots[0]);
 		    exchangeCard(slot, $(this), false);
 		    slot.removeClass('empty-card-slot');
+		    slot.removeClass('hide-card');
+
 		    slot.addClass('filled-card-slot');
+
+		    if (openSlots.length == 1) {
+			$('#pass-btn').removeClass('disabled');
+		    }
 		}
 	    }
 	    else if (state == 'playing') {

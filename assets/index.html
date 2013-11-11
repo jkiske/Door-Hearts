@@ -83,45 +83,78 @@
 
 	<!-- Center Stack -->
 	<div id="center">
-	  <div class = "btn btn-primary btn-lg" id="play">Play</div>
+          <div class = "btn btn-primary btn-lg" id="play">Play</div>
+
+	  <!-- Play Stack -->
 	  <div id="played-cards" class="playingCards">
 	    <ul class="table">
 	      <li>
 		<div id="top-played-card" class="hide-card">
-		  <div class="card rank-10 clubs">
-		    <span class="rank">10</span>
+		  <div class="card">
+		    <span class="rank"></span>
 		    <span class="suit"></span>
 		  </div>
 		</div>
 	      </li>
 	      <li>
 		<div id="left-played-card" class="rotate270 hide-card">
-		  <div class="card rank-10 clubs">
-		    <span class="rank">10</span>
+		  <div class="card">
+		    <span class="rank"></span>
 		    <span class="suit"></span>
 		  </div>
 		</div>
 	      </li>
 	      <li>
 		<div id="right-played-card" class="rotate90 hide-card">
-		  <div class="card rank-10 clubs">
-		    <span class="rank">10</span>
+		  <div class="card">
+		    <span class="rank"></span>
 		    <span class="suit"></span>
 		  </div>
 		</div>
 	      </li>
 	      <li>
 		<div id="bottom-played-card" class="rotate180 hide-card">
-		  <div class="card rank-10 clubs">
-		    <span class="rank">10</span>
+		  <div class="card">
+		    <span class="rank"></span>
 		    <span class="suit"></span>
 		  </div>
 		</div>
 	      </li>
 	    </ul>
 	  </div>
-	</div>
 
+	  <!-- Trade Stack -->
+	  <div id="traded-cards" class="playingCards">
+	    <ul class="table">
+	      <li>
+		<div id="left-traded-card" class="empty-card-slot hide-card">
+		  <div class="card">
+		    <span class="rank"></span>
+		    <span class="suit"></span>
+		  </div>
+		</div>
+	      </li>
+	      <li>
+		<div id="center-traded-card" class="empty-card-slot hide-card">
+		  <div class="card">
+		    <span class="rank"></span>
+		    <span class="suit"></span>
+		  </div>
+		</div>
+	      </li>
+	      <li>
+		<div id="right-traded-card" class="empty-card-slot hide-card">
+		  <div class="card">
+		    <span class="rank"></span>
+		    <span class="suit"></span>
+		  </div>
+		</div>
+	      </li>
+	    </ul>
+	    <div id='pass-btn' class='btn btn-lg btn-default disabled hidden'>Pass</div>
+	  </div>
+
+	</div>
 
 	<div class = "row">
 	  <!-- Left Hand-->
@@ -161,51 +194,6 @@
 	</div>
       </div>
 
-    </div>
-
-    <div id="myModal" class="modal fade">
-      <div class="modal-dialog">
-	<div class="modal-content">
-
-	  <div class="modal-header">
-            <h4 class="modal-title">Select Cards to Pass</h4>
-	  </div>
-
-	  <div class="modal-body text-center">
-	    <div id="traded-cards" class="playingCards">
-	      <ul class="table">
-		<li>
-		  <div id="left-traded-card" class="empty-card-slot">
-		    <div class="card">
-		      <span class="rank"></span>
-		      <span class="suit"></span>
-		    </div>
-		  </div>
-		</li>
-		<li>
-		  <div id="center-traded-card" class="empty-card-slot">
-		    <div class="card">
-		      <span class="rank"></span>
-		      <span class="suit"></span>
-		    </div>
-		  </div>
-		</li>
-		<li>
-		  <div id="right-traded-card" class="empty-card-slot">
-		    <div class="card">
-		      <span class="rank"></span>
-		      <span class="suit"></span>
-		    </div>
-		  </div>
-		</li>
-	      </ul>
-	    </div>
-	    <div class="modal-footer">
-              <button type="button" class="btn btn-primary" data-dismiss="modal">Trade</button>
-	    </div>
-	  </div>
-	</div>
-      </div>
     </div>
 
   </body>

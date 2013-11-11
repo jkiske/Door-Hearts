@@ -1,4 +1,4 @@
-body { 
+body {
   background: url('../images/big-heart.png'), -webkit-radial-gradient(top center, ellipse cover, rgba(255,255,255,0.2) 0%,rgba(0,0,0,0.6) 100%), url('../images/felt.jpg'), #4d9843;
   background-repeat: no-repeat, repeat, repeat;
   background-attachment:fixed;
@@ -36,6 +36,7 @@ body {
 #center{
     position:absolute;
     left: 50%;
+    min-width: 25em; /*Need this to be big to fit the traded cards */
 }
 #play{
     margin-left:-34.5px /* 69px/2 */
@@ -78,39 +79,53 @@ body {
 /* Bottom cards */
 #bottomcards{
     position: absolute;
-    z-index: 9999; /* Put this above the modal */
     left: 50%;
     /* Calculate margin-left in js */
     margin-top: 10px;
 }
 
 #traded-cards{
-    min-height: 11em;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -19.25em;
+    margin-top: -6.5em;
+    font-size: 1.1em;
+}
+
+#pass-btn {
+    position: absolute;
+    margin-top: 8em;
+    margin-left: -10.6em;
 }
 
 .empty-card-slot .card{
+/*
     -moz-box-shadow: inset .1em .1em .3em #aaa;
     -webkit-box-shadow: inset .1em .1em .3em #aaa;
     box-shadow: inset .1em .1em .3em #aaa;
+*/
 }
 
 .filled-card-slot .card{
+/*
     -moz-box-shadow: .1em .1em .3em #888;
     -webkit-box-shadow: .1em .1em .3em #888;
     box-shadow: .1em .1em .3em #888;
+*/
 }
 
 #left-traded-card{
-    margin-left: 2.5em;
-    margin-right: 6em;
+    margin-left: -6.6em;
+    margin-right: 4em;
 }
 
 #center-traded-card{
-    margin-right: 6em;
+    margin-right: 4em;
 }
 
 #right-traded-card{
-    margin-right: 6em;
+    margin-right: 0em;
 }
 
 
