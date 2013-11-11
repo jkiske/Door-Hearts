@@ -83,6 +83,22 @@ body {
     margin-top: 10px;
 }
 
+#traded-cards{
+    min-height: 11em;
+}
+#left-traded-card{
+    margin-left: 2.5em;
+    margin-right: 6em;
+}
+
+#center-traded-card{
+    margin-right: 6em;
+}
+
+#right-traded-card{
+    margin-right: 6em;
+}
+
 /* Inset login box */
 .login{
     -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.5);

@@ -120,6 +120,8 @@ $(document).ready(function(){
 	$("#play").hide();
 	$("#played-cards").removeClass("hidden");
 	socket.emit("dealCards");
+
+	$('#myModal').modal({keyboard: true, show:true, backdrop: true});
     });
 
     socket.on("updatePositions", function(your_pos, all_pos) {
