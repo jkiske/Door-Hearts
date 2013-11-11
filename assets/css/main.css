@@ -78,6 +78,7 @@ body {
 /* Bottom cards */
 #bottomcards{
     position: absolute;
+    z-index: 9999; /* Put this above the modal */
     left: 50%;
     /* Calculate margin-left in js */
     margin-top: 10px;
@@ -86,6 +87,19 @@ body {
 #traded-cards{
     min-height: 11em;
 }
+
+.empty-card-slot .card{
+    -moz-box-shadow: inset .1em .1em .3em #aaa;
+    -webkit-box-shadow: inset .1em .1em .3em #aaa;
+    box-shadow: inset .1em .1em .3em #aaa;
+}
+
+.filled-card-slot .card{
+    -moz-box-shadow: .1em .1em .3em #888;
+    -webkit-box-shadow: .1em .1em .3em #888;
+    box-shadow: .1em .1em .3em #888;
+}
+
 #left-traded-card{
     margin-left: 2.5em;
     margin-right: 6em;
@@ -98,6 +112,7 @@ body {
 #right-traded-card{
     margin-right: 6em;
 }
+
 
 /* Inset login box */
 .login{

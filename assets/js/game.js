@@ -121,7 +121,7 @@ $(document).ready(function(){
 	$("#played-cards").removeClass("hidden");
 	socket.emit("dealCards");
 
-	$('#myModal').modal({keyboard: true, show:true, backdrop: true});
+	$('#myModal').modal({backdrop:'static'});
     });
 
     socket.on("updatePositions", function(your_pos, all_pos) {
