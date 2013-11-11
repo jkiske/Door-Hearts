@@ -194,6 +194,11 @@ $(document).ready(function(){
 		exchangeCard(bottomCard, $(this), true);
 		bottomCard.removeClass('hide-card');
 	    }
+
+	    var measureCard = $('#bottomcards li');
+	    // Magic numbers to center stack
+	    bottomCards.css("margin-left", measureCard.length * - measureCard.width() / 2 - 56);
+
 	});
     });
 
@@ -203,9 +208,9 @@ $(document).ready(function(){
 	console.log("Player " +name + "played card " + card);
     });
 
-    function exchangeCard(card, newCard, shouldEmit) {
+    function exchangeCard(card, deckCard, shouldEmit) {
 	//Get the rank/suit information
-	var id = newCard.attr('id');
+	var id = deckCard.attr('id');
 	var suit = id.slice(0,1);
 	//Slice only becasue card can be A10
 	var rank = id.slice(1);
@@ -213,12 +218,11 @@ $(document).ready(function(){
 	    rank = inv_rankmap[rank];
 	}
 
-	//Delete the old card and replace it with the new one
-	var card_children = card.children()
-	if (card_children.length > 0)
-	    card_children[0].remove();
+	//Replace the middle card with the deck card
+	card.find('.card').replaceWith(createCard(suit, rank, 'div'));
 
-	card.append(createCard(suit, rank, 'div'));
+	//Remove the deck card
+	deckCard.closest('li').remove();
 
 	if (shouldEmit)
 	    socket.emit('submitCard', suit+rank);
