@@ -93,7 +93,7 @@ primus.on('connection', function(client) {
         _und.each(clients, function(id) {
             //Emit the client his position
             var client_pos = players[id].position;
-            primus.connections[id].emit("updatePositions", client_pos, other_pos);
+            primus.connections[id].send("updatePositions", client_pos, other_pos);
         });
 
         //Tell all the clients in the waiting room that there is an update
@@ -159,34 +159,35 @@ primus.on('connection', function(client) {
             }
         }
     });
-});
 
-//Disconnect
-primus.on('disconnection', function(client) {
-    if (client.id in players) {
-        var player = players[client.id];
-        delete players[client.id];
+    //Disconnect
+    primus.on('disconnection', function(client) {
+        if (client.id in players) {
+            var player = players[client.id];
+            delete players[client.id];
 
-        var table = tables[player.table];
-        if (table !== undefined) {
-            table.positions[player.position] = null;
+            var table = tables[player.table];
+            if (table !== undefined) {
+                table.positions[player.position] = null;
 
-            delete table.players[player.name];
-            client.leave(table.id);
+                delete table.players[player.name];
+                client.leave(table.id);
 
-            // If that was the last player in the room, delete the room
-            if (_und.size(table.players) == 0) {
-                delete tables[table.id];
-                primus.room(waiting_room).send("removeTableRow", table.id);
-            } else {
-                //Otherwise, remove the username from the row
-                primus.room(waiting_room).send("updateTableRow", table.safe());
-                //And let everone in the room know that person left
-                updatePlayerPositions(table);
+                // If that was the last player in the room, delete the room
+                if (_und.size(table.players) == 0) {
+                    delete tables[table.id];
+                    primus.room(waiting_room).send("removeTableRow", table.id);
+                } else {
+                    //Otherwise, remove the username from the row
+                    primus.room(waiting_room).send("updateTableRow", table.safe());
+                    //And let everone in the room know that person left
+                    updatePlayerPositions(table);
+                }
             }
         }
-    }
+    });
 });
+
 
 /**
  * This function takes a list of the same objects, reindexes by an

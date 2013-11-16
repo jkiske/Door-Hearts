@@ -160,7 +160,6 @@ $(document).ready(function() {
         });
         var remaining_player_count = 4 - _.size(all_pos);
         setInfoText("Waiting for " + remaining_player_count + " more players");
-
     });
 
     //Deal the cards to each player
