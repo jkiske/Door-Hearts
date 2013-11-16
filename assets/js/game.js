@@ -49,7 +49,6 @@ $(document).ready(function(){
 
     //Add a new table to all the users that are still looking for one
     socket.on("addTableRow", function(table) {
-	var table = $.parseJSON(table)
 	$('#tabletable-id tbody').append(rowHtml(table));
 
 	//When we add a new table, check to see if we should make links inactive
@@ -67,7 +66,6 @@ $(document).ready(function(){
     });
 
     socket.on("updateTableRow", function(table) {
-	var table = $.parseJSON(table);
 	var row = $("#"+table.id).closest("tr");
 	row.replaceWith(rowHtml(table));
 
@@ -103,9 +101,6 @@ $(document).ready(function(){
     socket.on("joinTable", function(table) {
 	$('#tableslist').hide();
 	$('#game').show();
-
-	//var table = $.parseJSON(table);
-	//var players = _.values(table.players);
     });
 
 
@@ -118,10 +113,7 @@ $(document).ready(function(){
     });
 
     socket.on("updatePositions", function(your_pos, all_pos) {
-	var your_pos = $.parseJSON(your_pos);
-
-	//A map from position to {name: ?, score: ?}
-	var all_pos = $.parseJSON(all_pos);
+	//all_pos: A map from position to {name: ?, score: ?}
 
 	var dir_map = ["bottom", "right", "top", "left"];
 	var pos_map =["N", "W", "S", "E"];
@@ -152,8 +144,7 @@ $(document).ready(function(){
 		       "S":"spades", "D":"diams"};
 	var cardmap = {1:"a", 11: "j", 12:"q", 13:"k"};
 
-	var json = $.parseJSON(cards);
-	$.each(json, function(key, value) {
+	$.each(cards, function(key, value) {
 	    var suit = suitmap[value["suit"]];
 	    var includeSuit = true;
 
