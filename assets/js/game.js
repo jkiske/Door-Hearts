@@ -2,6 +2,8 @@ $(document).ready(function(){
     var socket = io.connect("http://localhost:8888");
 
     var state = 'waiting'; // waiting, trading, playing
+    var _players = [];
+    var _cards = [];
 
     var bottomCard = $('#bottom-played-card');
     var leftCard = $('#left-played-card');
@@ -157,14 +159,20 @@ $(document).ready(function(){
     });
 
     //Deal the cards to each player
-    socket.on("showCards", function(cards){
-	var cards = $.parseJSON(cards);
-	console.log(cards);
+    socket.on("showCards", showCards);
+
+    function showCards(cards){
+	var _cards = $.parseJSON(cards);
+
+	_cards = _.sortBy(_cards, function(card) {
+            return sortValue(card);
+        });
+
 	var bottomCards = $('#bottomcards');
 
 	//Delete the children and replace them
 	bottomCards.children().remove();
-	$.each(cards, function(key, value) {
+	$.each(_cards, function(key, value) {
 	    bottomCards.append('<li>' +
 			       createCard(value['suit'], value['rank'], 'a') +
 			       '</li>'
@@ -185,6 +193,12 @@ $(document).ready(function(){
 
 		    slot.addClass('filled-card-slot');
 
+		    // Add a click handler to return card back to deck
+		    slot.click(function() {
+			if ($(this).hasClass('hidden'))
+			    return true;
+		    });
+
 		    if (openSlots.length == 1) {
 			$('#pass-btn').removeClass('disabled');
 		    }
@@ -200,7 +214,7 @@ $(document).ready(function(){
 	    bottomCards.css("margin-left", measureCard.length * - measureCard.width() / 2 - 56);
 
 	});
-    });
+    }
 
     socket.on("opponentPlayedCard", function(name, card) {
 	var card = $.parseJSON(card);
@@ -255,6 +269,16 @@ function createCard(suit, rank, tag) {
 	"</span>" +
 	"</" + tag + ">";
 }
+
+function sortValue(card) {
+        var suitVals = {"C":0, "D":1, "S":2, "H":3};
+        //Give each suit a value for sorting
+        var suitVal = suitVals[card["suit"]]*13;
+        //Aces are high
+        var rankVal = card["rank"] == 1 ? 13 : card["rank"] - 1;
+        return rankVal + suitVal;
+}
+
 
 _.mixin({
     rotate: function(array, n, guard) {

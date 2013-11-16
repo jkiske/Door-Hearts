@@ -117,9 +117,9 @@ socket.sockets.on('connection', function (client) {
 
 	if (_und.size(player.cards) < 13) {
 	    var cards = deck.draw(13, "", true);
-	    cards = _und.sortBy(cards, function(card) {
-		return deck.sortValue(card);
-	    });
+//	    cards = _und.sortBy(cards, function(card) {
+//		return deck.sortValue(card);
+//	    });
 
 	    player.cards = cards;
 	    console.log("Added cards to player " + player.name);
