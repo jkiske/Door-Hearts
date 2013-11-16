@@ -91,9 +91,9 @@ primus.on('connection', function(client) {
         //Tell all the clients at the table that there is a new player
         var clients = primus.room(table.id).clients();
         _und.each(clients, function(id) {
-            //Send the client his position
+            //Emit the client his position
             var client_pos = players[id].position;
-            c.send("updatePositions", client_pos, other_pos);
+            primus.connections[id].emit("updatePositions", client_pos, other_pos);
         });
 
         //Tell all the clients in the waiting room that there is an update
@@ -105,7 +105,6 @@ primus.on('connection', function(client) {
     client.on('newTable', function(playerName) {
         var table = makeTable();
         //Tell all the clients in the waiting room that there is an update
-        console.log(_und.functions(primus.room(waiting_room)));
         primus.room(waiting_room).send("addTableRow", table.safe());
 
         //Check to see if we successfully joined
@@ -160,7 +159,6 @@ primus.on('connection', function(client) {
             }
         }
     });
-
 });
 
 //Disconnect
