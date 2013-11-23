@@ -131,6 +131,18 @@ $(document).ready(function() {
         $('#pass-btn').removeClass('hidden');
     });
 
+    $('#pass-btn').click(function() {
+        var selected_cards = $('.filled-card-slot .card');
+        if (selected_cards.length == 3) {
+            var selected_cards_ids = selected_cards.map(function() {
+                return this.id;
+            });
+            console.log(_cards);
+            console.log($.makeArray(selected_cards_ids));
+            socket.emit("passCard", $.makeArray(selected_cards_ids));
+        }
+    });
+
     socket.on("updatePositions", function(your_pos, all_pos) {
         var your_pos = $.parseJSON(your_pos);
 
@@ -164,8 +176,7 @@ $(document).ready(function() {
     socket.on("showCards", showCards);
 
     function showCards(cards) {
-        var _cards = $.parseJSON(cards);
-
+        _cards = $.parseJSON(cards);
         _cards = _.sortBy(_cards, function(card) {
             return sortValue(card);
         });
@@ -189,16 +200,34 @@ $(document).ready(function() {
                 var openSlots = $('.empty-card-slot');
                 if (openSlots.length > 0) {
                     var slot = $(openSlots[0]);
-                    exchangeCard(slot, $(this), false);
+                    moveCardToCenter(slot, $(this), false);
+
+                    var card = idToCard($(this).attr('id'));
+                    var index = cardIndex(card);
+
+                    if (index >= 0) {
+                        //Remove the card and flatten the array
+                        delete _cards[index];
+                        _cards = _.compact(_cards);
+                    }
+
                     slot.removeClass('empty-card-slot');
                     slot.removeClass('hide-card');
-
                     slot.addClass('filled-card-slot');
 
                     // Add a click handler to return card back to deck
                     slot.click(function() {
-                        if ($(this).hasClass('hidden'))
-                            return true;
+                        if ($(this).hasClass('filled-card-slot')) {
+                            moveCardToHand($(this).find('.card'));
+
+                            slot.addClass('empty-card-slot');
+                    		slot.addClass('hide-card');
+                    		slot.removeClass('filled-card-slot');
+
+                            if (openSlots.length != 3) {
+                                $('#pass-btn').addClass('disabled');
+                            }
+                        }
                     });
 
                     if (openSlots.length == 1) {
@@ -206,7 +235,7 @@ $(document).ready(function() {
                     }
                 }
             } else if (state == 'playing') {
-                exchangeCard(bottomCard, $(this), true);
+                moveCardToCenter(bottomCard, $(this), true);
                 bottomCard.removeClass('hide-card');
             }
 
@@ -223,24 +252,42 @@ $(document).ready(function() {
         console.log("Player " + name + "played card " + card);
     });
 
-    function exchangeCard(card, deckCard, shouldEmit) {
+    function moveCardToCenter(middleCard, handCard, shouldEmit) {
         //Get the rank/suit information
-        var id = deckCard.attr('id');
-        var suit = id.slice(0, 1);
-        //Slice only becasue card can be A10
-        var rank = id.slice(1);
-        if (rank in inv_rankmap) {
-            rank = inv_rankmap[rank];
-        }
+        var id = handCard.attr('id');
+        handCardObj = idToCard(id);
+        var suit = handCardObj.suit;
+        var rank = handCardObj.rank;
 
         //Replace the middle card with the deck card
-        card.find('.card').replaceWith(createCard(suit, rank, 'div'));
+        middleCard.find('.card').replaceWith(createCard(suit, rank, 'div'));
 
         //Remove the deck card
-        deckCard.closest('li').remove();
+        handCard.closest('li').remove();
 
         if (shouldEmit)
             socket.emit('submitCard', suit + rank);
+    }
+
+    function moveCardToHand(card) {
+        id = card.attr('id');
+        card_obj = idToCard(id);
+        var suit = card_obj.suit;
+        var rank = card_obj.rank;
+
+        _cards[_cards.length] = card_obj;
+
+        showCards(JSON.stringify(_cards));
+    }
+
+    function cardIndex(card) {
+        var hand_index = -1;
+        _.each(_cards, function(hand_card, index) {
+            if (card.rank == hand_card.rank && card.suit == hand_card.suit) {
+                hand_index = index;
+            }
+        });
+        return hand_index;
     }
 });
 
@@ -257,6 +304,19 @@ var rankmap = {
     13: "k"
 };
 var inv_rankmap = _.invert(rankmap);
+
+// Converts a card id to an object
+
+function idToCard(id) {
+    rank = id.slice(1);
+    if (rank in inv_rankmap)
+        rank = inv_rankmap[rank];
+
+    return {
+        suit: id.slice(0, 1),
+        rank: parseInt(rank)
+    };
+}
 
 function createCard(suit, rank, tag) {
     var full_suit = suitmap[suit];
