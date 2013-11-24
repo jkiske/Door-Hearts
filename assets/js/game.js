@@ -2,7 +2,7 @@ $(document).ready(function() {
     var socket = io.connect("http://localhost:8888");
 
     var state = 'waiting'; // waiting, trading, playing
-    var _players = [];
+    var _players = {};
     var _cards = [];
 
     var bottomCard = $('#bottom-played-card');
@@ -114,40 +114,32 @@ $(document).ready(function() {
     socket.on("joinTable", function(table) {
         $('#tableslist').hide();
         $('#game').show();
-
-        //var table = $.parseJSON(table);
-        //var players = _.values(table.players);
     });
 
 
     // -------------------------------- Game ----------------------------- //
 
-    $("#play").click(function() {
-        $("#play").hide();
-        $("#played-cards").removeClass("hidden");
-        socket.emit("dealCards");
+    socket.on('startGame', function() {
+        if (_.size(_players) == 4) {
+            socket.emit("dealCards");
+            $("#played-cards").removeClass("hidden");
 
-        state = 'trading';
-        $('#pass-btn').removeClass('hidden');
-    });
-
-    $('#pass-btn').click(function() {
-        var selected_cards = $('.filled-card-slot .card');
-        if (selected_cards.length == 3) {
-            var selected_cards_ids = selected_cards.map(function() {
-                return this.id;
-            });
-            console.log(_cards);
-            console.log($.makeArray(selected_cards_ids));
-            socket.emit("passCard", $.makeArray(selected_cards_ids));
+            state = 'trading';
+            setInfoText("Select cards to trade");
         }
     });
 
+    function setInfoText(text) {
+        var text_div = $('#info-text');
+        text_div.text('');
+        text_div.append(text);
+    }
+
     socket.on("updatePositions", function(your_pos, all_pos) {
-        var your_pos = $.parseJSON(your_pos);
+        your_pos = $.parseJSON(your_pos);
 
         //A map from position to {name: ?, score: ?}
-        var all_pos = $.parseJSON(all_pos);
+        all_pos = $.parseJSON(all_pos);
 
         var dir_map = ["bottom", "right", "top", "left"];
         var pos_map = ["N", "W", "S", "E"];
@@ -160,7 +152,11 @@ $(document).ready(function() {
             var rel_dir = pos_dir_map[pos];
             var name = (player.name == null ? "Open" : player.name);
             var score = (player.score == undefined ? "0" : player.score);
-            console.log(rel_dir + "is player: " + name + ": " + score);
+            _players[pos] = {
+                dir: rel_dir,
+                name: name
+            };
+            console.log(_players);
             $("#" + rel_dir + "name").text(name + ": " + score);
         });
         //Set ever other position to empty
@@ -169,6 +165,8 @@ $(document).ready(function() {
                 $("#" + rel_dir + "name").text("Open");
             }
         });
+        var remaining_player_count = 4 - _.size(all_pos);
+        setInfoText("Waiting for " + remaining_player_count + " more players");
 
     });
 
@@ -195,7 +193,7 @@ $(document).ready(function() {
         // Magic numbers to center stack
         bottomCards.css("margin-left", measureCard.length * -measureCard.width() / 2 - 56);
 
-        $("a.card").click(function() {
+        $("#bottomcards .card").click(function() {
             if (state == 'trading') {
                 var openSlots = $('.empty-card-slot');
                 if (openSlots.length > 0) {
@@ -221,17 +219,20 @@ $(document).ready(function() {
                             moveCardToHand($(this).find('.card'));
 
                             slot.addClass('empty-card-slot');
-                    		slot.addClass('hide-card');
-                    		slot.removeClass('filled-card-slot');
+                            slot.addClass('hide-card');
+                            slot.removeClass('filled-card-slot');
 
-                            if (openSlots.length != 3) {
-                                $('#pass-btn').addClass('disabled');
+                            if (openSlots.length == 2) {
+                                //Tell the server that we aren't ready yet
+                                console.log("I'm changing my mind!");
+                                socket.emit("passCards", null);
                             }
                         }
                     });
 
                     if (openSlots.length == 1) {
-                        $('#pass-btn').removeClass('disabled');
+                        console.log("Submit my cards to trade");
+                        emitTradedCards();
                     }
                 }
             } else if (state == 'playing') {
@@ -246,11 +247,15 @@ $(document).ready(function() {
         });
     }
 
-    socket.on("opponentPlayedCard", function(name, card) {
-        var card = $.parseJSON(card);
-        var name = $.parseJSON(name);
-        console.log("Player " + name + "played card " + card);
-    });
+    function emitTradedCards() {
+        var selected_cards = $('.filled-card-slot .card');
+        if (selected_cards.length == 3) {
+            var selected_cards_ids = selected_cards.map(function() {
+                return idToCard(this.id);
+            });
+            socket.emit("passCards", $.makeArray(selected_cards_ids));
+        }
+    };
 
     function moveCardToCenter(middleCard, handCard, shouldEmit) {
         //Get the rank/suit information
@@ -289,6 +294,12 @@ $(document).ready(function() {
         });
         return hand_index;
     }
+
+    socket.on("opponentPlayedCard", function(name, card) {
+        var card = $.parseJSON(card);
+        var name = $.parseJSON(name);
+        console.log("Player " + name + "played card " + card);
+    });
 });
 
 var suitmap = {
@@ -353,7 +364,6 @@ function sortValue(card) {
     var rankVal = card["rank"] == 1 ? 13 : card["rank"] - 1;
     return rankVal + suitVal;
 }
-
 
 _.mixin({
     rotate: function(array, n, guard) {

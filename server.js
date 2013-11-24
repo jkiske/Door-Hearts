@@ -67,6 +67,9 @@ socket.sockets.on('connection', function(client) {
                 client.emit("joinTable", JSON.stringify(table.safe()));
 
                 updatePlayerPositions(table);
+                if (_und.size(table.players) == 4) {
+                    socket.sockets. in (table.id).emit("startGame");
+                }
                 return true;
             }
         }
@@ -115,38 +118,32 @@ socket.sockets.on('connection', function(client) {
         var table = tables[player.table];
         var deck = table.deck;
 
-        if (_und.size(player.cards) < 13) {
+        if (_und.size(player.hand) < 13) {
             var cards = deck.draw(13, "", true);
-            //		cards = _und.sortBy(cards, function(card) {
-            //		return deck.sortValue(card);
-            //		});
 
-            player.cards = cards;
-            console.log("Added cards to player " + player.name);
-            client.emit('showCards', JSON.stringify(cards));
+            player.addCards(cards);
+            client.emit('showCards', JSON.stringify(player.hand));
         } else {
             console.log("Player " + player.name + " already has 13 cards");
         }
     });
 
-    client.on('submitCard', function(card) {
-        var card_suit = card.slice(0, 1);
-        var card_rank = card.slice(1) - 0; //Convert to an int?
+    //Wait for all players to submit cards to trade
+    client.on('passCards', function(cards) {
         var player = players[client.id];
-        if (player !== undefined) {
-            var player_card = _und.where(player.cards, {
-                suit: card_suit,
-                rank: card_rank
-            });
-            //remove the card from the players deck
-            //TODO: check if the card is in the players hand
-            player.cards = _und.difference(player.cards, player_card);
-            client.emit('showCards', JSON.stringify(player.cards));
+        var position = player.position;
+        var table = tables[player.table];
+        table.traded_cards[position] = cards;
 
-            //Send to all players except the emitting socket
-            client.broadcast.to(player.table).emit("opponentPlayedCard",
-                JSON.stringify(player.name),
-                JSON.stringify(card));
+
+        if (table.readyToTrade()) {
+            console.log(JSON.stringify(table.traded_cards));
+            _und.each(table.traded_cards, function(cards, pos) {
+                var player_name = table.positions[pos];
+                var player = table.players[player_name];
+                player.removeCards(cards);
+
+            });
         }
     });
 

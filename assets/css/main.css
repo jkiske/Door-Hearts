@@ -93,27 +93,11 @@ body {
     font-size: 1.1em;
 }
 
-#pass-btn {
+/*#pass-btn {
     position: absolute;
     margin-top: 8em;
     margin-left: -10.6em;
-}
-
-.empty-card-slot .card{
-/*
-    -moz-box-shadow: inset .1em .1em .3em #aaa;
-    -webkit-box-shadow: inset .1em .1em .3em #aaa;
-    box-shadow: inset .1em .1em .3em #aaa;
-*/
-}
-
-.filled-card-slot .card{
-/*
-    -moz-box-shadow: .1em .1em .3em #888;
-    -webkit-box-shadow: .1em .1em .3em #888;
-    box-shadow: .1em .1em .3em #888;
-*/
-}
+}*/
 
 #left-traded-card{
     margin-left: -6.6em;

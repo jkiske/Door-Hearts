@@ -9,12 +9,15 @@ var Deck = function() {
     var n = 52;
     var cards = new Array();
 
-    var index = n/suits.length;
+    var index = n / suits.length;
     var count = 0;
     for (i = 0; i <= 3; ++i) {
-	for (j = 1; j <= index; ++j) {
-	    cards[count++] = {suit: suits[i], rank: j};
-	}
+        for (j = 1; j <= index; ++j) {
+            cards[count++] = {
+                suit: suits[i],
+                rank: j
+            };
+        }
     }
 
     /**
@@ -22,24 +25,25 @@ var Deck = function() {
      *
      * @return a shuffled deck
      **/
+
     function shuffle() {
-	var endIndex = cards.length;
-	var randIndex;
+        var endIndex = cards.length;
+        var randIndex;
 
-	var endCard;
-	var randCard;
+        var endCard;
+        var randCard;
 
-	if (endIndex === 0) return false;
-	while (--endIndex) {
-	    randIndex = Math.floor(Math.random() * (endIndex + 1));
-	    endCard = cards[endIndex];
-	    randCard = cards[randIndex];
+        if (endIndex === 0) return false;
+        while (--endIndex) {
+            randIndex = Math.floor(Math.random() * (endIndex + 1));
+            endCard = cards[endIndex];
+            randCard = cards[randIndex];
 
-	    //Swaps the two elements with each other
-	    cards[endIndex] = randCard;
-	    cards[randIndex] = endCard;
-	}
-	return cards;
+            //Swaps the two elements with each other
+            cards[endIndex] = randCard;
+            cards[randIndex] = endCard;
+        }
+        return cards;
     }
 
     /**
@@ -52,34 +56,41 @@ var Deck = function() {
      * @return A hand of cards removed from the deck, also adds cards to
      * hand variable
      **/
+
     function draw(amount, hand, initial) {
-	var drawnCards = new Array();
-	drawnCards = cards.slice(0, amount);
+        var drawnCards = new Array();
+        drawnCards = cards.slice(0, amount);
 
-	cards.splice(0, amount);
+        cards.splice(0, amount);
 
-	if (!initial) {
-	    Array.prototype.push.apply(hand, drawnCards);
-	}
-	return drawnCards;
+        if (!initial) {
+            Array.prototype.push.apply(hand, drawnCards);
+        }
+        return drawnCards;
     }
 
     /**
      * Returns the "value" of a card. This is used for sorting.
      **/
+
     function sortValue(card) {
-	var suitVals = {"C":0, "D":1, "S":2, "H":3};
-	//Give each suit a value for sorting
-	var suitVal = suitVals[card["suit"]]*13;
-	//Aces are high
-	var rankVal = card["rank"] == 1 ? 13 : card["rank"] - 1;
-	return rankVal + suitVal;
+        var suitVals = {
+            "C": 0,
+            "D": 1,
+            "S": 2,
+            "H": 3
+        };
+        //Give each suit a value for sorting
+        var suitVal = suitVals[card["suit"]] * 13;
+        //Aces are high
+        var rankVal = card["rank"] == 1 ? 13 : card["rank"] - 1;
+        return rankVal + suitVal;
     }
     return {
-	shuffle: shuffle,
-	draw: draw,
-	sortValue: sortValue,
-	cards: cards
+        shuffle: shuffle,
+        draw: draw,
+        sortValue: sortValue,
+        cards: cards
     }
 };
 
