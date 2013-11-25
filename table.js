@@ -41,7 +41,7 @@ var Table = function() {
 
     function firstOpenPosition() {
         for (var pos in this.positions) {
-            if (this.positions[pos] == null)
+            if (this.positions[pos] === null)
                 return pos;
         }
         return undefined;
@@ -108,7 +108,7 @@ var Table = function() {
         readyToTrade: readyToTrade,
         resetTrade: resetTrade,
         tradeMap: tradeMap
-    }
-}
+    };
+};
 
 module.exports.Table = Table;

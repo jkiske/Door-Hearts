@@ -5,9 +5,9 @@ var Deck = function() {
      * @return An array containing a deck
      *         ex: "11H" is the Jack of hearts
      **/
-    var suits = new Array("H", "C", "S", "D");
+    var suits = ["H", "C", "S", "D"];
     var n = 52;
-    var cards = new Array();
+    var cards = [];
 
     var index = n / suits.length;
     var count = 0;
@@ -58,8 +58,7 @@ var Deck = function() {
      **/
 
     function draw(amount, hand, initial) {
-        var drawnCards = new Array();
-        drawnCards = cards.slice(0, amount);
+        var drawnCards = cards.slice(0, amount);
 
         cards.splice(0, amount);
 
@@ -81,9 +80,9 @@ var Deck = function() {
             "H": 3
         };
         //Give each suit a value for sorting
-        var suitVal = suitVals[card["suit"]] * 13;
+        var suitVal = suitVals[card.suit] * 13;
         //Aces are high
-        var rankVal = card["rank"] == 1 ? 13 : card["rank"] - 1;
+        var rankVal = card.rank == 1 ? 13 : card.rank - 1;
         return rankVal + suitVal;
     }
     return {
@@ -91,7 +90,7 @@ var Deck = function() {
         draw: draw,
         sortValue: sortValue,
         cards: cards
-    }
+    };
 };
 
 /**

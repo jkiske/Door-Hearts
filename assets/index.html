@@ -1,208 +1,211 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head>
-    <title>Door Hearts</title>
+<head>
+  <title>
+    Door Hearts
+  </title>
+  <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="css/bootstrap.min.css" rel="stylesheet" media="screen" type="text/css">
+  <link href="css/cards.css" rel="stylesheet" media="screen" type="text/css">
+  <link href="css/main.css" rel="stylesheet" media="screen" type="text/css">
+</head>
 
-    <meta charset=utf-8 />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<body>
+  <div class="container">
+    <div id="tableslist">
+      <div class="row">
+        <div class="col-xs-12 col-md-6 col-md-offset-3 user-box">
 
-    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
-    <link href="css/cards.css" rel="stylesheet" media="screen" />
-    <link href="css/main.css" rel="stylesheet" media="screen" />
-  </head>
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="alert alert-dismissable alert-warning fade in">
+                <span id="name-taken"></span>
+                <button type="button" class="close" aria-hidden="true">&times;</button>
+              </div>
+            </div>
+          </div>
 
-  <body>
-    <div class = "container">
-      <div id = "tableslist">
-	<div class = "row">
-	  <div class = "col-xs-12 col-md-6 col-md-offset-3 user-box">
+          <div class="row">
+            <div class="form">
+              <div class="col-xs-12 col-md-8 col-md-offset-2">
+                <input autofocus class="text-center form-control input-lg" placeholder="Enter Name" type="text" id="playername">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 col-md-6 col-md-offset-3">
+            <div class="panel panel-primary">
+              <div class="panel-heading">
+                <div class="panel-title">
+                  <h3>Games</h3>
+                </div>
+              </div>
+              <table class="table table-hover" id="tabletable-id">
+                <thead>
+                  <tr>
+                    <th>Players</th>
+                    <th>Round</th>
+                    <th style="width:50px">
+                      <div class="text-center btn btn-sm btn-success" id="newtable">
+                        <span class="glyphicon glyphicon-plus"></span>
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
 
-	    <div class = "row">
-	      <div class = "col-xs-12">
-		<div class="alert alert-dismissable alert-warning fade in">
-		  <span id="name-taken"></span>
-		  <button type="button" class="close" aria-hidden="true">&times;</button>
-		</div>
-	      </div>
-	    </div>
+                <tbody>
+                </tbody>
 
-	    <div class="row">
-	      <div class="form">
-		<div class="col-xs-12 col-md-8 col-md-offset-2">
-		  <input autofocus class="text-center form-control input-lg" placeholder="Enter Name" type="text" id="playername">
-		</div>
-	      </div>
-	    </div>
-	  </div>
-	  <div class = "row">
-	    <div class = "col-xs-12 col-md-6 col-md-offset-3">
-	      <div class = "panel panel-primary">
-		<div class="panel-heading">
-		  <div class="panel-title">
-		    <h3>Games</h3>
-		  </div>
-		</div>
-		<table class="table table-hover" id="tabletable-id">
-		  <thead>
-		    <tr>
-		      <th>Players</th>
-		      <th>Round</th>
-		      <th width="50px">
-			<div class="text-center btn btn-sm btn-success" id="newtable">
-			  <span class="glyphicon glyphicon-plus"></span>
-			</div>
-		      </th>
-		    </tr>
-		  </thead>
-
-		  <tbody>
-		  </tbody>
-
-		</table>
-	      </div>
-	    </div>
-	  </div>
-	</div>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
-      <div id="game">
-	<div class = "row">
+    </div>
+    <div id="game">
+      <div class="row">
 
-	  <!-- Top cards -->
-	  <div class = "col-xs-12">
-	    <div class = "text-center" id="topplayer">
-	      <div class = "text-center user-box">
-		<h3 class="name-box top-name-box">
-		  <span id="topname" class="label label-primary">Open</span>
-		</h3>
-		<img src="images\placeholder.png" alt="..." class="img-circle">
-	      </div>
-	    </div>
-	  </div>
-	</div>
-
-	<!-- Center Stack -->
-	<div id="center">
-      <!--div class = "btn btn-primary btn-lg" id="play">Play</div-->
-
-	  <!-- Play Stack -->
-	  <div id="played-cards" class="playingCards">
-	    <ul class="table">
-	      <li>
-		<div id="top-played-card" class="hide-card">
-		  <div class="card">
-		    <span class="rank"></span>
-		    <span class="suit"></span>
-		  </div>
-		</div>
-	      </li>
-	      <li>
-		<div id="left-played-card" class="rotate270 hide-card">
-		  <div class="card">
-		    <span class="rank"></span>
-		    <span class="suit"></span>
-		  </div>
-		</div>
-	      </li>
-	      <li>
-		<div id="right-played-card" class="rotate90 hide-card">
-		  <div class="card">
-		    <span class="rank"></span>
-		    <span class="suit"></span>
-		  </div>
-		</div>
-	      </li>
-	      <li>
-		<div id="bottom-played-card" class="rotate180 hide-card">
-		  <div class="card">
-		    <span class="rank"></span>
-		    <span class="suit"></span>
-		  </div>
-		</div>
-	      </li>
-	    </ul>
-	  </div>
-
-	  <!-- Trade Stack -->
-	  <div id="traded-cards" class="playingCards">
-	    <ul class="table">
-	      <li>
-		<div id="left-traded-card" class="empty-card-slot hide-card">
-		  <div class="card">
-		    <span class="rank"></span>
-		    <span class="suit"></span>
-		  </div>
-		</div>
-	      </li>
-	      <li>
-		<div id="center-traded-card" class="empty-card-slot hide-card">
-		  <div class="card">
-		    <span class="rank"></span>
-		    <span class="suit"></span>
-		  </div>
-		</div>
-	      </li>
-	      <li>
-		<div id="right-traded-card" class="empty-card-slot hide-card">
-		  <div class="card">
-		    <span class="rank"></span>
-		    <span class="suit"></span>
-		  </div>
-		</div>
-	      </li>
-	    </ul>
-	    <div id='info-text' class=''>
-	    </div>
-	  </div>
-
-	</div>
-
-	<div class = "row">
-	  <!-- Left Hand-->
-	  <div class = "col-xs-3" id="leftplayer">
-	    <div class = "pull-left">
-	      <div class = "text-center user-box">
-		<h3 class="name-box"><span id="leftname" class="label label-warning">Open</span></h3>
-		<img src="images\placeholder.png" alt="..." class="img-circle">
-	      </div>
-	    </div>
-	  </div>
-
-	  <!-- filler space for cards and play button -->
-	  <div class = "col-xs-6"></div>
-
-	  <!-- Right Hand -->
-	  <div class = "col-xs-3" id="rightplayer">
-	    <div class = "pull-right">
-	      <div class = "text-center user-box">
-		<h3 class="name-box"><span id="rightname" class="label label-success">Open</span></h3>
-		<img src="images\placeholder.png" alt="..." class="img-circle">
-	      </div>
-	    </div>
-	  </div>
-	</div>
-
-	<!-- My cards -->
-	<div class="row text-center">
-	  <h3 class="name-box my-name-box">
-	    <span id="bottomname" class="label label-danger"></span>
-	  </h3>
-	</div>
-	<div class = "row">
-	  <div class="playingCards">
-	    <ul id="bottomcards" class="table"></ul>
-	  </div>
-	</div>
+        <!-- Top cards -->
+        <div class="col-xs-12">
+          <div class="text-center" id="topplayer">
+            <div class="text-center user-box">
+              <h3 class="name-box top-name-box">
+                <span id="topname" class="label label-primary">Open</span>
+              </h3>
+              <img src="images/placeholder.png" alt="..." class="img-circle">
+            </div>
+          </div>
+        </div>
       </div>
 
+      <!-- Center Stack -->
+      <div id="center">
+        <!--div class = "btn btn-primary btn-lg" id="play">Play</div-->
+
+        <!-- Play Stack -->
+        <div id="played-cards" class="playingCards">
+          <ul class="table">
+            <li>
+              <div id="top-played-card" class="hide-card">
+                <div class="card">
+                  <span class="rank"></span>
+                  <span class="suit"></span>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div id="left-played-card" class="rotate270 hide-card">
+                <div class="card">
+                  <span class="rank"></span>
+                  <span class="suit"></span>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div id="right-played-card" class="rotate90 hide-card">
+                <div class="card">
+                  <span class="rank"></span>
+                  <span class="suit"></span>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div id="bottom-played-card" class="rotate180 hide-card">
+                <div class="card">
+                  <span class="rank"></span>
+                  <span class="suit"></span>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Trade Stack -->
+        <div id="traded-cards" class="playingCards">
+          <ul class="table">
+            <li>
+              <div id="left-traded-card" class="empty-card-slot hide-card">
+                <div class="card">
+                  <span class="rank"></span>
+                  <span class="suit"></span>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div id="center-traded-card" class="empty-card-slot hide-card">
+                <div class="card">
+                  <span class="rank"></span>
+                  <span class="suit"></span>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div id="right-traded-card" class="empty-card-slot hide-card">
+                <div class="card">
+                  <span class="rank"></span>
+                  <span class="suit"></span>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <div id='info-text' class=''>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row">
+        <!-- Left Hand-->
+        <div class="col-xs-3" id="leftplayer">
+          <div class="pull-left">
+            <div class="text-center user-box">
+              <h3 class="name-box">
+                <span id="leftname" class="label label-warning">Open</span>
+              </h3>
+              <img src="images/placeholder.png" alt="..." class="img-circle">
+            </div>
+          </div>
+        </div>
+
+        <!-- filler space for cards and play button -->
+        <div class="col-xs-6"></div>
+
+        <!-- Right Hand -->
+        <div class="col-xs-3" id="rightplayer">
+          <div class="pull-right">
+            <div class="text-center user-box">
+              <h3 class="name-box">
+                <span id="rightname" class="label label-success">Open</span>
+              </h3>
+              <img src="images/placeholder.png" alt="..." class="img-circle">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- My cards -->
+      <div class="row text-center">
+        <h3 class="name-box my-name-box">
+          <span id="bottomname" class="label label-danger"></span>
+        </h3>
+      </div>
+      <div class="row">
+        <div class="playingCards">
+          <ul id="bottomcards" class="table"></ul>
+        </div>
+      </div>
     </div>
 
-  </body>
+  </div>
 
-  <script src="/primus/primus.io.js"></script>
+  <script src="/primus/primus.io.js" type="text/javascript"></script>
+  <script src="js/underscore.min.js" type="text/javascript"></script>
+  <script src="js/jquery-2.0.3.min.js" type="text/javascript"></script>
+  <script src="js/bootstrap.min.js" type="text/javascript"></script>
+  <script src="js/game.js" type="text/javascript"></script>
+</body>
 
-  <script src="js/underscore.min.js"></script>
-  <script src="js/jquery-2.0.3.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <script src="js/game.js"></script>
+
 </html>

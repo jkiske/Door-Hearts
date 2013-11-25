@@ -25,7 +25,7 @@ app.get('/', function(req, res) {
 // production only
 app.configure('production', function() {
     require("newrelic");
-})
+});
 
 // This is where we initialize the websocket for javascript callbacks
 var primus = new Primus(server, {
@@ -143,25 +143,29 @@ primus.on('connection', function(client) {
         table.traded_cards[position] = cards;
 
         if (table.readyToTrade()) {
-            for (pos in table.traded_cards) {
-                var cards = table.traded_cards[pos];
-
-                var player_name = table.positions[pos];
-                var player = table.players[player_name];
-                player.removeCards(cards);
-
-                //TODO: Make sure we do not trade on the 4th round
-                var trade_map = table.tradeMap();
-                var trade_player_pos = trade_map[pos];
-                var trade_player_name = table.positions[trade_player_pos];
-                var trade_player = table.players[trade_player_name];
-                trade_player.addCards(cards);
-            }
-            for (player in table.players) {
-                //Re-deal the cards and update round state
-            }
+            makeTrade(table);
         }
     });
+
+    function makeTrade(table) {
+        for (var pos in table.traded_cards) {
+            var cards = table.traded_cards[pos];
+
+            var player_name = table.positions[pos];
+            var player = table.players[player_name];
+            player.removeCards(cards);
+
+            //TODO: Make sure we do not trade on the 4th round
+            var trade_map = table.tradeMap();
+            var trade_player_pos = trade_map[pos];
+            var trade_player_name = table.positions[trade_player_pos];
+            var trade_player = table.players[trade_player_name];
+            trade_player.addCards(cards);
+        }
+        for (player in table.players) {
+            //Re-deal the cards and update round state
+        }
+    }
 
     //Disconnect
     primus.on('disconnection', function(client) {
@@ -177,7 +181,7 @@ primus.on('connection', function(client) {
                 client.leave(table.id);
 
                 // If that was the last player in the room, delete the room
-                if (_und.size(table.players) == 0) {
+                if (_und.size(table.players) === 0) {
                     delete tables[table.id];
                     primus.room(waiting_room).send("removeTableRow", table.id);
                 } else {

@@ -34,9 +34,9 @@ $(document).ready(function() {
     // -------------------------------- Joining Tables ----------------------------- //
 
     function rowHtml(table) {
-        var player_names = table['players'].join(", ");
-        var round = table['round'];
-        var t_id = table['id'];
+        var player_names = table.players.join(", ");
+        var round = table.round;
+        var t_id = table.id;
 
         return '<tr>' +
             '<td>' + player_names + '</td>' +
@@ -49,7 +49,7 @@ $(document).ready(function() {
 
     }
     $("#newtable").click(function() {
-        if (validateName() == true) {
+        if (validateName() === true) {
             //Prevent being able to double-click new game
             var buttons = $(".joinbtn,#newtable");
             buttons.addClass("disabled");
@@ -66,7 +66,7 @@ $(document).ready(function() {
 
         // If we click the button, join that table
         $("#" + table.id).click(function() {
-            if (validateName() == true) {
+            if (validateName() === true) {
                 //Prevent being able to double-click new game
                 var buttons = $(".joinbtn,#newtable");
                 buttons.addClass("disabled");
@@ -81,7 +81,7 @@ $(document).ready(function() {
 
         // When we re-add the row we have to reattach the handler
         $("#" + table.id).click(function() {
-            if (validateName() == true) {
+            if (validateName() === true) {
                 var buttons = $(".joinbtn,#newtable");
                 buttons.addClass("disabled");
                 socket.send("joinTable", table.id, $("#playername").val());
@@ -143,8 +143,8 @@ $(document).ready(function() {
         //Add players that exist
         _.each(all_pos, function(player, pos) {
             var rel_dir = pos_dir_map[pos];
-            var name = (player.name == null ? "Open" : player.name);
-            var score = (player.score == undefined ? "0" : player.score);
+            var name = (player.name === null ? "Open" : player.name);
+            var score = (player.score === undefined ? "0" : player.score);
             _players[pos] = {
                 dir: rel_dir,
                 name: name
@@ -154,7 +154,7 @@ $(document).ready(function() {
         });
         //Set ever other position to empty
         _.each(pos_dir_map, function(rel_dir, pos) {
-            if (_.contains(_.keys(all_pos), pos) == false) {
+            if (_.contains(_.keys(all_pos), pos) === false) {
                 $("#" + rel_dir + "name").text("Open");
             }
         });
@@ -176,7 +176,7 @@ $(document).ready(function() {
         bottomCards.children().remove();
         $.each(_cards, function(key, value) {
             bottomCards.append('<li>' +
-                createCard(value['suit'], value['rank'], 'a') +
+                createCard(value.suit, value.rank, 'a') +
                 '</li>'
             );
         });
@@ -246,7 +246,7 @@ $(document).ready(function() {
             });
             socket.send("passCards", $.makeArray(selected_cards_ids));
         }
-    };
+    }
 
     function moveCardToCenter(middleCard, handCard, shouldEmit) {
         //Get the rank/suit information
@@ -319,11 +319,11 @@ function createCard(suit, rank, tag) {
     var includeSuit = true;
 
     if (rank in rankmap) {
-        var rank = rankmap[rank];
+        rank = rankmap[rank];
         if (rank == "a")
             includeSuit = false;
     } else {
-        var rank = rank.toString();
+        rank = rank.toString();
         includeSuit = false;
     }
 
@@ -344,16 +344,16 @@ function sortValue(card) {
         "H": 3
     };
     //Give each suit a value for sorting
-    var suitVal = suitVals[card["suit"]] * 13;
+    var suitVal = suitVals[card.suit] * 13;
     //Aces are high
-    var rankVal = card["rank"] == 1 ? 13 : card["rank"] - 1;
+    var rankVal = card.rank == 1 ? 13 : card.rank - 1;
     return rankVal + suitVal;
 }
 
 _.mixin({
     rotate: function(array, n, guard) {
         var head, tail;
-        n = (n == null) || guard ? 1 : n;
+        n = (n === null) || guard ? 1 : n;
         n = n % array.length;
         tail = array.slice(n);
         head = array.slice(0, n);

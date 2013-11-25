@@ -1,8 +1,8 @@
 var _und = require("underscore");
 
-var Player = function(n, id) {
+var Player = function(n, socket_id) {
     var name = name;
-    var id = id;
+    var id = socket_id;
     var table;
     var hand = [];
     var score = 0;
@@ -52,7 +52,7 @@ var Player = function(n, id) {
         position: position,
         removeCards: removeCards,
         addCards: addCards
-    }
+    };
 };
 
 module.exports.Player = Player;

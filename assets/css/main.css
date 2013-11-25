@@ -1,90 +1,90 @@
 body {
-  background: url('../images/big-heart.png'), -webkit-radial-gradient(top center, ellipse cover, rgba(255,255,255,0.2) 0%,rgba(0,0,0,0.6) 100%), url('../images/felt.jpg'), #4d9843;
-  background-repeat: no-repeat, repeat, repeat;
-  background-attachment:fixed;
-  background-position:center, top left, top left;
-
-  margin: 0;
-  padding-top: 25px;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  z-index: -1;
-  top: 0;
-  left: 0;
+    background: url('../images/big-heart.png'), -webkit-radial-gradient(top center, ellipse cover, rgba(255, 255, 255, 0.2) 0%, rgba(0, 0, 0, 0.6) 100%), url('../images/felt.jpg'), #4d9843;
+    background-repeat: no-repeat, repeat, repeat;
+    background-attachment:fixed;
+    background-position:center, top left, top left;
+    margin: 0;
+    padding-top: 25px;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
 }
-
 .rotate90 {
     transform:rotate(90deg);
-    -ms-transform:rotate(90deg); /* IE 9 */
-    -webkit-transform:rotate(90deg); /* Safari and Chrome */
+    -ms-transform:rotate(90deg);
+    /* IE 9 */
+    -webkit-transform:rotate(90deg);
+    /* Safari and Chrome */
 }
-
 .rotate180 {
     transform:rotate(180deg);
-    -ms-transform:rotate(180deg); /* IE 9 */
-    -webkit-transform:rotate(180deg); /* Safari and Chrome */
+    -ms-transform:rotate(180deg);
+    /* IE 9 */
+    -webkit-transform:rotate(180deg);
+    /* Safari and Chrome */
 }
-
 .rotate270 {
     transform:rotate(-90deg);
-    -ms-transform:rotate(-90deg); /* IE 9 */
-    -webkit-transform:rotate(-90deg); /* Safari and Chrome */
+    -ms-transform:rotate(-90deg);
+    /* IE 9 */
+    -webkit-transform:rotate(-90deg);
+    /* Safari and Chrome */
 }
-
 /* Middle stack positioning */
-#center{
+ #center {
     position:absolute;
     left: 50%;
-    min-width: 25em; /*Need this to be big to fit the traded cards */
+    min-width: 25em;
+    /*Need this to be big to fit the traded cards */
 }
-#play{
-    margin-left:-34.5px /* 69px/2 */
+#play {
+    margin-left:-34.5px
+    /* 69px/2 */
 }
-
 /* Middle cards style and margins */
-
-#played-cards{
+ #played-cards {
     font-size: 1.1em;
     margin-top: -1.3em;
     min-width: 380px;
-    margin-left:-190px; /* ~380px/2 */
+    margin-left:-190px;
+    /* ~380px/2 */
 }
-
-#top-played-card{
+#top-played-card {
     margin-top: -0.5em;
     margin-left: 6.6em;
 }
-#left-played-card{
+#left-played-card {
     margin-top: 0em;
     margin-left: -9.5em;
 }
-#right-played-card{
+#right-played-card {
     margin-top: 0.4em;
     margin-left: -0.6em;
     margin-right: -3em;
 }
-#bottom-played-card{
+#bottom-played-card {
     margin-top: 3.7em;
     margin-left: -3.9em;
 }
 /* Use these to hide cards without hiding space */
-.hide-card{
+.hide-card {
     visibility: hidden;
 }
-.show-card{
+.show-card {
     visibility: visible;
 }
-
 /* Bottom cards */
-#bottomcards{
+ #bottomcards {
     position: absolute;
     left: 50%;
     /* Calculate margin-left in js */
     margin-top: 10px;
+    width:900px;
 }
-
-#traded-cards{
+#traded-cards {
     position: absolute;
     left: 50%;
     top: 50%;
@@ -92,48 +92,39 @@ body {
     margin-top: -6.5em;
     font-size: 1.1em;
 }
-
 /*#pass-btn {
     position: absolute;
     margin-top: 8em;
     margin-left: -10.6em;
 }*/
-
-#left-traded-card{
+ #left-traded-card {
     margin-left: -6.6em;
     margin-right: 4em;
 }
-
-#center-traded-card{
+#center-traded-card {
     margin-right: 4em;
 }
-
-#right-traded-card{
+#right-traded-card {
     margin-right: 0em;
 }
-
-
 /* Inset login box */
-.login{
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.5);
-    box-shadow: inset 0 1px 1px rgba(0,0,0,0.5);
-    background-color: rgba(0,0,0,.1);
+ .login {
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.5);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, .1);
     border: #000;
 }
-
 /* Player name and picture */
-.user-box{
+ .user-box {
     padding: 10px;
     margin-bottom: 20px;
 }
-
 /* Name label */
-.name-box{
+ .name-box {
     margin-bottom: 15px;
     margin-top: 0px;
 }
-
 /* Lower name label */
-.my-name-box{
+ .my-name-box {
     margin-top:30px;
 }
