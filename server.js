@@ -1,4 +1,3 @@
-require("newrelic");
 var _und = require("underscore");
 var fs = require('fs');
 var $ = require('jquery');
@@ -22,6 +21,11 @@ app.use(express.static(__dirname + '/assets'));
 app.get('/', function(req, res) {
     res.sendfile(__dirname + '/assets/index.html');
 });
+
+// production only
+app.configure('production', function() {
+    require("newrelic");
+})
 
 // This is where we initialize the websocket for javascript callbacks
 var primus = new Primus(server, {
