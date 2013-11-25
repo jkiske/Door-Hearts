@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    var socket = Primus.connect("http://localhost:8888");
+    var socket = Primus.connect(document.URL);
 
     var state = 'waiting'; // waiting, trading, playing
     var _players = {};
