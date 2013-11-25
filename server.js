@@ -30,7 +30,7 @@ socket.set("log level", 1);
 var players = {};
 var tables = {};
 
-var waiting_room = 'waiting room';
+var waiting_room = 'waiting_room';
 
 socket.sockets.on('connection', function(client) {
     //When someone connects put them in the waiting room
@@ -69,6 +69,8 @@ socket.sockets.on('connection', function(client) {
                 updatePlayerPositions(table);
                 if (_und.size(table.players) == 4) {
                     socket.sockets. in (table.id).emit("startGame");
+                    table.round++;
+                    table.state = "trading";
                 }
                 return true;
             }
@@ -135,15 +137,24 @@ socket.sockets.on('connection', function(client) {
         var table = tables[player.table];
         table.traded_cards[position] = cards;
 
-
         if (table.readyToTrade()) {
-            console.log(JSON.stringify(table.traded_cards));
-            _und.each(table.traded_cards, function(cards, pos) {
+            for (pos in table.traded_cards) {
+                var cards = table.traded_cards[pos];
+
                 var player_name = table.positions[pos];
                 var player = table.players[player_name];
                 player.removeCards(cards);
 
-            });
+                //TODO: Make sure we do not trade on the 4th round
+                var trade_map = table.tradeMap();
+                var trade_player_pos = trade_map[pos];
+                var trade_player_name = table.positions[trade_player_pos];
+                var trade_player = table.players[trade_player_name];
+                trade_player.addCards(cards);
+            }
+            for (player in table.players) {
+                //Re-deal the cards and update round state
+            }
         }
     });
 
