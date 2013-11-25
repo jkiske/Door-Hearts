@@ -1,17 +1,17 @@
 $(document).ready(function() {
     var socket = Primus.connect(document.URL);
 
-    var state = 'waiting'; // waiting, trading, playing
+    var state = "waiting"; // waiting, trading, playing
     var _players = {};
     var _cards = [];
 
-    var bottomCard = $('#bottom-played-card');
-    var leftCard = $('#left-played-card');
-    var rightCard = $('#right-played-card');
-    var topCard = $('#top-played-card');
+    var bottomCard = $("#bottom-played-card");
+    var leftCard = $("#left-played-card");
+    var rightCard = $("#right-played-card");
+    var topCard = $("#top-played-card");
 
     // Hide the game at the start
-    $('#game').hide();
+    $("#game").hide();
 
     // -------------------------------- Name logic ----------------------------- //
 
@@ -29,7 +29,7 @@ $(document).ready(function() {
     validateName();
 
     //When we change the name field, disable/enable links
-    $("#playername").on('input', validateName);
+    $("#playername").on("input", validateName);
 
     // -------------------------------- Joining Tables ----------------------------- //
 
@@ -59,7 +59,7 @@ $(document).ready(function() {
 
     //Add a new table to all the users that are still looking for one
     socket.on("addTableRow", function(table) {
-        $('#tabletable-id tbody').append(rowHtml(table));
+        $("#tabletable-id tbody").append(rowHtml(table));
 
         //When we add a new table, check to see if we should make links inactive
         validateName();
@@ -95,7 +95,7 @@ $(document).ready(function() {
 
     var alertDialog = $("#name-taken");
     alertDialog.parent().hide();
-    $('.alert .close').on("click", function() {
+    $(".alert .close").on("click", function() {
         $(this).parent().hide();
     });
     socket.on("duplicateName", function(name) {
@@ -109,26 +109,26 @@ $(document).ready(function() {
     // -------------------------------- Switching Views ----------------------------- //
     //Switch views to the table view
     socket.on("joinTable", function(table) {
-        $('#tableslist').hide();
-        $('#game').show();
+        $("#tableslist").hide();
+        $("#game").show();
     });
 
 
     // -------------------------------- Game ----------------------------- //
 
-    socket.on('startGame', function() {
+    socket.on("startGame", function() {
         if (_.size(_players) == 4) {
             socket.send("dealCards");
             $("#played-cards").removeClass("hidden");
 
-            state = 'trading';
+            state = "trading";
             setInfoText("Select cards to trade");
         }
     });
 
     function setInfoText(text) {
-        var text_div = $('#info-text');
-        text_div.text('');
+        var text_div = $("#info-text");
+        text_div.text("");
         text_div.append(text);
     }
 
@@ -170,7 +170,7 @@ $(document).ready(function() {
             return sortValue(card);
         });
 
-        var bottomCards = $('#bottomcards');
+        var bottomCards = $("#bottomcards");
 
         //Delete the children and replace them
         bottomCards.children().remove();
@@ -180,18 +180,18 @@ $(document).ready(function() {
                 '</li>'
             );
         });
-        var measureCard = $('#bottomcards li');
+        var measureCard = $("#bottomcards li");
         // Magic numbers to center stack
         bottomCards.css("margin-left", measureCard.length * -measureCard.width() / 2 - 56);
 
         $("#bottomcards .card").click(function() {
-            if (state == 'trading') {
-                var openSlots = $('.empty-card-slot');
+            if (state == "trading") {
+                var openSlots = $(".empty-card-slot");
                 if (openSlots.length > 0) {
                     var slot = $(openSlots[0]);
                     moveCardToCenter(slot, $(this), false);
 
-                    var card = idToCard($(this).attr('id'));
+                    var card = idToCard($(this).attr("id"));
                     var index = cardIndex(card);
 
                     if (index >= 0) {
@@ -200,18 +200,18 @@ $(document).ready(function() {
                         _cards = _.compact(_cards);
                     }
 
-                    slot.removeClass('empty-card-slot');
-                    slot.removeClass('hide-card');
-                    slot.addClass('filled-card-slot');
+                    slot.removeClass("empty-card-slot");
+                    slot.removeClass("hide-card");
+                    slot.addClass("filled-card-slot");
 
                     // Add a click handler to return card back to deck
                     slot.click(function() {
-                        if ($(this).hasClass('filled-card-slot')) {
-                            moveCardToHand($(this).find('.card'));
+                        if ($(this).hasClass("filled-card-slot")) {
+                            moveCardToHand($(this).find(".card"));
 
-                            slot.addClass('empty-card-slot');
-                            slot.addClass('hide-card');
-                            slot.removeClass('filled-card-slot');
+                            slot.addClass("empty-card-slot");
+                            slot.addClass("hide-card");
+                            slot.removeClass("filled-card-slot");
 
                             if (openSlots.length == 2) {
                                 //Tell the server that we aren't ready yet
@@ -226,12 +226,12 @@ $(document).ready(function() {
                         emitTradedCards();
                     }
                 }
-            } else if (state == 'playing') {
+            } else if (state == "playing") {
                 moveCardToCenter(bottomCard, $(this), true);
-                bottomCard.removeClass('hide-card');
+                bottomCard.removeClass("hide-card");
             }
 
-            var measureCard = $('#bottomcards li');
+            var measureCard = $("#bottomcards li");
             // Magic numbers to center stack
             bottomCards.css("margin-left", measureCard.length * -measureCard.width() / 2 - 56);
 
@@ -239,7 +239,7 @@ $(document).ready(function() {
     }
 
     function emitTradedCards() {
-        var selected_cards = $('.filled-card-slot .card');
+        var selected_cards = $(".filled-card-slot .card");
         if (selected_cards.length == 3) {
             var selected_cards_ids = selected_cards.map(function() {
                 return idToCard(this.id);
@@ -250,23 +250,23 @@ $(document).ready(function() {
 
     function moveCardToCenter(middleCard, handCard, shouldEmit) {
         //Get the rank/suit information
-        var id = handCard.attr('id');
+        var id = handCard.attr("id");
         handCardObj = idToCard(id);
         var suit = handCardObj.suit;
         var rank = handCardObj.rank;
 
         //Replace the middle card with the deck card
-        middleCard.find('.card').replaceWith(createCard(suit, rank, 'div'));
+        middleCard.find(".card").replaceWith(createCard(suit, rank, "div"));
 
         //Remove the deck card
-        handCard.closest('li').remove();
+        handCard.closest("li").remove();
 
         if (shouldEmit)
-            socket.send('submitCard', suit + rank);
+            socket.send("submitCard", suit + rank);
     }
 
     function moveCardToHand(card) {
-        id = card.attr('id');
+        id = card.attr("id");
         card_obj = idToCard(id);
         var suit = card_obj.suit;
         var rank = card_obj.rank;

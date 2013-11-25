@@ -1,9 +1,8 @@
 var _und = require("underscore");
-var fs = require('fs');
-var $ = require('jquery');
+var fs = require("fs");
 
-var http = require('http');
-var express = require('express');
+var http = require("http");
+var express = require("express");
 var Primus = require("primus.io");
 
 var _deck = require("./deck");
@@ -16,21 +15,21 @@ var server = http.createServer(app);
 var port = process.env.PORT || 8888;
 server.listen(port);
 
-app.use(express.static(__dirname + '/assets'));
+app.use(express.static(__dirname + "/assets"));
 
-app.get('/', function(req, res) {
-    res.sendfile(__dirname + '/assets/index.html');
+app.get("/", function(req, res) {
+    res.sendfile(__dirname + "/assets/index.html");
 });
 
 // production only
-app.configure('production', function() {
+app.configure("production", function() {
     require("newrelic");
 });
 
 // This is where we initialize the websocket for javascript callbacks
 var primus = new Primus(server, {
-    transformer: 'sockjs',
-    parser: 'JSON'
+    transformer: "sockjs",
+    parser: "JSON"
 });
 console.log("Primus starting");
 
@@ -38,9 +37,9 @@ console.log("Primus starting");
 var players = {};
 var tables = {};
 
-var waiting_room = 'waiting_room';
+var waiting_room = "waiting_room";
 
-primus.on('connection', function(client) {
+primus.on("connection", function(client) {
     //When someone connects put them in the waiting room
     client.join(waiting_room);
 
@@ -104,9 +103,9 @@ primus.on('connection', function(client) {
         primus.room(waiting_room).send("updateTableRow", table.safe());
     }
 
-    client.on('joinTable', joinTable);
+    client.on("joinTable", joinTable);
 
-    client.on('newTable', function(playerName) {
+    client.on("newTable", function(playerName) {
         var table = makeTable();
         //Tell all the clients in the waiting room that there is an update
         primus.room(waiting_room).send("addTableRow", table.safe());
@@ -121,7 +120,7 @@ primus.on('connection', function(client) {
     });
 
     // Individual table logic
-    client.on('dealCards', function() {
+    client.on("dealCards", function() {
         var player = players[client.id];
         var table = tables[player.table];
         var deck = table.deck;
@@ -129,14 +128,14 @@ primus.on('connection', function(client) {
         if (_und.size(player.cards) < 13) {
             var cards = deck.draw(13, "", true);
             player.addCards(cards);
-            client.send('showCards', cards);
+            client.send("showCards", cards);
         } else {
             console.log("Player " + player.name + " already has 13 cards");
         }
     });
 
     //Wait for all players to submit cards to trade
-    client.on('passCards', function(cards) {
+    client.on("passCards", function(cards) {
         var player = players[client.id];
         var position = player.position;
         var table = tables[player.table];
@@ -168,7 +167,7 @@ primus.on('connection', function(client) {
     }
 
     //Disconnect
-    primus.on('disconnection', function(client) {
+    primus.on("disconnection", function(client) {
         if (client.id in players) {
             var player = players[client.id];
             delete players[client.id];
