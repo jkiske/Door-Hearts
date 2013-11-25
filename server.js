@@ -28,6 +28,8 @@ var primus = new Primus(server, {
     transformer: 'sockjs',
     parser: 'JSON'
 });
+console.log("Primus starting");
+
 
 var players = {};
 var tables = {};
@@ -79,7 +81,6 @@ primus.on('connection', function(client) {
             }
         }
         return false;
-
     }
 
     function updatePlayerPositions(table) {
@@ -123,7 +124,6 @@ primus.on('connection', function(client) {
 
         if (_und.size(player.cards) < 13) {
             var cards = deck.draw(13, "", true);
-
             player.addCards(cards);
             client.send('showCards', cards);
         } else {
