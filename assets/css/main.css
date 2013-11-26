@@ -1,8 +1,12 @@
 body {
-    background: url('../images/big-heart.png'), -webkit-radial-gradient(top center, ellipse cover, rgba(255, 255, 255, 0.2) 0%, rgba(0, 0, 0, 0.6) 100%), url('../images/felt.jpg'), #4d9843;
+    background: url('../images/big-heart_@2X.png'),
+                -webkit-radial-gradient(top center, ellipse cover, rgba(255, 255, 255, 0.2) 0%, rgba(0, 0, 0, 0.6) 100%), 
+                url('../images/felt_@2X.jpg'),
+                #4d9843;
     background-repeat: no-repeat, repeat, repeat;
     background-attachment:fixed;
     background-position:center, top left, top left;
+    background-size: 459px, auto, 465px;
     margin: 0;
     padding-top: 15px;
     width: 100%;
@@ -127,6 +131,10 @@ body {
 /* Lower name label */
  .my-name-box {
     margin-top:30px;
+}
+.placeholder{
+    width: 140px;
+    height: 140px;
 }
 .nav {
     margin-bottom: -25px;
