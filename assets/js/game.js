@@ -113,6 +113,12 @@ $(document).ready(function() {
         $("#game").show();
     });
 
+    $("#leave-table").click(function() {
+        $("#game").hide();
+        $("#tableslist").show();
+        socket.send("leaveTable");
+    });
+
 
     // -------------------------------- Game ----------------------------- //
 
@@ -134,8 +140,8 @@ $(document).ready(function() {
 
     //all_pos: A map from position to {name: ?, score: ?}
     socket.on("updatePositions", function(your_pos, all_pos) {
-        var dir_map = ["bottom", "right", "top", "left"];
         var pos_map = ["N", "W", "S", "E"];
+        var dir_map = ["bottom", "right", "top", "left"];
 
         //Rotate the table around based on our position
         pos_map = _.rotate(pos_map, _.indexOf(pos_map, your_pos));
@@ -150,7 +156,8 @@ $(document).ready(function() {
                 name: name
             };
             console.log(_players);
-            $("#" + rel_dir + "name").text(name + ": " + score);
+            $("#" + rel_dir + "name").text(name);
+            $("#" + rel_dir + "name").append('<div class = "score-label">' + player.score + '</div>');
         });
         //Set ever other position to empty
         _.each(pos_dir_map, function(rel_dir, pos) {

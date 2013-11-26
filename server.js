@@ -166,8 +166,17 @@ primus.on("connection", function(client) {
         }
     }
 
+    client.on("leaveTable", function(){
+        client.leaveAll();
+        client.join(waiting_room);
+        leaveTable();
+    });
+
     //Disconnect
-    primus.on("disconnection", function(client) {
+    primus.on("disconnection", leaveTable);
+
+    function leaveTable() {
+        console.log("Client disconnected: " + client.id);
         if (client.id in players) {
             var player = players[client.id];
             delete players[client.id];
@@ -191,7 +200,7 @@ primus.on("connection", function(client) {
                 }
             }
         }
-    });
+    }
 });
 
 

@@ -4,7 +4,7 @@ body {
     background-attachment:fixed;
     background-position:center, top left, top left;
     margin: 0;
-    padding-top: 25px;
+    padding-top: 15px;
     width: 100%;
     height: 100%;
     position: absolute;
@@ -70,7 +70,7 @@ body {
     margin-left: -3.9em;
 }
 /* Use these to hide cards without hiding space */
-.hide-card {
+ .hide-card {
     visibility: hidden;
 }
 .show-card {
@@ -127,4 +127,33 @@ body {
 /* Lower name label */
  .my-name-box {
     margin-top:30px;
+}
+.nav {
+    margin-bottom: -25px;
+}
+.nav-back {
+    position: absolute;
+    top:-10px;
+    padding-top: 15px;
+    left: 2em;
+     -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+}
+.nav-info {
+    position: absolute;
+    top: -10px;
+    padding-top: 15px;
+    right: 2em;
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+}
+.score-label {
+    position: relative;
+    top: .5px;
+    left: 10px;
+    display: inline-block;
+    padding: 6.5px 12px;
+    background: rgba(0, 0, 0, 0.15);
+    border-left: 1px solid rgba(0, 0, 0, .1);
+    border-radius: 0px 4px 4px 0px;
 }
