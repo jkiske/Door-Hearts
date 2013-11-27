@@ -178,6 +178,13 @@ primus.on("connection", function(client) {
         });
     }
 
+    client.on("playCard", function(card){
+        var player = players[client.id];
+        if (player !== undefined) {
+            console.log(player.name + " played card: " + JSON.stringify(card));
+        }
+    });
+
     client.on("leaveTable", function() {
         client.leaveAll();
         client.join(waiting_room);

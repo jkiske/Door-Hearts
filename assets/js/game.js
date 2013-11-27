@@ -202,19 +202,9 @@ $(document).ready(function() {
                 var openSlots = $(".empty-card-slot");
                 if (openSlots.length > 0) {
                     var slot = $(openSlots[0]);
-                    moveCardToCenter(slot, $(this), false);
-
-                    var card = idToCard($(this).attr("id"));
-                    var index = cardIndex(card);
-
-                    if (index >= 0) {
-                        //Remove the card and flatten the array
-                        delete _cards[index];
-                        _cards = _.compact(_cards);
-                    }
+                    moveCardToCenter(slot, $(this));
 
                     slot.removeClass("empty-card-slot");
-                    slot.removeClass("hide-card");
                     slot.addClass("filled-card-slot");
 
                     // Add a click handler to return card back to deck
@@ -223,7 +213,6 @@ $(document).ready(function() {
                             moveCardToHand($(this).find(".card"));
 
                             slot.addClass("empty-card-slot");
-                            slot.addClass("hide-card");
                             slot.removeClass("filled-card-slot");
 
                             if (openSlots.length == 2) {
@@ -238,8 +227,9 @@ $(document).ready(function() {
                     }
                 }
             } else if (_state == "playing") {
-                moveCardToCenter(bottomCard, $(this), true);
-                bottomCard.removeClass("hide-card");
+                moveCardToCenter(bottomCard, $(this));
+                var played_card = idToCard($(this).attr("id"));
+                socket.send("playCard", played_card);
             }
 
             var measureCard = $("#bottomcards li");
@@ -259,20 +249,26 @@ $(document).ready(function() {
         }
     }
 
-    function moveCardToCenter(middleCard, handCard, shouldEmit) {
+    function moveCardToCenter(middleCard, handCard) {
         //Get the rank/suit information
         var id = handCard.attr("id");
-        handCardObj = idToCard(id);
-        var suit = handCardObj.suit;
-        var rank = handCardObj.rank;
+        var card = idToCard(id);
+        var suit = card.suit;
+        var rank = card.rank;
+        var index = cardIndex(card);
 
         //Replace the middle card with the deck card
         middleCard.find(".card").replaceWith(createCard(suit, rank, "div"));
+        middleCard.removeClass("hide-card");
+
         //Remove the deck card
         handCard.closest("li").remove();
 
-        if (shouldEmit)
-            socket.send("submitCard", suit + rank);
+        if (index >= 0) {
+            //Remove the card and flatten the array
+            delete _cards[index];
+            _cards = _.compact(_cards);
+        }
     }
 
     function moveCardToHand(card) {
@@ -316,11 +312,10 @@ $(document).ready(function() {
                 suit: "C",
                 rank: 2
             };
-            if (cardIndex(two_of_clubs) != -1) {
+            if (_turn == _name && cardIndex(two_of_clubs) != -1) {
                 var two_of_clubs_id = cardToId(two_of_clubs);
-                moveCardToCenter(bottomCard, $("#" + two_of_clubs_id), true);
-                //TODO: Delete the card from _cards
-
+                moveCardToCenter(bottomCard, $("#" + two_of_clubs_id));
+                socket.send("playCard", two_of_clubs);
             }
         }
     });
