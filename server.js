@@ -150,7 +150,6 @@ primus.on("connection", function(client) {
 
     function makeTrade(table) {
         table.state = "playing";
-        console.log(table);
         for (var pos in table.traded_cards) {
             var cards = table.traded_cards[pos];
 

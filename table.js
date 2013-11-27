@@ -30,15 +30,12 @@ var Table = function() {
         var players = _und.values(this.players);
         var player_names = _und.pluck(players, "name");
 
-        var round = this.round;
-        var id = this.id;
-        var turn = this.turn;
         return {
             players: player_names,
-            round: round,
-            id: id,
-            state: state,
-            turn: turn
+            round: this.round,
+            id: this.id,
+            state: this.state,
+            turn: this.turn
         };
     }
 

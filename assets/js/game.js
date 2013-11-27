@@ -6,6 +6,7 @@ $(document).ready(function() {
     var _players = {};
     var _cards = [];
     var _turn = "";
+    var _name = "";
 
     var bottomCard = $("#bottom-played-card");
     var leftCard = $("#left-played-card");
@@ -20,12 +21,14 @@ $(document).ready(function() {
     function validateName() {
         var namedom = $("#playername");
         var buttons = $(".joinbtn,#newtable");
-        if (namedom.val().length > 0) {
+        var isValid = namedom.val().length > 0
+        if (isValid) {
             buttons.removeClass("disabled");
+            _name = namedom.val();
         } else {
             buttons.addClass("disabled");
         }
-        return namedom.val().length > 0;
+        return isValid;
     }
     // When we start, check see if we should disable links
     validateName();
@@ -216,7 +219,7 @@ $(document).ready(function() {
 
                     // Add a click handler to return card back to deck
                     slot.click(function() {
-                        if ($(this).hasClass("filled-card-slot")) {
+                        if ($(this).hasClass(".filled-card-slot")) {
                             moveCardToHand($(this).find(".card"));
 
                             slot.addClass("empty-card-slot");
@@ -225,14 +228,12 @@ $(document).ready(function() {
 
                             if (openSlots.length == 2) {
                                 //Tell the server that we aren't ready yet
-                                console.log("I'm changing my mind!");
                                 socket.send("passCards", null);
                             }
                         }
                     });
 
                     if (openSlots.length == 1) {
-                        console.log("Submit my cards to trade");
                         emitTradedCards();
                     }
                 }
@@ -267,7 +268,6 @@ $(document).ready(function() {
 
         //Replace the middle card with the deck card
         middleCard.find(".card").replaceWith(createCard(suit, rank, "div"));
-        console.log("moveCardToCenter " + suit + rank);
         //Remove the deck card
         handCard.closest("li").remove();
 
@@ -303,7 +303,7 @@ $(document).ready(function() {
         //This means we just finished trading cards
         if (_state == "playing") {
             //Hide the traded cards
-            var tradeSlots = $("filled-card-slot");
+            var tradeSlots = $(".filled-card-slot");
             tradeSlots.addClass("empty-card-slot");
             tradeSlots.addClass("hide-card");
             tradeSlots.removeClass("filled-card-slot");
@@ -316,9 +316,11 @@ $(document).ready(function() {
                 suit: "C",
                 rank: 2
             };
-            var two_of_clubs_id = cardToId(two_of_clubs);
             if (cardIndex(two_of_clubs) != -1) {
-                moveCardToCenter(bottomCard, $("#" + id), true);
+                var two_of_clubs_id = cardToId(two_of_clubs);
+                moveCardToCenter(bottomCard, $("#" + two_of_clubs_id), true);
+                //TODO: Delete the card from _cards
+
             }
         }
     });
@@ -371,7 +373,6 @@ $(document).ready(function() {
     }
 
     function createCard(suit, rank, tag) {
-        console.log("createCard " + suit + rank);
         var full_suit = suitmap[suit];
         var includeSuit = true;
 
@@ -383,7 +384,6 @@ $(document).ready(function() {
             rank = rank.toString();
             includeSuit = false;
         }
-        console.log("createCard " + suit + rank + full_suit);
         return '<' + tag + ' id="' + suit + rank + '" ' +
             'class="card rank-' + rank + ' ' + full_suit + '">\n' +
             '<span class="rank">' + rank.toUpperCase() + '</span>' +
