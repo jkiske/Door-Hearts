@@ -43,13 +43,12 @@ primus.on("connection", function(client) {
     //When someone connects put them in the waiting room
     client.join(waiting_room);
 
-    console.log("Client joined: " + client.id);
     //Let the new client know which tables are available
-    _und.each(_und.values(tables),
-        function(table) {
-            client.send("addTableRow", table.safe());
-        }
-    );
+    console.log("Tables: " + JSON.stringify(_und.pluck(_und.values(tables), "id")));
+    console.log("Clients: " + JSON.stringify(_und.pluck(primus.connections, "id")));
+    _und.each(_und.values(tables), function(table) {
+        client.send("addTableRow", table.safe());
+    });
 
     function joinTable(table_id, playerName) {
         var all_names = _und.pluck(_und.values(players), "name");
@@ -86,23 +85,6 @@ primus.on("connection", function(client) {
         return false;
     }
 
-    function updatePlayerPositions(table) {
-        // Put all of the other players into a map - position:{name: ?, score: ?}
-        var table_players = _und.values(table.players);
-        var other_pos = _und.filterAndIndexBy(table_players, "position", ["name", "score"]);
-
-        //Tell all the clients at the table that there is a new player
-        var clients = primus.room(table.id).clients();
-        _und.each(clients, function(id) {
-            //Emit the client his position
-            var client_pos = players[id].position;
-            primus.connections[id].send("updatePositions", client_pos, other_pos);
-        });
-
-        //Tell all the clients in the waiting room that there is an update
-        primus.room(waiting_room).send("updateTableRow", table.safe());
-    }
-
     client.on("joinTable", joinTable);
 
     client.on("newTable", function(playerName) {
@@ -112,7 +94,7 @@ primus.on("connection", function(client) {
 
         //Check to see if we successfully joined
         var did_join = joinTable(table.id, playerName);
-        if (!did_join) {
+        if (did_join === false) {
             primus.room(waiting_room).send("removeTableRow", table.id);
             //Delete the table if there was an error
             delete tables[table.id];
@@ -180,21 +162,21 @@ primus.on("connection", function(client) {
         table.resetTrade();
     }
 
-    client.on("playCard", function(card){
+    client.on("playCard", function(card) {
         var player = players[client.id];
         if (player !== undefined) {
             //TODO: Check to make sure we have the card!
             var table = tables[player.table];
             if (table !== undefined && table.turn == player.name) {
-                if(_und.size(table.played_cards) < 4) {
+                if (_und.size(table.played_cards) < 4) {
                     primus.room(table.id).send("cardPlayed", player.name, card);
                     primus.room(table.id).send("nextPlayer", table.nextTurn());
                     table.played_cards[player.name] = card;
                 }
-                if(_und.size(table.played_cards) == 4) {
+                if (_und.size(table.played_cards) == 4) {
                     //TODO: Who won?
-                     table.resetPlayedCards();
-                     primus.room(table.id).send("clearTrick");
+                    table.resetPlayedCards();
+                    primus.room(table.id).send("clearTrick");
                 }
             }
         }
@@ -203,40 +185,56 @@ primus.on("connection", function(client) {
     client.on("leaveTable", function() {
         client.leaveAll();
         client.join(waiting_room);
-        leaveTable();
+        leaveTable(client);
     });
+});
 
-    //Disconnect
-    primus.on("disconnection", leaveTable);
+//Disconnect
+primus.on("disconnection", leaveTable);
 
-    function leaveTable() {
-        console.log("Client disconnected: " + client.id);
-        if (client.id in players) {
-            var player = players[client.id];
-            delete players[client.id];
+function leaveTable(client) {
+    console.log("Client disconnected: " + client.id);
+    if (client.id in players) {
+        var player = players[client.id];
+        delete players[client.id];
 
-            var table = tables[player.table];
-            if (table !== undefined) {
-                table.positions[player.position] = null;
+        var table = tables[player.table];
+        if (table !== undefined) {
+            table.positions[player.position] = null;
 
-                delete table.players[player.name];
-                client.leave(table.id);
+            delete table.players[player.name];
+            client.leave(table.id);
 
-                // If that was the last player in the room, delete the room
-                if (_und.size(table.players) === 0) {
-                    delete tables[table.id];
-                    primus.room(waiting_room).send("removeTableRow", table.id);
-                } else {
-                    //Otherwise, remove the username from the row
-                    primus.room(waiting_room).send("updateTableRow", table.safe());
-                    //And let everone in the room know that person left
-                    updatePlayerPositions(table);
-                }
+            // If that was the last player in the room, delete the room
+            if (_und.size(table.players) === 0) {
+                delete tables[table.id];
+                primus.room(waiting_room).send("removeTableRow", table.id);
+            } else {
+                //Otherwise, remove the username from the row
+                primus.room(waiting_room).send("updateTableRow", table.safe());
+                //And let everone in the room know that person left
+                updatePlayerPositions(table);
             }
         }
     }
-});
+}
 
+function updatePlayerPositions(table) {
+    // Put all of the other players into a map - position:{name: ?, score: ?}
+    var table_players = _und.values(table.players);
+    var other_pos = _und.filterAndIndexBy(table_players, "position", ["name", "score"]);
+
+    //Tell all the clients at the table that there is a new player
+    var clients = primus.room(table.id).clients();
+    _und.each(clients, function(id) {
+        //Emit the client his position
+        var client_pos = players[id].position;
+        primus.connections[id].send("updatePositions", client_pos, other_pos);
+    });
+
+    //Tell all the clients in the waiting room that there is an update
+    primus.room(waiting_room).send("updateTableRow", table.safe());
+}
 
 /**
  * This function takes a list of the same objects, reindexes by an

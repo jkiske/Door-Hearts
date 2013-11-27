@@ -397,16 +397,10 @@ $(document).ready(function() {
         var rank = card.rank;
         var suit = card.suit;
 
-        var full_suit = suitmap[suit];
-        var includeSuit = true;
-
         if (rank in rankmap) {
             rank = rankmap[rank];
-            if (rank == "a")
-                includeSuit = false;
         } else {
             rank = rank.toString();
-            includeSuit = false;
         }
         return suit + rank;
     }
