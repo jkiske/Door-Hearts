@@ -43,6 +43,14 @@ var Player = function(n, socket_id) {
         this.hand = _und.union(cards, this.hand);
     }
 
+    function hasTwoOfClubs() {
+        var two_of_clubs = {
+            suit: "C",
+            rank: 2
+        };
+        return cardIndex(two_of_clubs, this.hand) >= 0;;
+    }
+
     return {
         name: n,
         id: id,
@@ -51,7 +59,8 @@ var Player = function(n, socket_id) {
         hand: hand,
         position: position,
         removeCards: removeCards,
-        addCards: addCards
+        addCards: addCards,
+        hasTwoOfClubs: hasTwoOfClubs
     };
 };
 

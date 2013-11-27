@@ -137,16 +137,20 @@ primus.on("connection", function(client) {
     //Wait for all players to submit cards to trade
     client.on("passCards", function(cards) {
         var player = players[client.id];
-        var position = player.position;
-        var table = tables[player.table];
-        table.traded_cards[position] = cards;
+        if (player !== undefined) {
+            var position = player.position;
+            var table = tables[player.table];
+            table.traded_cards[position] = cards;
 
-        if (table.readyToTrade()) {
-            makeTrade(table);
+            if (table.readyToTrade()) {
+                makeTrade(table);
+            }
         }
     });
 
     function makeTrade(table) {
+        table.state = "playing";
+        console.log(table);
         for (var pos in table.traded_cards) {
             var cards = table.traded_cards[pos];
 
@@ -161,12 +165,21 @@ primus.on("connection", function(client) {
             var trade_player = table.players[trade_player_name];
             trade_player.addCards(cards);
         }
-        for (player in table.players) {
-            //Re-deal the cards and update round state
-        }
+        //The trade is done, now figure out who goes first
+        _und.each(_und.values(table.players), function(player) {
+            if (player.hasTwoOfClubs()) {
+                table.turn = player.name;
+            }
+        });
+        //Tell everyone to start playing
+        _und.each(_und.values(table.players), function(player) {
+            var id = player.id;
+            primus.connections[id].send("showCards", player.hand);
+            primus.connections[id].send("updateState", table.safe());
+        });
     }
 
-    client.on("leaveTable", function(){
+    client.on("leaveTable", function() {
         client.leaveAll();
         client.join(waiting_room);
         leaveTable();

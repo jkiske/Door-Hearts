@@ -17,8 +17,9 @@ var Table = function() {
         "E": null,
         "W": null
     };
-    var state = 'waiting';
-    var id = _und.uniqueId('tableid_');
+    var state = "waiting";
+    var turn = "";
+    var id = _und.uniqueId("tableid_");
     var round = 0;
     var deck = new _deck.Deck();
     deck.shuffle();
@@ -31,11 +32,13 @@ var Table = function() {
 
         var round = this.round;
         var id = this.id;
+        var turn = this.turn;
         return {
             players: player_names,
             round: round,
             id: id,
-            state: state
+            state: state,
+            turn: turn
         };
     }
 
@@ -99,6 +102,7 @@ var Table = function() {
         players: players,
         id: id,
         round: round,
+        turn: turn,
         deck: deck,
         positions: positions,
         traded_cards: traded_cards,

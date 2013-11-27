@@ -1,9 +1,11 @@
 $(document).ready(function() {
     var socket = Primus.connect(document.URL);
 
-    var state = "waiting"; // waiting, trading, playing
+    var _state = "waiting"; // waiting, trading, playing
+    var _round = 0;
     var _players = {};
     var _cards = [];
+    var _turn = "";
 
     var bottomCard = $("#bottom-played-card");
     var leftCard = $("#left-played-card");
@@ -98,6 +100,7 @@ $(document).ready(function() {
     $(".alert .close").on("click", function() {
         $(this).parent().hide();
     });
+
     socket.on("duplicateName", function(name) {
         //Clear the text
         alertDialog.text("");
@@ -127,7 +130,7 @@ $(document).ready(function() {
             socket.send("dealCards");
             $("#played-cards").removeClass("hidden");
 
-            state = "trading";
+            _state = "trading";
             setInfoText("Select cards to trade");
         }
     });
@@ -192,7 +195,7 @@ $(document).ready(function() {
         bottomCards.css("margin-left", measureCard.length * -measureCard.width() / 2 - 56);
 
         $("#bottomcards .card").click(function() {
-            if (state == "trading") {
+            if (_state == "trading") {
                 var openSlots = $(".empty-card-slot");
                 if (openSlots.length > 0) {
                     var slot = $(openSlots[0]);
@@ -233,7 +236,7 @@ $(document).ready(function() {
                         emitTradedCards();
                     }
                 }
-            } else if (state == "playing") {
+            } else if (_state == "playing") {
                 moveCardToCenter(bottomCard, $(this), true);
                 bottomCard.removeClass("hide-card");
             }
@@ -264,7 +267,7 @@ $(document).ready(function() {
 
         //Replace the middle card with the deck card
         middleCard.find(".card").replaceWith(createCard(suit, rank, "div"));
-
+        console.log("moveCardToCenter " + suit + rank);
         //Remove the deck card
         handCard.closest("li").remove();
 
@@ -292,78 +295,126 @@ $(document).ready(function() {
         });
         return hand_index;
     }
-});
 
-var suitmap = {
-    "H": "hearts",
-    "C": "clubs",
-    "S": "spades",
-    "D": "diams"
-};
-var rankmap = {
-    1: "a",
-    11: "j",
-    12: "q",
-    13: "k"
-};
-var inv_rankmap = _.invert(rankmap);
+    socket.on("updateState", function(table) {
+        _state = table.state;
+        _round = table.round;
+        _turn = table.turn;
+        //This means we just finished trading cards
+        if (_state == "playing") {
+            //Hide the traded cards
+            var tradeSlots = $("filled-card-slot");
+            tradeSlots.addClass("empty-card-slot");
+            tradeSlots.addClass("hide-card");
+            tradeSlots.removeClass("filled-card-slot");
 
-// Converts a card id to an object
+            //Update info text
+            setInfoText("It is " + _turn + "'s turn to play"); //It is _____'s turn
 
-function idToCard(id) {
-    rank = id.slice(1);
-    if (rank in inv_rankmap)
-        rank = inv_rankmap[rank];
+            //Select the person to go first
+            var two_of_clubs = {
+                suit: "C",
+                rank: 2
+            };
+            var two_of_clubs_id = cardToId(two_of_clubs);
+            if (cardIndex(two_of_clubs) != -1) {
+                moveCardToCenter(bottomCard, $("#" + id), true);
+            }
+        }
+    });
 
-    return {
-        suit: id.slice(0, 1),
-        rank: parseInt(rank)
+    // -------------------------------- Helper Functions ----------------------------- //
+
+    var suitmap = {
+        "H": "hearts",
+        "C": "clubs",
+        "S": "spades",
+        "D": "diams"
     };
-}
+    var rankmap = {
+        1: "a",
+        11: "j",
+        12: "q",
+        13: "k"
+    };
+    var inv_rankmap = _.invert(rankmap);
 
-function createCard(suit, rank, tag) {
-    var full_suit = suitmap[suit];
-    var includeSuit = true;
+    // Converts a card id to an object
 
-    if (rank in rankmap) {
-        rank = rankmap[rank];
-        if (rank == "a")
+    function idToCard(id) {
+        rank = id.slice(1);
+        if (rank in inv_rankmap)
+            rank = inv_rankmap[rank];
+
+        return {
+            suit: id.slice(0, 1),
+            rank: parseInt(rank)
+        };
+    }
+
+    function cardToId(card) {
+        var rank = card.rank;
+        var suit = card.suit;
+
+        var full_suit = suitmap[suit];
+        var includeSuit = true;
+
+        if (rank in rankmap) {
+            rank = rankmap[rank];
+            if (rank == "a")
+                includeSuit = false;
+        } else {
+            rank = rank.toString();
             includeSuit = false;
-    } else {
-        rank = rank.toString();
-        includeSuit = false;
+        }
+        return suit + rank;
     }
 
-    return "<" + tag + " id=\"" + suit + rank + "\" " +
-        "class=\"card rank-" + rank + " " + full_suit + "\">\n" +
-        "<span class=\"rank\">" + rank.toUpperCase() + "</span>" +
-        "<span class=\"suit\">" +
-        (includeSuit ? ("&" + full_suit + ";") : "") +
-        "</span>" +
-        "</" + tag + ">";
-}
+    function createCard(suit, rank, tag) {
+        console.log("createCard " + suit + rank);
+        var full_suit = suitmap[suit];
+        var includeSuit = true;
 
-function sortValue(card) {
-    var suitVals = {
-        "C": 0,
-        "D": 1,
-        "S": 2,
-        "H": 3
-    };
-    //Give each suit a value for sorting
-    var suitVal = suitVals[card.suit] * 13;
-    //Aces are high
-    var rankVal = card.rank == 1 ? 13 : card.rank - 1;
-    return rankVal + suitVal;
-}
-
-_.mixin({
-    rotate: function(array, n, guard) {
-        var head, tail;
-        n = (n === null) || guard ? 1 : n;
-        n = n % array.length;
-        tail = array.slice(n);
-        head = array.slice(0, n);
-        return tail.concat(head);
+        if (rank in rankmap) {
+            rank = rankmap[rank];
+            if (rank == "a")
+                includeSuit = false;
+        } else {
+            rank = rank.toString();
+            includeSuit = false;
+        }
+        console.log("createCard " + suit + rank + full_suit);
+        return '<' + tag + ' id="' + suit + rank + '" ' +
+            'class="card rank-' + rank + ' ' + full_suit + '">\n' +
+            '<span class="rank">' + rank.toUpperCase() + '</span>' +
+            '<span class="suit">' +
+            (includeSuit ? ('&' + full_suit + ';') : '') +
+            '</span>' +
+            '</' + tag + '>';
     }
+
+    function sortValue(card) {
+        var suitVals = {
+            "C": 0,
+            "D": 1,
+            "S": 2,
+            "H": 3
+        };
+        //Give each suit a value for sorting
+        var suitVal = suitVals[card.suit] * 13;
+        //Aces are high
+        var rankVal = card.rank == 1 ? 13 : card.rank - 1;
+        return rankVal + suitVal;
+    }
+
+    _.mixin({
+        rotate: function(array, n, guard) {
+            var head, tail;
+            n = (n === null) || guard ? 1 : n;
+            n = n % array.length;
+            tail = array.slice(n);
+            head = array.slice(0, n);
+            return tail.concat(head);
+        }
+    });
 });
