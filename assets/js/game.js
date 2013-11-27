@@ -229,9 +229,11 @@ $(document).ready(function() {
                     }
                 }
             } else if (_state == "playing") {
-                moveCardToCenter(bottomCard, $(this));
-                var played_card = idToCard($(this).attr("id"));
-                socket.send("playCard", played_card);
+                if (_turn == _name) {
+                    moveCardToCenter(bottomCard, $(this));
+                    var played_card = idToCard($(this).attr("id"));
+                    socket.send("playCard", played_card);
+                }
             }
 
             var measureCard = $("#bottomcards li");
@@ -272,6 +274,12 @@ $(document).ready(function() {
         //Replace the middle card with the deck card
         middleCard.find(".card").replaceWith(createCard(card.suit, card.rank, "div"));
         middleCard.removeClass("hide-card");
+    }
+
+    function hideMiddleCard(middleCard) {
+        //Replace the middle card with the deck card
+        middleCard.find(".card").replaceWith(createCard("", "", "div"));
+        middleCard.addClass("hide-card");
     }
 
     function moveCardToHand(card) {
@@ -326,6 +334,7 @@ $(document).ready(function() {
     });
 
     socket.on("nextPlayer", function(player_name) {
+        _turn = player_name;
         if (_name == player_name) {
             //Do some stuff
             setInfoText("It is your turn to play");
@@ -344,6 +353,11 @@ $(document).ready(function() {
         }
     });
 
+    socket.on("clearTrick", function() {
+        _.each(dir_card_map, function(card, dir){
+            hideMiddleCard(card);
+        });
+    });
     // -------------------------------- Helper Functions ----------------------------- //
 
     var dir_card_map = {

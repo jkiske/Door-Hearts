@@ -185,9 +185,18 @@ primus.on("connection", function(client) {
         if (player !== undefined) {
             //TODO: Check to make sure we have the card!
             var table = tables[player.table];
-            console.log(player.name + " played card: " + JSON.stringify(card));
-            primus.room(table.id).send("cardPlayed", player.name, card);
-            primus.room(table.id).send("nextPlayer", table.nextTurn());
+            if (table !== undefined && table.turn == player.name) {
+                if(_und.size(table.played_cards) < 4) {
+                    primus.room(table.id).send("cardPlayed", player.name, card);
+                    primus.room(table.id).send("nextPlayer", table.nextTurn());
+                    table.played_cards[player.name] = card;
+                }
+                if(_und.size(table.played_cards) == 4) {
+                    //TODO: Who won?
+                     table.resetPlayedCards();
+                     primus.room(table.id).send("clearTrick");
+                }
+            }
         }
     });
 
