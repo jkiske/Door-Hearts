@@ -27,6 +27,15 @@ var Player = function(n, socket_id) {
         return true;
     }
 
+    function hasCard(card) {
+        return cardIndex(card, this.hand) >= 0;
+    }
+
+    function hasSuit(suit) {
+        var cards_with_suit = _und.where(this.hand, {suit: suit});
+        return cards_with_suit.length > 0;
+    }
+
     function removeCards(cards) {
         var hand = this.hand;
         if (hasCards(cards, hand)) {
@@ -48,7 +57,7 @@ var Player = function(n, socket_id) {
             suit: "C",
             rank: 2
         };
-        return cardIndex(two_of_clubs, this.hand) >= 0;;
+        return cardIndex(two_of_clubs, this.hand) >= 0;
     }
 
     return {
@@ -60,6 +69,8 @@ var Player = function(n, socket_id) {
         position: position,
         removeCards: removeCards,
         addCards: addCards,
+        hasCard: hasCard,
+        hasSuit: hasSuit,
         hasTwoOfClubs: hasTwoOfClubs
     };
 };

@@ -165,18 +165,38 @@ primus.on("connection", function(client) {
     client.on("playCard", function(card) {
         var player = players[client.id];
         if (player !== undefined) {
-            //TODO: Check to make sure we have the card!
             var table = tables[player.table];
             if (table !== undefined && table.turn == player.name) {
-                if (_und.size(table.played_cards) < 4) {
-                    primus.room(table.id).send("cardPlayed", player.name, card);
-                    primus.room(table.id).send("nextPlayer", table.nextTurn());
-                    table.played_cards[player.name] = card;
-                }
-                if (_und.size(table.played_cards) == 4) {
-                    //TODO: Who won?
-                    table.resetPlayedCards();
-                    primus.room(table.id).send("clearTrick");
+                if (player.hasCard(card)) {
+                    if (_und.size(table.played_cards) == 0) {
+                        //This is the first card, set the trick suit
+                        table.trick_suit = card.suit;
+                    }
+                    //Check if this card is allowed to be played
+                    var isValidSuit = (card.suit == table.trick_suit) || !player.hasSuit(table.trick_suit);
+                    console.log("Has to play other suit: " + !player.hasSuit(table.trick_suit) +
+                        "\nPlayed Correct Suit: " + (card.suit == table.trick_suit));
+                    if (isValidSuit === true) {
+                        if (_und.size(table.played_cards) < 4) {
+                            primus.room(table.id).send("cardPlayed", player.name, card,
+                                table.trick_suit);
+                            primus.room(table.id).send("nextPlayer", table.nextTurn());
+                            //Add the card to the list of played cards
+                            table.played_cards[player.name] = card;
+                            player.removeCards([card]);
+                        }
+                        if (_und.size(table.played_cards) == 4) {
+                            //TODO: Who won?
+                            table.resetPlayedCards();
+                            primus.room(table.id).send("clearTrick");
+                            var winner = "TODO: set winner";
+                            primus.room(table.id).send("nextPlayer", winner);
+                        }
+                    } else {
+                        console.log("You can't play this card this hand: " + card)
+                    }
+                } else {
+                    console.log("We don't have the card: " + card);
                 }
             }
         }

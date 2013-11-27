@@ -7,6 +7,7 @@ $(document).ready(function() {
     var _cards = [];
     var _turn = "";
     var _name = "";
+    var _trick_suit = "";
 
     var bottomCard = $("#bottom-played-card");
     var leftCard = $("#left-played-card");
@@ -188,7 +189,7 @@ $(document).ready(function() {
         //Delete the children and replace them
         bottomCards.children().remove();
 
-        for(var i in _cards){
+        for (var i in _cards) {
             var card = _cards[i];
             bottomCards.append('<li>' +
                 createCard(card.suit, card.rank, 'a') +
@@ -230,7 +231,7 @@ $(document).ready(function() {
                 }
             } else if (_state == "playing") {
                 if (_turn == _name) {
-                    moveCardToCenter(bottomCard, $(this));
+                    //Try to play the card
                     var played_card = idToCard($(this).attr("id"));
                     socket.send("playCard", played_card);
                 }
@@ -344,17 +345,22 @@ $(document).ready(function() {
         }
     });
 
-    socket.on("cardPlayed", function(opponent_name, card) {
+    socket.on("cardPlayed", function(opponent_name, card, trick_suit) {
+        _trick_suit = trick_suit;
         var opponent = _players[opponent_name];
         if (opponent !== undefined) {
             var opponent_dir = opponent.dir;
             var played_card_spot = dir_card_map[opponent_dir];
-            showMiddleCard(played_card_spot, card);
+            if (opponent_name == _name) {
+                moveCardToCenter(bottomCard, $('#'+cardToId(card)));
+            } else {
+                showMiddleCard(played_card_spot, card);
+            }
         }
     });
 
     socket.on("clearTrick", function() {
-        _.each(dir_card_map, function(card, dir){
+        _.each(dir_card_map, function(card, dir) {
             hideMiddleCard(card);
         });
     });
