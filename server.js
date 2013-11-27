@@ -186,11 +186,16 @@ primus.on("connection", function(client) {
                             player.removeCards([card]);
                         }
                         if (_und.size(table.played_cards) == 4) {
-                            //TODO: Who won?
-                            table.resetPlayedCards();
+                            var winner = table.getWinner();
+                            var score = table.getPointsInTrick();
+                            table.players[winner].score += score;
+                            //TODO: Add this method to the client
+                            primus.room(table.id).send("updateScore", winner,
+                                table.players[winner].score);
                             primus.room(table.id).send("clearTrick");
-                            var winner = "TODO: set winner";
                             primus.room(table.id).send("nextPlayer", winner);
+                            //Clear the table's played cards and reset the trick suit
+                            table.resetPlayedCards();
                         }
                     } else {
                         console.log("You can't play this card this hand: " + card)

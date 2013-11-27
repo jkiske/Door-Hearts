@@ -114,6 +114,41 @@ var Table = function() {
         trick_suit = "";
     }
 
+    function getWinner() {
+        var scores = [];
+        _und.each(this.played_cards, function(card, name){
+            player = {name: name, score: 0};
+            if(card.suit == this.trick_suit){
+                player.score = card.value;
+                if(player.score == 1){
+                    player.score = 14;
+                }
+            }
+            scores = _und.union(scores, [player]);
+        });
+        console.log(JSON.stringify(scores));
+        var winner = _und.max(scores, function(player){ 
+            return player.score;
+        });
+        console.log(winner.name);
+        return winner.name;
+    }
+
+    function getPointsInTrick(){
+        var score = 0;
+        _und.each(this.played_cards, function(card, name){
+            //Any heart
+            if(card.suit == "H"){
+                score += 1;
+            }
+            //Queen of spades
+            else if (card.suit == "S" && card.rank == 12) {
+                score += 13
+            }
+        });
+        return score;
+    }
+
     return {
         players: players,
         id: id,
@@ -131,6 +166,8 @@ var Table = function() {
         resetTrade: resetTrade,
         resetPlayedCards: resetPlayedCards,
         tradeMap: tradeMap,
+        getPointsInTrick: getPointsInTrick,
+        getWinner: getWinner,
         nextTurn: nextTurn
     };
 };
