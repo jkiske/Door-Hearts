@@ -18,6 +18,7 @@ var Table = function() {
         "W": null
     };
     var played_cards = {};
+    var trick_suit;
     var state = "waiting";
     var turn = "";
     var id = _und.uniqueId("tableid_");
@@ -110,6 +111,7 @@ var Table = function() {
 
     function resetPlayedCards() {
         played_cards = {};
+        trick_suit = "";
     }
 
     return {
@@ -121,6 +123,7 @@ var Table = function() {
         positions: positions,
         traded_cards: traded_cards,
         played_cards: played_cards,
+        trick_suit: trick_suit,
         state: state,
         safe: safe,
         firstOpenPosition: firstOpenPosition,
