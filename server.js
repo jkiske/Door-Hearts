@@ -149,7 +149,6 @@ primus.on("connection", function(client) {
     });
 
     function makeTrade(table) {
-        table.state = "playing";
         for (var pos in table.traded_cards) {
             var cards = table.traded_cards[pos];
 
@@ -171,17 +170,24 @@ primus.on("connection", function(client) {
             }
         });
         //Tell everyone to start playing
+        table.state = "start_playing";
         _und.each(_und.values(table.players), function(player) {
             var id = player.id;
-            primus.connections[id].send("showCards", player.hand);
-            primus.connections[id].send("updateState", table.safe());
+            var hand = player.hand;
+            primus.connections[id].send("startPlaying", table.safe(), hand);
         });
+        //Make sure we clear out the trade for the future
+        table.resetTrade();
     }
 
     client.on("playCard", function(card){
         var player = players[client.id];
         if (player !== undefined) {
+            //TODO: Check to make sure we have the card!
+            var table = tables[player.table];
             console.log(player.name + " played card: " + JSON.stringify(card));
+            primus.room(table.id).send("cardPlayed", player.name, card);
+            primus.room(table.id).send("nextPlayer", table.nextTurn());
         }
     });
 

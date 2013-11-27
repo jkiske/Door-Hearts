@@ -95,6 +95,18 @@ var Table = function() {
         }
     }
 
+    //Gets the next player, and sets the turn variable
+    function nextTurn() {
+        var player = this.players[this.turn];
+        var player_pos = player.position;
+        var order = ["N", "E", "S", "W"];
+        var next_index = (order.indexOf(player_pos) + 1) % 4;
+        var next_pos = order[next_index];
+        var next_player_name = this.positions[next_pos];
+        this.turn = next_player_name;
+        return this.turn;
+    }
+
     return {
         players: players,
         id: id,
@@ -108,7 +120,8 @@ var Table = function() {
         firstOpenPosition: firstOpenPosition,
         readyToTrade: readyToTrade,
         resetTrade: resetTrade,
-        tradeMap: tradeMap
+        tradeMap: tradeMap,
+        nextTurn: nextTurn
     };
 };
 

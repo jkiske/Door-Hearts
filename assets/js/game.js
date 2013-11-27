@@ -1,7 +1,7 @@
 $(document).ready(function() {
     var socket = Primus.connect(document.URL);
 
-    var _state = "waiting"; // waiting, trading, playing
+    var _state = "waiting"; // waiting, trading, playing, start_playing
     var _round = 0;
     var _players = {};
     var _cards = [];
@@ -157,9 +157,9 @@ $(document).ready(function() {
             var rel_dir = pos_dir_map[pos];
             var name = (player.name === null ? "Open" : player.name);
             var score = (player.score === undefined ? "0" : player.score);
-            _players[pos] = {
+            _players[name] = {
                 dir: rel_dir,
-                name: name
+                pos: pos
             };
             console.log(_players);
             $("#" + rel_dir + "name").text(name);
@@ -187,12 +187,14 @@ $(document).ready(function() {
 
         //Delete the children and replace them
         bottomCards.children().remove();
-        $.each(_cards, function(key, value) {
+
+        for(var i in _cards){
+            var card = _cards[i];
             bottomCards.append('<li>' +
-                createCard(value.suit, value.rank, 'a') +
+                createCard(card.suit, card.rank, 'a') +
                 '</li>'
             );
-        });
+        }
         var measureCard = $("#bottomcards li");
         // Magic numbers to center stack
         bottomCards.css("margin-left", measureCard.length * -measureCard.width() / 2 - 56);
@@ -209,7 +211,7 @@ $(document).ready(function() {
 
                     // Add a click handler to return card back to deck
                     slot.click(function() {
-                        if ($(this).hasClass(".filled-card-slot")) {
+                        if ($(this).hasClass("filled-card-slot")) {
                             moveCardToHand($(this).find(".card"));
 
                             slot.addClass("empty-card-slot");
@@ -253,22 +255,23 @@ $(document).ready(function() {
         //Get the rank/suit information
         var id = handCard.attr("id");
         var card = idToCard(id);
-        var suit = card.suit;
-        var rank = card.rank;
         var index = cardIndex(card);
 
-        //Replace the middle card with the deck card
-        middleCard.find(".card").replaceWith(createCard(suit, rank, "div"));
-        middleCard.removeClass("hide-card");
+        showMiddleCard(middleCard, card);
 
-        //Remove the deck card
+        //If we have the card, remove it
         handCard.closest("li").remove();
-
         if (index >= 0) {
             //Remove the card and flatten the array
             delete _cards[index];
             _cards = _.compact(_cards);
         }
+    }
+
+    function showMiddleCard(middleCard, card) {
+        //Replace the middle card with the deck card
+        middleCard.find(".card").replaceWith(createCard(card.suit, card.rank, "div"));
+        middleCard.removeClass("hide-card");
     }
 
     function moveCardToHand(card) {
@@ -278,7 +281,7 @@ $(document).ready(function() {
         var rank = card_obj.rank;
 
         _cards[_cards.length] = card_obj;
-
+        card.addClass("hide-card");
         showCards(_cards);
     }
 
@@ -292,36 +295,63 @@ $(document).ready(function() {
         return hand_index;
     }
 
-    socket.on("updateState", function(table) {
+    socket.on("startPlaying", function(table, new_hand) {
         _state = table.state;
         _round = table.round;
         _turn = table.turn;
         //This means we just finished trading cards
-        if (_state == "playing") {
+        if (_state == "start_playing") {
+            _state = "playing";
             //Hide the traded cards
             var tradeSlots = $(".filled-card-slot");
             tradeSlots.addClass("empty-card-slot");
             tradeSlots.addClass("hide-card");
             tradeSlots.removeClass("filled-card-slot");
 
-            //Update info text
-            setInfoText("It is " + _turn + "'s turn to play"); //It is _____'s turn
+            showCards(new_hand);
 
             //Select the person to go first
             var two_of_clubs = {
                 suit: "C",
                 rank: 2
             };
-            if (_turn == _name && cardIndex(two_of_clubs) != -1) {
+            if (_turn == _name) {
                 var two_of_clubs_id = cardToId(two_of_clubs);
+                //Busy wait untill all cards have been set
+                //while($("#" + two_of_clubs_id).attr("id") == undefined);
                 moveCardToCenter(bottomCard, $("#" + two_of_clubs_id));
                 socket.send("playCard", two_of_clubs);
             }
         }
     });
 
+    socket.on("nextPlayer", function(player_name) {
+        if (_name == player_name) {
+            //Do some stuff
+            setInfoText("It is your turn to play");
+        } else {
+            //Do other stuff
+            setInfoText("It is " + player_name + "'s turn to play");
+        }
+    });
+
+    socket.on("cardPlayed", function(opponent_name, card) {
+        var opponent = _players[opponent_name];
+        if (opponent !== undefined) {
+            var opponent_dir = opponent.dir;
+            var played_card_spot = dir_card_map[opponent_dir];
+            showMiddleCard(played_card_spot, card);
+        }
+    });
+
     // -------------------------------- Helper Functions ----------------------------- //
 
+    var dir_card_map = {
+        "top": topCard,
+        "bottom": bottomCard,
+        "left": leftCard,
+        "right": rightCard
+    }
     var suitmap = {
         "H": "hearts",
         "C": "clubs",
