@@ -107,7 +107,7 @@ primus.on("connection", function(client) {
         var table = tables[player.table];
         var deck = table.deck;
 
-        if (_und.size(player.cards) < 13) {
+        if (_und.size(player.hand) < 13) {
             var cards = deck.draw(13, "", true);
             player.addCards(cards);
             client.send("showCards", cards);
@@ -168,9 +168,10 @@ primus.on("connection", function(client) {
             var table = tables[player.table];
             if (table !== undefined && table.turn == player.name) {
                 if (player.hasCard(card)) {
-                    if (_und.size(table.played_cards) == 0) {
+                    if (_und.size(table.played_cards) === 0) {
                         //This is the first card, set the trick suit
                         table.trick_suit = card.suit;
+                        console.log(card.suit + " <- card, trick -> " + table.trick_suit);
                     }
                     //Check if this card is allowed to be played
                     var isValidSuit = (card.suit == table.trick_suit) || !player.hasSuit(table.trick_suit);
@@ -185,6 +186,7 @@ primus.on("connection", function(client) {
                             table.played_cards[player.name] = card;
                             player.removeCards([card]);
                         }
+                        //All the cards have been played. Select a winner
                         if (_und.size(table.played_cards) == 4) {
                             var winner = table.getWinner();
                             var score = table.getPointsInTrick();
@@ -198,7 +200,7 @@ primus.on("connection", function(client) {
                             table.resetPlayedCards();
                         }
                     } else {
-                        console.log("You can't play this card this hand: " + card)
+                        console.log("You can't play this card this hand: " + card);
                     }
                 } else {
                     console.log("We don't have the card: " + card);

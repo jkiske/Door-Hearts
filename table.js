@@ -18,7 +18,7 @@ var Table = function() {
         "W": null
     };
     var played_cards = {};
-    var trick_suit;
+    var trick_suit = "";
     var state = "waiting";
     var turn = "";
     var id = _und.uniqueId("tableid_");
@@ -98,6 +98,7 @@ var Table = function() {
     }
 
     //Gets the next player, and sets the turn variable
+
     function nextTurn() {
         var player = this.players[this.turn];
         var player_pos = player.position;
@@ -116,29 +117,32 @@ var Table = function() {
 
     function getWinner() {
         var scores = [];
-        _und.each(this.played_cards, function(card, name){
-            player = {name: name, score: 0};
-            if(card.suit == this.trick_suit){
-                player.score = card.value;
-                if(player.score == 1){
+        var trick_suit = this.trick_suit;
+        _und.each(this.played_cards, function(card, name) {
+            player = {
+                name: name,
+                score: 0
+            };
+            if (card.suit == trick_suit) {
+                player.score = card.rank;
+                if (player.score == 1) {
                     player.score = 14;
                 }
             }
             scores = _und.union(scores, [player]);
         });
         console.log(JSON.stringify(scores));
-        var winner = _und.max(scores, function(player){ 
+        var winner = _und.max(scores, function(player) {
             return player.score;
         });
-        console.log(winner.name);
         return winner.name;
     }
 
-    function getPointsInTrick(){
+    function getPointsInTrick() {
         var score = 0;
-        _und.each(this.played_cards, function(card, name){
+        _und.each(this.played_cards, function(card, name) {
             //Any heart
-            if(card.suit == "H"){
+            if (card.suit == "H") {
                 score += 1;
             }
             //Queen of spades
