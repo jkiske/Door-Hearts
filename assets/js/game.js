@@ -158,13 +158,15 @@ $(document).ready(function() {
             var rel_dir = pos_dir_map[pos];
             var name = (player.name === null ? "Open" : player.name);
             var score = (player.score === undefined ? "0" : player.score);
+            var name_div = $("#" + rel_dir + "name");
+            name_div.text(name);
+            name_div.append('<div class = "score-label">' + player.score + '</div>');
             _players[name] = {
                 dir: rel_dir,
-                pos: pos
+                pos: pos,
+                score_div: name_div.find(".score-label")
             };
             console.log(_players);
-            $("#" + rel_dir + "name").text(name);
-            $("#" + rel_dir + "name").append('<div class = "score-label">' + player.score + '</div>');
         });
         //Set ever other position to empty
         _.each(pos_dir_map, function(rel_dir, pos) {
@@ -363,6 +365,10 @@ $(document).ready(function() {
         _.each(dir_card_map, function(card, dir) {
             hideMiddleCard(card);
         });
+    });
+
+    socket.on("updateScore", function(name, score) {
+       _players[name].score_div.text(score);
     });
     // -------------------------------- Helper Functions ----------------------------- //
 
