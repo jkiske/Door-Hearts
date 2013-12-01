@@ -111,8 +111,8 @@ var Table = function() {
     }
 
     function resetPlayedCards() {
-        played_cards = {};
-        trick_suit = "";
+        this.played_cards = {};
+        this.trick_suit = "";
     }
 
     function getWinner() {

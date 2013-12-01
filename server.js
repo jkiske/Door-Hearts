@@ -171,12 +171,11 @@ primus.on("connection", function(client) {
                     if (_und.size(table.played_cards) === 0) {
                         //This is the first card, set the trick suit
                         table.trick_suit = card.suit;
-                        console.log(card.suit + " <- card, trick -> " + table.trick_suit);
                     }
                     //Check if this card is allowed to be played
                     var isValidSuit = (card.suit == table.trick_suit) || !player.hasSuit(table.trick_suit);
-                    console.log("Has to play other suit: " + !player.hasSuit(table.trick_suit) +
-                        "\nPlayed Correct Suit: " + (card.suit == table.trick_suit));
+                    //console.log("Has to play other suit: " + !player.hasSuit(table.trick_suit) +
+                    //    "\nPlayed Correct Suit: " + (card.suit == table.trick_suit));
                     if (isValidSuit === true) {
                         if (_und.size(table.played_cards) < 4) {
                             primus.room(table.id).send("cardPlayed", player.name, card,
@@ -190,11 +189,14 @@ primus.on("connection", function(client) {
                         if (_und.size(table.played_cards) == 4) {
                             var winner = table.getWinner();
                             var score = table.getPointsInTrick();
+
                             table.players[winner].score += score;
-                            //TODO: Add this method to the client
                             primus.room(table.id).send("updateScore", winner,
                                 table.players[winner].score);
+
                             primus.room(table.id).send("clearTrick");
+
+                            table.turn = winner;
                             primus.room(table.id).send("nextPlayer", winner);
                             //Clear the table's played cards and reset the trick suit
                             table.resetPlayedCards();

@@ -280,7 +280,7 @@ $(document).ready(function() {
     }
 
     function hideMiddleCard(middleCard) {
-        //Replace the middle card with the deck card
+        //Hide the middle card
         middleCard.find(".card").replaceWith(createCard("", "", "div"));
         middleCard.addClass("hide-card");
     }
