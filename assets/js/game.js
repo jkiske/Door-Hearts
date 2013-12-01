@@ -198,9 +198,8 @@ $(document).ready(function() {
                 '</li>'
             );
         }
-        var measureCard = $("#bottomcards li");
-        // Magic numbers to center stack
-        bottomCards.css("margin-left", measureCard.length * -measureCard.width() / 2 - 56);
+
+        centerBottomCards();
 
         $("#bottomcards .card").click(function() {
             if (_state == "trading") {
@@ -238,12 +237,15 @@ $(document).ready(function() {
                     socket.send("playCard", played_card);
                 }
             }
-
-            var measureCard = $("#bottomcards li");
-            // Magic numbers to center stack
-            bottomCards.css("margin-left", measureCard.length * -measureCard.width() / 2 - 56);
-
+           centerBottomCards();
         });
+    }
+
+    function centerBottomCards() {
+        var bottomCards = $("#bottomcards");
+        var measureCard = $("#bottomcards li");
+        // Magic numbers to center stack
+        bottomCards.css("margin-left", measureCard.length * -measureCard.width() / 2 - 56);
     }
 
     function emitTradedCards() {
@@ -355,6 +357,7 @@ $(document).ready(function() {
             var played_card_spot = dir_card_map[opponent_dir];
             if (opponent_name == _name) {
                 moveCardToCenter(bottomCard, $('#'+cardToId(card)));
+                centerBottomCards();
             } else {
                 showMiddleCard(played_card_spot, card);
             }
