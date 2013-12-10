@@ -75,9 +75,8 @@ primus.on("connection", function(client) {
 
                 updatePlayerPositions(table);
                 if (_und.size(table.players) == 4) {
-                    primus.room(table.id).send("startGame");
-                    table.round++;
-                    table.state = "trading";
+                    table.nextRound();
+                    primus.room(table.id).send("nextRound", table.safe());
                 }
                 return true;
             }
@@ -111,6 +110,10 @@ primus.on("connection", function(client) {
             var cards = deck.draw(13);
             player.addCards(cards);
             client.send("showCards", cards);
+            // Force the hand to start if we skip trading this round
+            if (table.tradeMap() == null) {
+                startPlaying(table);
+            }
         } else {
             console.log("Player " + player.name + " already has 13 cards");
         }
@@ -125,25 +128,29 @@ primus.on("connection", function(client) {
             table.traded_cards[position] = cards;
 
             if (table.readyToTrade()) {
-                makeTrade(table);
+                startPlaying(table);
             }
         }
     });
 
-    function makeTrade(table) {
-        for (var pos in table.traded_cards) {
-            var cards = table.traded_cards[pos];
 
-            var player_name = table.positions[pos];
-            var player = table.players[player_name];
-            player.removeCards(cards);
+    function startPlaying(table) {
+        console.log(table.id + " has started playing");
+        if (table.readyToTrade()) {
+            for (var pos in table.traded_cards) {
+                var cards = table.traded_cards[pos];
 
-            //TODO: Make sure we do not trade on the 4th round
-            var trade_map = table.tradeMap();
-            var trade_player_pos = trade_map[pos];
-            var trade_player_name = table.positions[trade_player_pos];
-            var trade_player = table.players[trade_player_name];
-            trade_player.addCards(cards);
+                var player_name = table.positions[pos];
+                var player = table.players[player_name];
+                player.removeCards(cards);
+
+                //TODO: Make sure we do not trade on the 4th round
+                var trade_map = table.tradeMap();
+                var trade_player_pos = trade_map[pos];
+                var trade_player_name = table.positions[trade_player_pos];
+                var trade_player = table.players[trade_player_name];
+                trade_player.addCards(cards);
+            }
         }
         //The trade is done, now figure out who goes first
         _und.each(_und.values(table.players), function(player) {
@@ -203,8 +210,8 @@ primus.on("connection", function(client) {
 
                             //If the round is over
                             if (player.hand.length == 0) {
-                                table.round++;
-                                //Do the other things for a new round
+                                table.nextRound();
+                                primus.room(table.id).send("nextRound", table.safe());
                             }
                         }
                     } else {

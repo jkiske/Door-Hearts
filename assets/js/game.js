@@ -131,13 +131,18 @@ $(document).ready(function() {
 
     // -------------------------------- Game ----------------------------- //
 
-    socket.on("startGame", function() {
+    socket.on("nextRound", function(table) {
+        console.log(table);
         if (_.size(_players) == 4) {
             socket.send("dealCards");
             $("#played-cards").removeClass("hidden");
 
-            _state = "trading";
-            setInfoText("Select cards to trade");
+            _state = table.state;
+            if (_state == "trading") {
+                setInfoText("Select cards to trade");
+            } else {
+                socket.send("skipPassCards");
+            }
         }
     });
 
