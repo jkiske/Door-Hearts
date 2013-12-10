@@ -116,11 +116,13 @@ $(document).ready(function() {
     // -------------------------------- Switching Views ----------------------------- //
     //Switch views to the table view
     socket.on("joinTable", function(table) {
+         document.title = _name + ": Door Hearts";
         $("#tableslist").hide();
         $("#game").show();
     });
 
     $("#leave-table").click(function() {
+        document.title = "Door Hearts";
         $("#game").hide();
         $("#tableslist").show();
         socket.send("leaveTable");
@@ -341,11 +343,11 @@ $(document).ready(function() {
     socket.on("nextPlayer", function(player_name) {
         _turn = player_name;
         if (_name == player_name) {
-            //Do some stuff
             setInfoText("It is your turn to play");
+            document.title = "It is your turn to play";
         } else {
-            //Do other stuff
             setInfoText("It is " + player_name + "'s turn to play");
+            document.title = _name + ": Door Hearts";
         }
     });
 
