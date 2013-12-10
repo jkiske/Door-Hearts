@@ -200,12 +200,18 @@ primus.on("connection", function(client) {
                             primus.room(table.id).send("nextPlayer", winner);
                             //Clear the table's played cards and reset the trick suit
                             table.resetPlayedCards();
+
+                            //If the round is over
+                            if (player.hand.length == 0) {
+                                table.round++;
+                                //Do the other things for a new round
+                            }
                         }
                     } else {
-                        console.log("You can't play this card this hand: " + card);
+                        console.log("You can't play this card this hand: " + JSON.stringify(card));
                     }
                 } else {
-                    console.log("We don't have the card: " + card);
+                    console.log("We don't have the card: " + JSON.stringify(card));
                 }
             }
         }

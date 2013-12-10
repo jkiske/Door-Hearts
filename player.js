@@ -1,6 +1,6 @@
 var _und = require("underscore");
 
-var Player = function(n, socket_id) {
+var Player = function(name, socket_id) {
     var name = name;
     var id = socket_id;
     var table;
@@ -61,7 +61,7 @@ var Player = function(n, socket_id) {
     }
 
     return {
-        name: n,
+        name: name,
         id: id,
         table: table,
         score: score,
