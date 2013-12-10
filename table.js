@@ -26,8 +26,22 @@ var Table = function() {
     var deck = new _deck.Deck();
     deck.shuffle();
 
-    /* Returns the table with 'safe' values */
+    function nextRound(){
+        this.round++;
+        if (this.tradeMap() == null) {
+            //Make sure we trade this round
+            this.state = "playing";
+        } else {
+            this.state = "trading";
+        }
+        this.deck = new _deck.Deck();
+        this.deck.shuffle();
 
+        this.resetTrade();
+        this.resetPlayedCards();
+    }
+
+    /* Returns the table with 'safe' values */
     function safe() {
         var players = _und.values(this.players);
         var player_names = _und.pluck(players, "name");
@@ -52,8 +66,7 @@ var Table = function() {
     function readyToTrade() {
         var trade_values = _und.values(traded_cards);
         //removes all elements that are null
-        //TODO: make sure the table in in the trading phase
-        return this.state == 'trading' && _und.compact(trade_values).length == 4;
+        return this.state == "trading" && _und.compact(trade_values).length == 4;
     }
 
     function resetTrade() {
@@ -93,7 +106,7 @@ var Table = function() {
                 };
             case 0:
                 //error
-                return "Do not trade on this round";
+                return null;
         }
     }
 
@@ -154,6 +167,7 @@ var Table = function() {
     }
 
     return {
+        //Instance Vars
         players: players,
         id: id,
         round: round,
@@ -164,6 +178,9 @@ var Table = function() {
         played_cards: played_cards,
         trick_suit: trick_suit,
         state: state,
+
+        //Functions
+        nextRound: nextRound,
         safe: safe,
         firstOpenPosition: firstOpenPosition,
         readyToTrade: readyToTrade,
