@@ -108,7 +108,7 @@ primus.on("connection", function(client) {
         var deck = table.deck;
 
         if (_und.size(player.hand) < 13) {
-            var cards = deck.draw(13, "", true);
+            var cards = deck.draw(13);
             player.addCards(cards);
             client.send("showCards", cards);
         } else {

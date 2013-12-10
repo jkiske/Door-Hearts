@@ -1,3 +1,5 @@
+var _und = require("underscore");
+
 var Deck = function() {
     /**
      * Creates a deck
@@ -11,8 +13,8 @@ var Deck = function() {
 
     var index = n / suits.length;
     var count = 0;
-    for (i = 0; i <= 3; ++i) {
-        for (j = 1; j <= index; ++j) {
+    for (var i = 0; i <= 3; ++i) {
+        for (var j = 1; j <= index; ++j) {
             cards[count++] = {
                 suit: suits[i],
                 rank: j
@@ -21,29 +23,11 @@ var Deck = function() {
     }
 
     /**
-     * Shuffles a deck by moving the end card to a random position
-     *
-     * @return a shuffled deck
+     * Shuffles the deck
      **/
 
     function shuffle() {
-        var endIndex = cards.length;
-        var randIndex;
-
-        var endCard;
-        var randCard;
-
-        if (endIndex === 0) return false;
-        while (--endIndex) {
-            randIndex = Math.floor(Math.random() * (endIndex + 1));
-            endCard = cards[endIndex];
-            randCard = cards[randIndex];
-
-            //Swaps the two elements with each other
-            cards[endIndex] = randCard;
-            cards[randIndex] = endCard;
-        }
-        return cards;
+        cards = _und.shuffle(cards);
     }
 
     /**
@@ -57,14 +41,9 @@ var Deck = function() {
      * hand variable
      **/
 
-    function draw(amount, hand, initial) {
-        var drawnCards = cards.slice(0, amount);
-
-        cards.splice(0, amount);
-
-        if (!initial) {
-            Array.prototype.push.apply(hand, drawnCards);
-        }
+    function draw(amount) {
+        //Splice removes elements, slice does not
+        var drawnCards = cards.splice(0, amount);
         return drawnCards;
     }
 
