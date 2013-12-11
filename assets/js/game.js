@@ -433,8 +433,6 @@ $(document).ready(function() {
 
         if (rank in rankmap) {
             rank = rankmap[rank];
-            if (rank == "a")
-                includeSuit = false;
         } else {
             rank = rank.toString();
             includeSuit = false;
