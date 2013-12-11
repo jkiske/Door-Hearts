@@ -167,6 +167,9 @@ $(document).ready(function() {
             var score = (player.score === undefined ? "0" : player.score);
             var name_div = $("#" + rel_dir + "name");
             name_div.text(name);
+            name_div.addClass(color_map[pos]);
+            name_div.removeClass(color_map["Open"]);
+
             name_div.append('<div class = "score-label">' + player.score + '</div>');
             _players[name] = {
                 dir: rel_dir,
@@ -178,7 +181,10 @@ $(document).ready(function() {
         //Set ever other position to empty
         _.each(pos_dir_map, function(rel_dir, pos) {
             if (_.contains(_.keys(all_pos), pos) === false) {
-                $("#" + rel_dir + "name").text("Open");
+                var open_div = $("#" + rel_dir + "name");
+                open_div.text("Open");
+                open_div.removeClass(color_map[pos]);
+                open_div.addClass(color_map["Open"]);
             }
         });
         var remaining_player_count = 4 - _.size(all_pos);
@@ -388,19 +394,27 @@ $(document).ready(function() {
         "left": leftCard,
         "right": rightCard
     }
-    var suitmap = {
+    var suit_map = {
         "H": "hearts",
         "C": "clubs",
         "S": "spades",
         "D": "diams"
     };
-    var rankmap = {
+    var rank_map = {
         1: "a",
         11: "j",
         12: "q",
         13: "k"
     };
-    var inv_rankmap = _.invert(rankmap);
+    var inv_rankmap = _.invert(rank_map);
+
+    var color_map = {
+        "N": "label-primary",
+        "S": "label-warning",
+        "E": "label-success",
+        "W": "label-danger",
+        "Open": "label-default"
+    };
 
     // Converts a card id to an object
 
@@ -419,8 +433,8 @@ $(document).ready(function() {
         var rank = card.rank;
         var suit = card.suit;
 
-        if (rank in rankmap) {
-            rank = rankmap[rank];
+        if (rank in rank_map) {
+            rank = rank_map[rank];
         } else {
             rank = rank.toString();
         }
@@ -428,11 +442,11 @@ $(document).ready(function() {
     }
 
     function createCard(suit, rank, tag) {
-        var full_suit = suitmap[suit];
+        var full_suit = suit_map[suit];
         var includeSuit = true;
 
-        if (rank in rankmap) {
-            rank = rankmap[rank];
+        if (rank in rank_map) {
+            rank = rank_map[rank];
         } else {
             rank = rank.toString();
             includeSuit = false;
