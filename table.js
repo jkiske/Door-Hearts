@@ -64,7 +64,7 @@ var Table = function() {
     }
 
     function readyToTrade() {
-        var trade_values = _und.values(traded_cards);
+        var trade_values = _und.values(this.traded_cards);
         //removes all elements that are null
         return this.state == "trading" && _und.compact(trade_values).length == 4;
     }
