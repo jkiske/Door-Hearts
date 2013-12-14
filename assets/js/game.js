@@ -17,6 +17,13 @@ $(document).ready(function() {
     // Hide the game at the start
     $("#game").hide();
 
+    $('#right-menu').sidr({
+        name: 'sidr-right',
+        side: 'right',
+        body: '#game',
+        displace: true
+    });
+
     // -------------------------------- Name logic ----------------------------- //
 
     function validateName() {
