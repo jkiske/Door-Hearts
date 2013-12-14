@@ -153,7 +153,6 @@ $(document).ready(function() {
         text_div.append(text);
         if (color !== undefined) {
             _.each(color_map, function(value, key) {
-                console.log(nav_label_div);
                 if (nav_label_div.hasClass(value)) {
                     nav_label_div.removeClass(value);
                 }
@@ -187,7 +186,6 @@ $(document).ready(function() {
                 score_div: name_div.find(".score-label"),
                 color: color_map[pos]
             };
-            console.log(_players);
         });
         //Set ever other position to empty
         _.each(pos_dir_map, function(rel_dir, pos) {
@@ -389,9 +387,12 @@ $(document).ready(function() {
     });
 
     socket.on("clearTrick", function() {
-        _.each(dir_card_map, function(card, dir) {
-            hideMiddleCard(card);
-        });
+        //Clear the cards after a delay
+        _.delay(function() {
+            _.each(dir_card_map, function(card, dir) {
+                hideMiddleCard(card);
+            });
+        }, 1000);
     });
 
     socket.on("updateScore", function(name, score) {
