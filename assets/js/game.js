@@ -200,6 +200,10 @@ $(document).ready(function() {
         setInfoText("Waiting for " + remaining_player_count + " more players", color_grey);
     });
 
+    socket.on("updateRemainingTrades", function(remaining_trades) {
+        setInfoText("Waiting for " + remaining_trades + " more players to trade", color_grey);
+    });
+
     //Deal the cards to each player
     socket.on("showCards", showCards);
 
@@ -249,7 +253,17 @@ $(document).ready(function() {
                     });
 
                     if (openSlots.length == 1) {
-                        emitTradedCards();
+                        _.delay(function() {
+                            /*Wait 2 seconds before making trade final
+                             * This is buggy:
+                             * If you deselct a card then quickly reselct another,
+                             * the event will still fire
+                             */
+                            var openSlots = $(".empty-card-slot");
+                            if (openSlots.length == 0) {
+                                emitTradedCards();
+                            }
+                        }, 1000);
                     }
                 }
             } else if (_state == "playing") {

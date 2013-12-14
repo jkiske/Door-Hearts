@@ -129,6 +129,10 @@ primus.on("connection", function(client) {
 
             if (table.readyToTrade()) {
                 startPlaying(table);
+            } else {
+                var trade_values = _und.values(table.traded_cards);
+                var remaining_trades = 4 - _und.compact(trade_values).length;
+                primus.room(table.id).send("updateRemainingTrades", remaining_trades);
             }
         }
     });
