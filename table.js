@@ -70,7 +70,7 @@ var Table = function() {
     }
 
     function resetTrade() {
-        traded_cards = {
+        this.traded_cards = {
             "N": null,
             "S": null,
             "E": null,
