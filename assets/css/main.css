@@ -1,8 +1,5 @@
 body {
-    background: url('../images/big-heart_@2X.png'),
-                -webkit-radial-gradient(top center, ellipse cover, rgba(255, 255, 255, 0.2) 0%, rgba(0, 0, 0, 0.6) 100%), 
-                url('../images/felt_@2X.jpg'),
-                #4d9843;
+    background: url('../images/big-heart_@2X.png'), -webkit-radial-gradient(top center, ellipse cover, rgba(255, 255, 255, 0.2) 0%, rgba(0, 0, 0, 0.6) 100%), url('../images/felt_@2X.jpg'), #4d9843;
     background-repeat: no-repeat, repeat, repeat;
     background-attachment:fixed;
     background-position:center, top left, top left;
@@ -15,7 +12,6 @@ body {
     z-index: -1;
     top: 0;
     left: 0;
-
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -103,12 +99,7 @@ body {
     margin-top: -6.5em;
     font-size: 1.1em;
 }
-/*#pass-btn {
-    position: absolute;
-    margin-top: 8em;
-    margin-left: -10.6em;
-}*/
- #left-traded-card {
+#left-traded-card {
     margin-left: -6.6em;
     margin-right: 4em;
 }
@@ -118,8 +109,7 @@ body {
 #right-traded-card {
     margin-right: 0em;
 }
-/* Inset login box */
- .login {
+.login {
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.5);
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.5);
     background-color: rgba(0, 0, 0, .1);
@@ -139,7 +129,7 @@ body {
  .my-name-box {
     margin-top:30px;
 }
-.placeholder{
+.placeholder {
     width: 140px;
     height: 140px;
 }
@@ -151,7 +141,7 @@ body {
     top:-10px;
     padding-top: 15px;
     left: 2em;
-     -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
 }
 .nav-info {
@@ -171,4 +161,18 @@ body {
     background: rgba(0, 0, 0, 0.15);
     border-left: 1px solid rgba(0, 0, 0, .1);
     border-radius: 0px 4px 4px 0px;
+}
+#score-menu-btn {
+    position: absolute;
+    top: 200px;
+    right: 0px;
+    padding-bottom: 20px;
+    margin-right: -3em;
+    width:100px !important;
+}
+#sidr-right {
+    width:500px;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    background: #FFF;
 }

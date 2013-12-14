@@ -17,10 +17,10 @@ $(document).ready(function() {
     // Hide the game at the start
     $("#game").hide();
 
-    $('#right-menu').sidr({
+    $('#score-menu-btn').sidr({
         name: 'sidr-right',
         side: 'right',
-        body: '#game',
+        body: "#score-menu-btn",
         displace: true
     });
 
