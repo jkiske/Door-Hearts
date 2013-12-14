@@ -116,7 +116,7 @@ $(document).ready(function() {
     // -------------------------------- Switching Views ----------------------------- //
     //Switch views to the table view
     socket.on("joinTable", function(table) {
-         document.title = _name + ": Door Hearts";
+        document.title = _name + ": Door Hearts";
         $("#tableslist").hide();
         $("#game").show();
     });
@@ -139,17 +139,27 @@ $(document).ready(function() {
 
             _state = table.state;
             if (_state == "trading") {
-                setInfoText("Select cards to trade");
+                setInfoText("Select cards to trade", color_grey);
             } else {
                 socket.send("skipPassCards");
             }
         }
     });
 
-    function setInfoText(text) {
+    function setInfoText(text, color) {
         var text_div = $("#info-text");
+        var nav_label_div = $(".nav-info");
         text_div.text("");
         text_div.append(text);
+        if (color !== undefined) {
+            _.each(color_map, function(value, key) {
+                console.log(nav_label_div);
+                if (nav_label_div.hasClass(value)) {
+                    nav_label_div.removeClass(value);
+                }
+            });
+            nav_label_div.addClass(color);
+        }
     }
 
     //all_pos: A map from position to {name: ?, score: ?}
@@ -174,7 +184,8 @@ $(document).ready(function() {
             _players[name] = {
                 dir: rel_dir,
                 pos: pos,
-                score_div: name_div.find(".score-label")
+                score_div: name_div.find(".score-label"),
+                color: color_map[pos]
             };
             console.log(_players);
         });
@@ -188,7 +199,7 @@ $(document).ready(function() {
             }
         });
         var remaining_player_count = 4 - _.size(all_pos);
-        setInfoText("Waiting for " + remaining_player_count + " more players");
+        setInfoText("Waiting for " + remaining_player_count + " more players", color_grey);
     });
 
     //Deal the cards to each player
@@ -250,7 +261,7 @@ $(document).ready(function() {
                     socket.send("playCard", played_card);
                 }
             }
-           centerBottomCards();
+            centerBottomCards();
         });
     }
 
@@ -354,10 +365,10 @@ $(document).ready(function() {
     socket.on("nextPlayer", function(player_name) {
         _turn = player_name;
         if (_name == player_name) {
-            setInfoText("It is your turn to play");
+            setInfoText("It is your turn to play", _players[player_name].color);
             document.title = "It is your turn to play";
         } else {
-            setInfoText("It is " + player_name + "'s turn to play");
+            setInfoText("It is " + player_name + "'s turn to play", _players[player_name].color);
             document.title = _name + ": Door Hearts";
         }
     });
@@ -369,7 +380,7 @@ $(document).ready(function() {
             var opponent_dir = opponent.dir;
             var played_card_spot = dir_card_map[opponent_dir];
             if (opponent_name == _name) {
-                moveCardToCenter(bottomCard, $('#'+cardToId(card)));
+                moveCardToCenter(bottomCard, $('#' + cardToId(card)));
                 centerBottomCards();
             } else {
                 showMiddleCard(played_card_spot, card);
@@ -384,7 +395,7 @@ $(document).ready(function() {
     });
 
     socket.on("updateScore", function(name, score) {
-       _players[name].score_div.text(score);
+        _players[name].score_div.text(score);
     });
     // -------------------------------- Helper Functions ----------------------------- //
 
@@ -408,12 +419,18 @@ $(document).ready(function() {
     };
     var inv_rankmap = _.invert(rank_map);
 
+    var color_blue = "label-primary";
+    var color_yellow = "label-warning";
+    var color_green = "label-success";
+    var color_red = "label-danger";
+    var color_grey = "label-default";
+
     var color_map = {
-        "N": "label-primary",
-        "S": "label-warning",
-        "E": "label-success",
-        "W": "label-danger",
-        "Open": "label-default"
+        "N": color_blue,
+        "S": color_yellow,
+        "E": color_green,
+        "W": color_red,
+        "Open": color_grey,
     };
 
     // Converts a card id to an object
