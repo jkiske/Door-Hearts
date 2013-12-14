@@ -139,7 +139,7 @@ $(document).ready(function() {
 
             _state = table.state;
             if (_state == "trading") {
-                setInfoText("Select cards to trade", color_grey);
+                setInfoText("Select cards to trade (passing " + table.trade_dir + ")", color_grey);
             } else {
                 socket.send("skipPassCards");
             }
@@ -200,8 +200,8 @@ $(document).ready(function() {
         setInfoText("Waiting for " + remaining_player_count + " more players", color_grey);
     });
 
-    socket.on("updateRemainingTrades", function(remaining_trades) {
-        setInfoText("Waiting for " + remaining_trades + " more players to trade", color_grey);
+    socket.on("updateRemainingTrades", function(pass_dir, remaining_trades) {
+        setInfoText(remaining_trades + " trades remaining (passing " + pass_dir + ")", color_grey);
     });
 
     //Deal the cards to each player

@@ -51,7 +51,8 @@ var Table = function() {
             round: this.round,
             id: this.id,
             state: this.state,
-            turn: this.turn
+            turn: this.turn,
+            trade_dir: this.tradeDir()
         };
     }
 
@@ -104,6 +105,20 @@ var Table = function() {
                     "E": "W",
                     "W": "E"
                 };
+            case 0:
+                //error
+                return null;
+        }
+    }
+
+    function tradeDir() {
+        switch (this.round % 4) {
+            case 1:
+                return "left";
+            case 2:
+                return "right";
+            case 3:
+                return "across";
             case 0:
                 //error
                 return null;
@@ -187,6 +202,7 @@ var Table = function() {
         resetTrade: resetTrade,
         resetPlayedCards: resetPlayedCards,
         tradeMap: tradeMap,
+        tradeDir: tradeDir,
         getPointsInTrick: getPointsInTrick,
         getWinner: getWinner,
         nextTurn: nextTurn

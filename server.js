@@ -132,7 +132,8 @@ primus.on("connection", function(client) {
             } else {
                 var trade_values = _und.values(table.traded_cards);
                 var remaining_trades = 4 - _und.compact(trade_values).length;
-                primus.room(table.id).send("updateRemainingTrades", remaining_trades);
+                primus.room(table.id).send("updateRemainingTrades",
+                    table.tradeDir(), remaining_trades);
             }
         }
     });
