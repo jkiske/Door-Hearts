@@ -208,13 +208,14 @@ primus.on("connection", function(client) {
 
                             primus.room(table.id).send("clearTrick");
 
-                            table.turn = winner;
-                            primus.room(table.id).send("nextPlayer", winner);
-                            //Clear the table's played cards and reset the trick suit
-                            table.resetPlayedCards();
-
-                            //If the round is over
-                            if (player.hand.length === 0) {
+                            if (player.hand.length !== 0) {
+                                //If the round isn't over, set the turn to the winner
+                                table.turn = winner;
+                                primus.room(table.id).send("nextPlayer", winner);
+                                //Clear the table's played cards and reset the trick suit
+                                table.resetPlayedCards();
+                            } else {
+                                //If the round is over
                                 table.nextRound();
                                 if (table.tradeMap() === null) {
                                     //If this is not a trading round,

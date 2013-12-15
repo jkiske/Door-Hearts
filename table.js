@@ -54,7 +54,8 @@ var Table = function() {
             id: this.id,
             state: this.state,
             turn: this.turn,
-            trade_dir: this.tradeDir()
+            trade_dir: this.tradeDir(),
+            scores: this.scores
         };
     }
 
@@ -195,6 +196,7 @@ var Table = function() {
         played_cards: played_cards,
         trick_suit: trick_suit,
         state: state,
+        scores: scores,
 
         //Functions
         nextRound: nextRound,

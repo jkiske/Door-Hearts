@@ -48,7 +48,7 @@ $(document).ready(function() {
 
     // -------------------------------- Joining Tables ----------------------------- //
 
-    function rowHtml(table) {
+    function tableRowHtml(table) {
         var player_names = table.players.join(", ");
         var round = table.round;
         var t_id = table.id;
@@ -74,7 +74,7 @@ $(document).ready(function() {
 
     //Add a new table to all the users that are still looking for one
     socket.on("addTableRow", function(table) {
-        $("#tabletable-id tbody").append(rowHtml(table));
+        $("#tabletable-id tbody").append(tableRowHtml(table));
 
         //When we add a new table, check to see if we should make links inactive
         validateName();
@@ -92,7 +92,7 @@ $(document).ready(function() {
 
     socket.on("updateTableRow", function(table) {
         var row = $("#" + table.id).closest("tr");
-        row.replaceWith(rowHtml(table));
+        row.replaceWith(tableRowHtml(table));
 
         // When we re-add the row we have to reattach the handler
         $("#" + table.id).click(function() {
@@ -179,6 +179,11 @@ $(document).ready(function() {
         //Rotate the table around based on our position
         pos_map = _.rotate(pos_map, _.indexOf(pos_map, your_pos));
         var pos_dir_map = _.object(pos_map, dir_map);
+
+        //Update the names for the score table
+        var $score_table_head = $("#score-table thead tr th");
+        var score_order = ["N", "E", "S", "W"];
+
         //Add players that exist
         _.each(all_pos, function(player, pos) {
             var rel_dir = pos_dir_map[pos];
@@ -196,6 +201,10 @@ $(document).ready(function() {
                 score_div: name_div.find(".score-label"),
                 color: color_map[pos]
             };
+
+            //Update the score table's title
+            var score_index = score_order.indexOf(pos);
+            $score_table_head[score_index].innerText = name;
         });
         //Set ever other position to empty
         _.each(pos_dir_map, function(rel_dir, pos) {
@@ -203,9 +212,14 @@ $(document).ready(function() {
                 var open_div = $("#" + rel_dir + "name");
                 open_div.text("Open");
                 open_div.removeClass(color_map[pos]);
-                open_div.addClass(color_map["Open"]);
+                open_div.addClass(color_grey);
+
+                //Update the score table's title
+                var score_index = score_order.indexOf(pos);
+                $score_table_head[score_index].innerText = "Open";
             }
         });
+
         var remaining_player_count = 4 - _.size(all_pos);
         setInfoText("Waiting for " + remaining_player_count + " more players", color_grey);
     });
@@ -420,12 +434,19 @@ $(document).ready(function() {
             _.each(dir_card_map, function(card, dir) {
                 hideMiddleCard(card);
             });
-        }, 1000);
+        }, _clear_trick_delay);
     });
 
     socket.on("updateScore", function(name, score) {
         _players[name].score_div.text(score);
     });
+
+    function scoreTableRow(score, diff) {
+        return "<td><span class='total-score'>" + score + "</span>" +
+            "<span class='round-score text-muted'>" +
+            "<small>" + diff + "</small>" +
+            "</span></td>";
+    }
     // -------------------------------- Helper Functions ----------------------------- //
 
     var dir_card_map = {
