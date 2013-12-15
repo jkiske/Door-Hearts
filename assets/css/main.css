@@ -176,3 +176,12 @@ body {
     box-shadow: none;
     background: #FFF;
 }
+.total-score {
+    width: 50px;
+    display: inline-block;
+}
+.round-score {
+    width: 50px;
+    display: inline-block;
+    text-align: right;
+}
