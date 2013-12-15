@@ -111,7 +111,7 @@ primus.on("connection", function(client) {
             player.addCards(cards);
             client.send("showCards", cards);
             // Force the hand to start if we skip trading this round
-            if (table.tradeMap() == null) {
+            if (table.tradeMap() === null) {
                 startPlaying(table);
             }
         } else {
@@ -214,9 +214,19 @@ primus.on("connection", function(client) {
                             table.resetPlayedCards();
 
                             //If the round is over
-                            if (player.hand.length == 0) {
+                            if (player.hand.length === 0) {
                                 table.nextRound();
-                                primus.room(table.id).send("nextRound", table.safe());
+                                if (table.tradeMap() === null) {
+                                    //If this is not a trading round,
+                                    //let the cards clear before starting a new hand
+                                    _und.delay(function() {
+                                        primus.room(table.id).send("nextRound", table.safe());
+                                    }, 2000);
+                                } else {
+                                    //If this is a trading round,
+                                    //there is no problem starting the next round right now
+                                    primus.room(table.id).send("nextRound", table.safe());
+                                }
                             }
                         }
                     } else {

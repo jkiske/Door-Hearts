@@ -22,13 +22,15 @@ var Table = function() {
     var state = "waiting";
     var turn = "";
     var id = _und.uniqueId("tableid_");
-    var round = 0;
+    var round = 2;
+    var scores = {};
     var deck = new _deck.Deck();
     deck.shuffle();
 
     function nextRound(){
+        //scores[this.round];
         this.round++;
-        if (this.tradeMap() == null) {
+        if (this.tradeMap() === null) {
             //Make sure we trade this round
             this.state = "playing";
         } else {
@@ -175,7 +177,7 @@ var Table = function() {
             }
             //Queen of spades
             else if (card.suit == "S" && card.rank == 12) {
-                score += 13
+                score += 13;
             }
         });
         return score;

@@ -8,6 +8,8 @@ $(document).ready(function() {
     var _turn = "";
     var _name = "";
     var _trick_suit = "";
+    var _skip_trade = false;
+    var _clear_trick_delay = 1500;
 
     var bottomCard = $("#bottom-played-card");
     var leftCard = $("#left-played-card");
@@ -29,7 +31,7 @@ $(document).ready(function() {
     function validateName() {
         var namedom = $("#playername");
         var buttons = $(".joinbtn,#newtable");
-        var isValid = namedom.val().length > 0
+        var isValid = namedom.val().length > 0;
         if (isValid) {
             buttons.removeClass("disabled");
             _name = namedom.val();
@@ -146,9 +148,10 @@ $(document).ready(function() {
 
             _state = table.state;
             if (_state == "trading") {
+                _skip_trade = false;
                 setInfoText("Select cards to trade (passing " + table.trade_dir + ")", color_grey);
             } else {
-                socket.send("skipPassCards");
+                _skip_trade = true;
             }
         }
     });
@@ -184,7 +187,7 @@ $(document).ready(function() {
             var name_div = $("#" + rel_dir + "name");
             name_div.text(name);
             name_div.addClass(color_map[pos]);
-            name_div.removeClass(color_map["Open"]);
+            name_div.removeClass(color_grey);
 
             name_div.append('<div class = "score-label">' + player.score + '</div>');
             _players[name] = {
@@ -267,7 +270,7 @@ $(document).ready(function() {
                              * the event will still fire
                              */
                             var openSlots = $(".empty-card-slot");
-                            if (openSlots.length == 0) {
+                            if (openSlots.length === 0) {
                                 emitTradedCards();
                             }
                         }, 1000);
@@ -282,6 +285,10 @@ $(document).ready(function() {
             }
             centerBottomCards();
         });
+
+        if (_skip_trade === false) {
+            socket.send("skipPassCards");
+        }
     }
 
     function centerBottomCards() {
@@ -426,7 +433,7 @@ $(document).ready(function() {
         "bottom": bottomCard,
         "left": leftCard,
         "right": rightCard
-    }
+    };
     var suit_map = {
         "H": "hearts",
         "C": "clubs",
