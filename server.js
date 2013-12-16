@@ -110,12 +110,17 @@ primus.on("connection", function(client) {
             var cards = deck.draw(13);
             player.addCards(cards);
             client.send("showCards", cards);
-            // Force the hand to start if we skip trading this round
-            if (table.tradeMap() === null) {
-                startPlaying(table);
-            }
         } else {
             console.log("Player " + player.name + " already has 13 cards");
+        }
+    });
+
+    client.on("skipPassCards", function() {
+        var player = players[client.id];
+        var table = tables[player.table];
+        // Force the hand to start if we skip trading this round
+        if (table.tradeMap() === null) {
+            startPlaying(table);
         }
     });
 
@@ -140,7 +145,6 @@ primus.on("connection", function(client) {
 
 
     function startPlaying(table) {
-        console.log(table.id + " has started playing");
         if (table.readyToTrade()) {
             for (var pos in table.traded_cards) {
                 var cards = table.traded_cards[pos];
@@ -149,7 +153,6 @@ primus.on("connection", function(client) {
                 var player = table.players[player_name];
                 player.removeCards(cards);
 
-                //TODO: Make sure we do not trade on the 4th round
                 var trade_map = table.tradeMap();
                 var trade_player_pos = trade_map[pos];
                 var trade_player_name = table.positions[trade_player_pos];
@@ -189,52 +192,54 @@ primus.on("connection", function(client) {
                     //console.log("Has to play other suit: " + !player.hasSuit(table.trick_suit) +
                     //    "\nPlayed Correct Suit: " + (card.suit == table.trick_suit));
                     if (isValidSuit === true) {
+                        console.log(player.name + " played card " + JSON.stringify(card));
                         if (_und.size(table.played_cards) < 4) {
                             primus.room(table.id).send("cardPlayed", player.name, card,
                                 table.trick_suit);
-                            primus.room(table.id).send("nextPlayer", table.nextTurn());
                             //Add the card to the list of played cards
                             table.played_cards[player.name] = card;
                             player.removeCards([card]);
                         }
-                        //All the cards have been played. Select a winner
+                        //If this is the last card, tell the clients to clear the trick
                         if (_und.size(table.played_cards) == 4) {
-                            var winner = table.getWinner();
-                            var score = table.getPointsInTrick();
-
-                            table.players[winner].score += score;
-                            primus.room(table.id).send("updateScore", winner,
-                                table.players[winner].score);
-
                             primus.room(table.id).send("clearTrick");
-
-                            if (player.hand.length !== 0) {
-                                //If the round isn't over, set the turn to the winner
-                                table.turn = winner;
-                                primus.room(table.id).send("nextPlayer", winner);
-                                //Clear the table's played cards and reset the trick suit
-                                table.resetPlayedCards();
-                            } else {
-                                //If the round is over
-                                table.nextRound();
-                                if (table.tradeMap() === null) {
-                                    //If this is not a trading round,
-                                    //let the cards clear before starting a new hand
-                                    _und.delay(function() {
-                                        primus.room(table.id).send("nextRound", table.safe());
-                                    }, 2000);
-                                } else {
-                                    //If this is a trading round,
-                                    //there is no problem starting the next round right now
-                                    primus.room(table.id).send("nextRound", table.safe());
-                                }
-                            }
+                        } else {
+                            //If this is not the last card, move to the next player
+                            primus.room(table.id).send("nextPlayer", table.nextTurn());
                         }
                     } else {
-                        console.log("You can't play this card this hand: " + JSON.stringify(card));
+                        console.log(player.name + " can't play this card this hand: " + JSON.stringify(card));
                     }
                 } else {
-                    console.log("We don't have the card: " + JSON.stringify(card));
+                    console.log(player.name + " doesn't have the card: " + JSON.stringify(card));
+                }
+            }
+        }
+    });
+
+    client.on("nextTrick", function() {
+        var player = players[client.id];
+        if (player !== undefined) {
+            var table = tables[player.table];
+            //All the cards have been played. Select a winner
+            if (_und.size(table.played_cards) == 4) {
+                var winner = table.getWinner();
+                var score = table.getPointsInTrick();
+
+                table.players[winner].score += score;
+                primus.room(table.id).send("updateScore", winner,
+                    table.players[winner].score);
+
+                if (player.hand.length > 0) {
+                    //If the round isn't over, set the turn to the winner
+                    table.turn = winner;
+                    primus.room(table.id).send("nextPlayer", winner);
+                    //Clear the table's played cards and reset the trick suit
+                    table.resetPlayedCards();
+                } else {
+                    //If the round is over
+                    table.nextRound();
+                    primus.room(table.id).send("nextRound", table.safe());
                 }
             }
         }

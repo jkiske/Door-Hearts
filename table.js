@@ -22,13 +22,23 @@ var Table = function() {
     var state = "waiting";
     var turn = "";
     var id = _und.uniqueId("tableid_");
-    var round = 2;
-    var scores = {};
+    var round = 0;
+    var scores = [];
     var deck = new _deck.Deck();
     deck.shuffle();
 
-    function nextRound(){
-        //scores[this.round];
+    function nextRound() {
+        var round_scores = {};
+        _und.each(this.players, function(player, name) {
+            //Save a list of all the scores
+            round_scores[player.position] = player.score;
+            //reset player score
+            player.score = 0;
+        });
+        this.scores.length = round + 1;
+        this.scores[this.round] = round_scores;
+        console.log(this.scores);
+
         this.round++;
         if (this.tradeMap() === null) {
             //Make sure we trade this round
@@ -44,6 +54,7 @@ var Table = function() {
     }
 
     /* Returns the table with 'safe' values */
+
     function safe() {
         var players = _und.values(this.players);
         var player_names = _und.pluck(players, "name");
@@ -162,7 +173,6 @@ var Table = function() {
             }
             scores = _und.union(scores, [player]);
         });
-        console.log(JSON.stringify(scores));
         var winner = _und.max(scores, function(player) {
             return player.score;
         });

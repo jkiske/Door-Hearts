@@ -143,16 +143,16 @@ $(document).ready(function() {
     socket.on("nextRound", function(table) {
         console.log(table);
         if (_.size(_players) == 4) {
-            socket.send("dealCards");
-            $("#played-cards").removeClass("hidden");
-
             _state = table.state;
-            if (_state == "trading") {
+            if (table.state == "trading") {
                 _skip_trade = false;
                 setInfoText("Select cards to trade (passing " + table.trade_dir + ")", color_grey);
             } else {
                 _skip_trade = true;
             }
+
+            socket.send("dealCards");
+            $("#played-cards").removeClass("hidden");
         }
     });
 
@@ -259,6 +259,7 @@ $(document).ready(function() {
                     moveCardToCenter(slot, $(this));
 
                     slot.removeClass("empty-card-slot");
+                    slot.removeClass("hide-card");
                     slot.addClass("filled-card-slot");
 
                     // Add a click handler to return card back to deck
@@ -267,9 +268,11 @@ $(document).ready(function() {
                             moveCardToHand($(this).find(".card"));
 
                             slot.addClass("empty-card-slot");
+                            slot.addClass("hide-card");
                             slot.removeClass("filled-card-slot");
 
-                            if (openSlots.length == 2) {
+                            openSlots = $(".empty-card-slot");
+                            if (openSlots.length > 0) {
                                 //Tell the server that we aren't ready yet
                                 socket.send("passCards", null);
                             }
@@ -300,8 +303,9 @@ $(document).ready(function() {
             centerBottomCards();
         });
 
-        if (_skip_trade === false) {
+        if (_skip_trade === true) {
             socket.send("skipPassCards");
+            _skip_trade = false;
         }
     }
 
@@ -328,8 +332,6 @@ $(document).ready(function() {
         var card = idToCard(id);
         var index = cardIndex(card);
 
-        showMiddleCard(middleCard, card);
-
         //If we have the card, remove it
         handCard.closest("li").remove();
         if (index >= 0) {
@@ -337,6 +339,9 @@ $(document).ready(function() {
             delete _cards[index];
             _cards = _.compact(_cards);
         }
+
+        //Only show after we delete so the ids do not repeat
+        showMiddleCard(middleCard, card);
     }
 
     function showMiddleCard(middleCard, card) {
@@ -358,7 +363,8 @@ $(document).ready(function() {
         var rank = card_obj.rank;
 
         _cards[_cards.length] = card_obj;
-        card.addClass("hide-card");
+        card.replaceWith(createCard("", "", "div"));
+
         showCards(_cards);
     }
 
@@ -372,18 +378,21 @@ $(document).ready(function() {
         return hand_index;
     }
 
-    socket.on("startPlaying", function(table, new_hand) {
+    socket.on("startPlaying", startPlaying);
+
+    function startPlaying(table, new_hand) {
         _state = table.state;
         _round = table.round;
         _turn = table.turn;
         //This means we just finished trading cards
         if (_state == "start_playing") {
             _state = "playing";
-            //Hide the traded cards
+            //Hide and clear the traded cards
             var tradeSlots = $(".filled-card-slot");
             tradeSlots.addClass("empty-card-slot");
             tradeSlots.addClass("hide-card");
             tradeSlots.removeClass("filled-card-slot");
+            tradeSlots.find(".card").replaceWith(createCard("", "", "div"));
 
             showCards(new_hand);
 
@@ -394,13 +403,10 @@ $(document).ready(function() {
             };
             if (_turn == _name) {
                 var two_of_clubs_id = cardToId(two_of_clubs);
-                //Busy wait untill all cards have been set
-                //while($("#" + two_of_clubs_id).attr("id") == undefined);
-                moveCardToCenter(bottomCard, $("#" + two_of_clubs_id));
                 socket.send("playCard", two_of_clubs);
             }
         }
-    });
+    }
 
     socket.on("nextPlayer", function(player_name) {
         _turn = player_name;
@@ -429,10 +435,13 @@ $(document).ready(function() {
     });
 
     socket.on("clearTrick", function() {
+        //TODO: Disable clicking the cards
         //Clear the cards after a delay
         _.delay(function() {
             _.each(dir_card_map, function(card, dir) {
                 hideMiddleCard(card);
+                socket.send("nextTrick");
+                //TODO: Enable clicking the cards
             });
         }, _clear_trick_delay);
     });
@@ -509,6 +518,13 @@ $(document).ready(function() {
     }
 
     function createCard(suit, rank, tag) {
+        if (suit === "" && rank === "") {
+            return '<' + tag + ' class="card">' +
+                '<span class="rank"></span>' +
+                '<span class="suit"></span>' +
+                '</' + tag + '>';
+        }
+
         var full_suit = suit_map[suit];
         var includeSuit = true;
 
