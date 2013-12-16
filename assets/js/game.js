@@ -182,7 +182,6 @@ $(document).ready(function() {
 
         //Update the names for the score table
         var $score_table_head = $("#score-table thead tr th");
-        var score_order = ["N", "E", "S", "W"];
 
         //Add players that exist
         _.each(all_pos, function(player, pos) {
@@ -450,10 +449,44 @@ $(document).ready(function() {
         _players[name].score_div.text(score);
     });
 
+    socket.on("updateScoreTable", function(scores, prev_scores) {
+        //Add a new row to the table
+        var $score_table = $("#score-table tbody");
+        $score_table.append('<tr id = score-table-round-' + scores.round + '></tr>');
+
+        var $this_round = $("#score-table-round-" + scores.round);
+
+        //If we have a previous round, update the small score diff
+        if (prev_scores.round > 0) {
+            var $last_round = $("#score-table-round-" + prev_scores.round);
+            var $diffs = $last_round.find("small");
+        }
+
+        for (var i in score_order) {
+            var dir = score_order[i];
+            var score = scores[dir];
+            //Add the score to this round
+            $this_round.append(scoreTableRow(score));
+
+            if (prev_scores.round > 0) {
+                //Update the difference text
+                var diff = score - prev_scores[dir];
+                $diffs[i].innerText = '+' + diff;
+            }
+        }
+
+        //Show the scores and close after 3 seconds
+        //TODO: Toggle for auto show
+        $.sidr('open', 'sidr-right');
+        _.delay(function() {
+            $.sidr('close', 'sidr-right');
+        }, 3000);
+    });
+
     function scoreTableRow(score, diff) {
         return "<td><span class='total-score'>" + score + "</span>" +
             "<span class='round-score text-muted'>" +
-            "<small>" + diff + "</small>" +
+            "<small></small>" +
             "</span></td>";
     }
     // -------------------------------- Helper Functions ----------------------------- //
@@ -491,6 +524,8 @@ $(document).ready(function() {
         "W": color_red,
         "Open": color_grey,
     };
+
+    var score_order = ["N", "E", "S", "W"];
 
     // Converts a card id to an object
 

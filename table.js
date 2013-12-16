@@ -28,15 +28,19 @@ var Table = function() {
     deck.shuffle();
 
     function nextRound() {
-        var round_scores = {};
+        var round_scores = {"round": this.round};
+        var scores = this.scores;
+        var round = this.round;
         _und.each(this.players, function(player, name) {
             //Save a list of all the scores
             round_scores[player.position] = player.score;
+            if(round > 0) {
+                round_scores[player.position] += scores[round-1][player.position];
+            }
             //reset player score
             player.score = 0;
         });
-        this.scores.length = round + 1;
-        this.scores[this.round] = round_scores;
+        this.scores = _und.union(this.scores, [round_scores]);
         console.log(this.scores);
 
         this.round++;

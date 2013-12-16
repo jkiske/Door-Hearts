@@ -239,6 +239,13 @@ primus.on("connection", function(client) {
                 } else {
                     //If the round is over
                     table.nextRound();
+                    var scores = table.scores[table.round-1];
+                    var prev_scores = table.scores[table.round-2];
+                    //Update each player's score
+                    _und.each(table.players, function(player, name){
+                        primus.room(table.id).send("updateScore", name, player.score);
+                    });
+                    primus.room(table.id).send("updateScoreTable", scores, prev_scores);
                     primus.room(table.id).send("nextRound", table.safe());
                 }
             }
