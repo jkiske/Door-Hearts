@@ -28,21 +28,6 @@ var Table = function() {
     deck.shuffle();
 
     function nextRound() {
-        var round_scores = {"round": this.round};
-        var scores = this.scores;
-        var round = this.round;
-        _und.each(this.players, function(player, name) {
-            //Save a list of all the scores
-            round_scores[player.position] = player.score;
-            if(round > 0) {
-                round_scores[player.position] += scores[round-1][player.position];
-            }
-            //reset player score
-            player.score = 0;
-        });
-        this.scores = _und.union(this.scores, [round_scores]);
-        console.log(this.scores);
-
         this.round++;
         if (this.tradeMap() === null) {
             //Make sure we trade this round
@@ -55,6 +40,37 @@ var Table = function() {
 
         this.resetTrade();
         this.resetPlayedCards();
+    }
+
+    function updateScores() {
+        var round_scores = {
+            "round": this.round
+        };
+        var scores = this.scores;
+        var round = this.round;
+        var shot_the_moon = false;
+        var moon_shooter = "";
+        _und.each(this.players, function(player, name) {
+            if (player.score == 26) {
+                shot_the_moon = true;
+                moon_shooter = name;
+            }
+        });
+        _und.each(this.players, function(player, name) {
+            //Save a list of all the scores
+            if (shot_the_moon === true) {
+                round_scores[player.position] = (name == moon_shooter) ? 0 : 26;
+            } else {
+                round_scores[player.position] = player.score;
+            }
+            if (round > 0) {
+                round_scores[player.position] += scores[round - 1][player.position];
+            }
+            //reset player score
+            player.score = 0;
+        });
+        this.scores = _und.union(this.scores, [round_scores]);
+        console.log(this.scores);
     }
 
     /* Returns the table with 'safe' values */
@@ -214,6 +230,7 @@ var Table = function() {
 
         //Functions
         nextRound: nextRound,
+        updateScores: updateScores,
         safe: safe,
         firstOpenPosition: firstOpenPosition,
         readyToTrade: readyToTrade,

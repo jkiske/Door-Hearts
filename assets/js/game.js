@@ -456,12 +456,6 @@ $(document).ready(function() {
 
         var $this_round = $("#score-table-round-" + scores.round);
 
-        //If we have a previous round, update the small score diff
-        if (prev_scores.round > 0) {
-            var $last_round = $("#score-table-round-" + prev_scores.round);
-            var $diffs = $last_round.find("small");
-        }
-
         for (var i in score_order) {
             var dir = score_order[i];
             var score = scores[dir];
@@ -469,6 +463,8 @@ $(document).ready(function() {
             $this_round.append(scoreTableRow(score));
 
             if (prev_scores.round > 0) {
+                var $last_round = $("#score-table-round-" + prev_scores.round);
+                var $diffs = $last_round.find("small");
                 //Update the difference text
                 var diff = score - prev_scores[dir];
                 $diffs[i].innerText = '+' + diff;

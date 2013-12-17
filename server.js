@@ -75,6 +75,9 @@ primus.on("connection", function(client) {
 
                 updatePlayerPositions(table);
                 if (_und.size(table.players) == 4) {
+                    //Do this to initialize scores
+                    table.updateScores();
+                    //Set the round to 1
                     table.nextRound();
                     primus.room(table.id).send("nextRound", table.safe());
                 }
@@ -221,32 +224,37 @@ primus.on("connection", function(client) {
         var player = players[client.id];
         if (player !== undefined) {
             var table = tables[player.table];
-            //All the cards have been played. Select a winner
-            if (_und.size(table.played_cards) == 4) {
-                var winner = table.getWinner();
-                var score = table.getPointsInTrick();
+            //Only respond to this event from one person
+            if (table !== undefined && table.turn == player.name) {
+                //All the cards have been played. Select a winner
+                if (_und.size(table.played_cards) == 4) {
+                    var winner = table.getWinner();
+                    var score = table.getPointsInTrick();
 
-                table.players[winner].score += score;
-                primus.room(table.id).send("updateScore", winner,
-                    table.players[winner].score);
+                    table.players[winner].score += score;
+                    primus.room(table.id).send("updateScore", winner,
+                        table.players[winner].score);
 
-                if (player.hand.length > 0) {
-                    //If the round isn't over, set the turn to the winner
-                    table.turn = winner;
-                    primus.room(table.id).send("nextPlayer", winner);
-                    //Clear the table's played cards and reset the trick suit
-                    table.resetPlayedCards();
-                } else {
-                    //If the round is over
-                    table.nextRound();
-                    var scores = table.scores[table.round-1];
-                    var prev_scores = table.scores[table.round-2];
-                    //Update each player's score
-                    _und.each(table.players, function(player, name){
-                        primus.room(table.id).send("updateScore", name, player.score);
-                    });
-                    primus.room(table.id).send("updateScoreTable", scores, prev_scores);
-                    primus.room(table.id).send("nextRound", table.safe());
+                    if (player.hand.length > 0) {
+                        //If the round isn't over, set the turn to the winner
+                        table.turn = winner;
+                        primus.room(table.id).send("nextPlayer", winner);
+                        //Clear the table's played cards and reset the trick suit
+                        table.resetPlayedCards();
+                    } else {
+                        //If the round is over
+                        table.updateScores();
+                        var scores = table.scores[table.round];
+                        var prev_scores = table.scores[table.round - 1];
+                        _und.each(table.players, function(player, name) {
+                            primus.room(table.id).send("updateScore", name, player.score);
+                        });
+                        primus.room(table.id).send("updateScoreTable", scores, prev_scores);
+
+                        table.nextRound();
+                        //Update each player's score
+                        primus.room(table.id).send("nextRound", table.safe());
+                    }
                 }
             }
         }
