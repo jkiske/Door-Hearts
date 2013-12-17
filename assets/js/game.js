@@ -8,6 +8,7 @@ $(document).ready(function() {
     var _turn = "";
     var _name = "";
     var _trick_suit = "";
+    var _hearts_broken = false;
     var _skip_trade = false;
     var _clear_trick_delay = 1500;
 
@@ -293,7 +294,7 @@ $(document).ready(function() {
                     }
                 }
             } else if (_state == "playing") {
-                if (_turn == _name) {
+                if (_turn == _name && $(this).hasClass("disabled") === false) {
                     //Try to play the card
                     var played_card = idToCard($(this).attr("id"));
                     socket.send("playCard", played_card);
@@ -383,6 +384,7 @@ $(document).ready(function() {
         _state = table.state;
         _round = table.round;
         _turn = table.turn;
+        _hearts_broken = false;
         //This means we just finished trading cards
         if (_state == "start_playing") {
             _state = "playing";
@@ -410,13 +412,49 @@ $(document).ready(function() {
     socket.on("nextPlayer", function(player_name) {
         _turn = player_name;
         if (_name == player_name) {
+            disableAllCards();
+            enableAllowedCards();
             setInfoText("It is your turn to play", _players[player_name].color);
             document.title = "It is your turn to play";
         } else {
+            disableAllCards();
             setInfoText("It is " + player_name + "'s turn to play", _players[player_name].color);
             document.title = _name + ": Door Hearts";
+
         }
     });
+
+    function disableAllCards() {
+        $("#bottomcards .card").addClass("disabled");
+    }
+
+    function enableAllowedCards() {
+        var $bc = $("#bottomcards");
+        console.log("Trick suit: " + _trick_suit);
+
+        //If we are the first person
+        if (_trick_suit === null) {
+            //If we can start with hearts
+            if (_hearts_broken === true) {
+                $bc.find(".card.hearts").removeClass("disabled");
+            }
+            $bc.find(".card.diams").removeClass("disabled");
+            $bc.find(".card.clubs").removeClass("disabled");
+            $bc.find(".card.spades").removeClass("disabled");
+        } else {
+            var suit_class = suit_map[_trick_suit];
+            var $playable_cards = $bc.find('.card.' + suit_class);
+            if ($playable_cards.length === 0) {
+                $playable_cards = $bc.find('.card');
+            }
+            $playable_cards.removeClass("disabled");
+        }
+        //Finally re-disable cards if this is the first trick
+        if ($bc.find(".card").length == 13) {
+            $bc.find(".card.rank-q.spades").addClass("disabled");
+            $bc.find(".card.hearts").addClass("disabled");
+        }
+    }
 
     socket.on("cardPlayed", function(opponent_name, card, trick_suit) {
         _trick_suit = trick_suit;
@@ -434,12 +472,16 @@ $(document).ready(function() {
     });
 
     socket.on("heartsBroken", function() {
+        _hearts_broken = true;
         //TODO: Maybe an animation?
-    })
+    });
 
     socket.on("clearTrick", function() {
         //TODO: Disable clicking the cards
         //Clear the cards after a delay
+        _trick_suit = null;
+        //Disable cards before starting the next trick
+        disableAllCards();
         _.delay(function() {
             _.each(dir_card_map, function(card, dir) {
                 hideMiddleCard(card);
