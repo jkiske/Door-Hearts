@@ -59,37 +59,37 @@
 ********************************************************************/
 
 .playingCards .card.diams {
-    color: #f00 !important;
+    color: #f00;
 }
 .playingCards.fourColours .card.diams {
-    color: #00f !important;
+    color: #00f;
 }
 [lang=de] .playingCards.fourColours .card.diams {
     color: #f60 !important;
 }
 .playingCards .card.hearts {
-    color: #f00 !important;
+    color: #f00;
 }
 .playingCards .card.spades {
-    color: #000 !important;
+    color: #000;
 }
 [lang=de] .playingCards.fourColours .card.spades {
-    color: #090 !important;
+    color: #090;
 }
 .playingCards .card.clubs {
-    color: #000 !important;
+    color: #000;
 }
 .playingCards.fourColours .card.clubs {
-    color: #090 !important;
+    color: #090;
 }
 [lang=de] .playingCards.fourColours .card.clubs {
-    color: #000 !important;
+    color: #000;
 }
 .playingCards .card.joker {
-    color: #000 !important;
+    color: #000;
 }
 .playingCards .card.joker.big {
-    color: #f00 !important;
+    color: #f00;
 }
 
 /* inner bits

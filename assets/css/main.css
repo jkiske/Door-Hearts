@@ -176,12 +176,19 @@ body {
     box-shadow: none;
     background: #FFF;
 }
-.total-score {
+.total-score,
+.round-score {
     width: 50px;
     display: inline-block;
 }
 .round-score {
-    width: 50px;
-    display: inline-block;
     text-align: right;
+}
+.card.disabled{
+    bottom: 0em !important; /*This disables the hover effect*/
+    background: #888;
+}
+.card.disabled.diams,
+.card.disabled.hearts{
+    color: #800 !important;
 }
