@@ -74,36 +74,35 @@ $(document).ready(function() {
     });
 
     //Add a new table to all the users that are still looking for one
-    socket.on("addTableRow", function(table) {
-        $("#tabletable-id tbody").append(tableRowHtml(table));
+    socket.on("addTableRow", addTableRow);
 
+    function addTableRow(table) {
+        $("#tabletable-id tbody").append(tableRowHtml(table));
         //When we add a new table, check to see if we should make links inactive
         validateName();
-
         // If we click the button, join that table
-        $("#" + table.id).click(function() {
-            if (validateName() === true) {
-                //Prevent being able to double-click new game
-                var buttons = $(".joinbtn,#newtable");
-                buttons.addClass("disabled");
-                socket.send("joinTable", table.id, $("#playername").val());
-            }
-        });
-    });
+        $("#" + table.id).click(joinTableClick);
+    }
 
     socket.on("updateTableRow", function(table) {
         var row = $("#" + table.id).closest("tr");
-        row.replaceWith(tableRowHtml(table));
-
-        // When we re-add the row we have to reattach the handler
-        $("#" + table.id).click(function() {
-            if (validateName() === true) {
-                var buttons = $(".joinbtn,#newtable");
-                buttons.addClass("disabled");
-                socket.send("joinTable", table.id, $("#playername").val());
-            }
-        });
+        if (row.length === 0) {
+            addTableRow(table);
+        } else {
+            row.replaceWith(tableRowHtml(table));
+            validateName();
+            $("#" + table.id).click(joinTableClick);
+        }
     });
+
+    function joinTableClick() {
+        var id = $(this).attr("id");
+        if (validateName() === true) {
+            var buttons = $(".joinbtn,#newtable");
+            buttons.addClass("disabled");
+            socket.send("joinTable", id, $("#playername").val());
+        }
+    }
 
     socket.on("removeTableRow", function(table_id) {
         $("#" + table_id).closest("tr").remove();

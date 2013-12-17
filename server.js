@@ -47,7 +47,9 @@ primus.on("connection", function(client) {
     console.log("Tables: " + JSON.stringify(_und.pluck(_und.values(tables), "id")));
     console.log("Clients: " + JSON.stringify(_und.pluck(primus.connections, "id")));
     _und.each(_und.values(tables), function(table) {
-        client.send("addTableRow", table.safe());
+        if (_und.size(table.players) < 4) {
+            client.send("addTableRow", table.safe());
+        }
     });
 
     function joinTable(table_id, playerName) {
@@ -80,6 +82,7 @@ primus.on("connection", function(client) {
                     //Set the round to 1
                     table.nextRound();
                     primus.room(table.id).send("nextRound", table.safe());
+                    primus.room(waiting_room).send("removeTableRow", table.id);
                 }
                 return true;
             }
