@@ -24,6 +24,7 @@ var Table = function() {
     var id = _und.uniqueId("tableid_");
     var round = 0;
     var scores = [];
+    var hearts_broken = false;
     var deck = new _deck.Deck();
     deck.shuffle();
 
@@ -35,6 +36,8 @@ var Table = function() {
         } else {
             this.state = "trading";
         }
+        this.hearts_broken = false;
+
         this.deck = new _deck.Deck();
         this.deck.shuffle();
 
@@ -86,7 +89,8 @@ var Table = function() {
             state: this.state,
             turn: this.turn,
             trade_dir: this.tradeDir(),
-            scores: this.scores
+            scores: this.scores,
+            hearts_broken: hearts_broken
         };
     }
 
@@ -227,6 +231,7 @@ var Table = function() {
         trick_suit: trick_suit,
         state: state,
         scores: scores,
+        hearts_broken: hearts_broken,
 
         //Functions
         nextRound: nextRound,

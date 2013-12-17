@@ -433,6 +433,10 @@ $(document).ready(function() {
         }
     });
 
+    socket.on("heartsBroken", function() {
+        //TODO: Maybe an animation?
+    })
+
     socket.on("clearTrick", function() {
         //TODO: Disable clicking the cards
         //Clear the cards after a delay
