@@ -74,7 +74,7 @@ primus.on("connection", function(client) {
                 client.send("joinTable", table.safe());
 
                 updatePlayerPositions(table);
-                if (_und.size(table.players) == 4) {
+                if (_und.size(table.players) >= 4) {
                     //Do this to initialize scores
                     table.updateScores();
                     //Set the round to 1
