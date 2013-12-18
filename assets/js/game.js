@@ -2,7 +2,7 @@ $(document).ready(function() {
     var socket = Primus.connect(document.URL);
     var peer = null;
     var _local_stream;
-    var _connected_peers = {}; //map from peer_id to name
+    var _connected_peers = []; //list of all peer names
 
     var _state = "waiting"; // waiting, trading, playing, start_playing
     var _round = 0;
@@ -134,10 +134,8 @@ $(document).ready(function() {
     });
 
     socket.on("connectToChat", function(table) {
-        console.log(table.player_ids);
-        var peer_id = table.player_ids[_name];
         if (peer === null) {
-            peer = new Peer(peer_id, {
+            peer = new Peer(_name, {
                 key: '2kddwxi4hfcrf6r'
             });
 
@@ -156,7 +154,8 @@ $(document).ready(function() {
             });
 
             peer.on('call', function(call) {
-                call.answer(_local_stream); // Answer the call with an A/V stream.
+                console.log("Answering call from " + call.peer);
+                call.answer(_local_stream);
                 call.on('stream', function(remoteStream) {
                     $("#video").attr("src", URL.createObjectURL(remoteStream));
                 });
@@ -164,10 +163,11 @@ $(document).ready(function() {
         }
     });
 
-    socket.on("addPeer", function(name, peer_id) {
-        if (!(peer_id in _connected_peers) && peer_id !== peer.id) {
-            _connected_peers[peer_id] = name;
-            peer.call(peer_id, _local_stream);
+    socket.on("addPeer", function(peer_name) {
+        if (!(peer_name in _connected_peers) && peer_name !== peer.id) {
+            _connected_peers = _.union(_connected_peers, [peer_name]);
+            console.log(_connected_peers);
+            peer.call(peer_name, _local_stream);
         }
     });
 

@@ -82,14 +82,8 @@ var Table = function() {
         var players = _und.values(this.players);
         var player_names = _und.pluck(players, "name");
 
-        var player_ids = {};
-        _und.each(players, function(player) {
-            player_ids[player.name] = player.id;
-        });
-
         return {
             players: player_names,
-            player_ids: player_ids,
             round: this.round,
             id: this.id,
             state: this.state,

@@ -287,9 +287,9 @@ primus.on("connection", function(client) {
         if (player !== undefined) {
             var table = tables[player.table];
             if (table !== undefined) {
-                _und.each(table.safe().player_ids, function(id) {
-                    console.log("Connecting table to " + id);
-                    primus.room(table.id).send("addPeer", name, id);
+                _und.each(table.safe().players, function(name) {
+                    console.log("Connecting table to " + name);
+                    primus.room(table.id).send("addPeer", name);
                 });
 
             }
