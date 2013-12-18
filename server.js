@@ -75,6 +75,9 @@ primus.on("connection", function(client) {
                 //Tell this client to join the table
                 client.send("joinTable", table.safe());
 
+                //Start the video chat - TODO: disconnection
+                client.send("connectToChat", table.safe());
+
                 updatePlayerPositions(table);
                 if (_und.size(table.players) >= 4) {
                     //Do this to initialize scores
@@ -275,6 +278,20 @@ primus.on("connection", function(client) {
                         primus.room(table.id).send("nextRound", table.safe());
                     }
                 }
+            }
+        }
+    });
+
+    client.on("connectedToChat", function() {
+        var player = players[client.id];
+        if (player !== undefined) {
+            var table = tables[player.table];
+            if (table !== undefined) {
+                _und.each(table.safe().player_ids, function(id) {
+                    console.log("Connecting table to " + id);
+                    primus.room(table.id).send("addPeer", name, id);
+                });
+
             }
         }
     });

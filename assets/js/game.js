@@ -1,5 +1,8 @@
 $(document).ready(function() {
     var socket = Primus.connect(document.URL);
+    var peer = null;
+    var _local_stream;
+    var _connected_peers = {}; //map from peer_id to name
 
     var _state = "waiting"; // waiting, trading, playing, start_playing
     var _round = 0;
@@ -130,11 +133,53 @@ $(document).ready(function() {
         $("#game").show();
     });
 
+    socket.on("connectToChat", function(table) {
+        console.log(table.player_ids);
+        var peer_id = table.player_ids[_name];
+        if (peer === null) {
+            peer = new Peer(peer_id, {
+                key: '2kddwxi4hfcrf6r'
+            });
+
+            var video_settings = {
+                video: true,
+                audio: true
+            };
+
+            navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+            navigator.getUserMedia(video_settings, function(stream) {
+                _local_stream = stream;
+                $("#my-video").attr("src", URL.createObjectURL(_local_stream));
+                socket.send("connectedToChat");
+            }, function(err) {
+                console.log('Failed to get local stream', err);
+            });
+
+            peer.on('call', function(call) {
+                call.answer(_local_stream); // Answer the call with an A/V stream.
+                call.on('stream', function(remoteStream) {
+                    $("#video").attr("src", URL.createObjectURL(remoteStream));
+                });
+            });
+        }
+    });
+
+    socket.on("addPeer", function(name, peer_id) {
+        if (!(peer_id in _connected_peers) && peer_id !== peer.id) {
+            _connected_peers[peer_id] = name;
+            peer.call(peer_id, _local_stream);
+        }
+    });
+
     $("#leave-table").click(function() {
         document.title = "Door Hearts";
         $("#game").hide();
         $("#tableslist").show();
         socket.send("leaveTable");
+    });
+
+    socket.on("disconnectChat", function(table) {
+        console.log(table.player_ids);
     });
 
 

@@ -192,3 +192,22 @@ body {
 .card.disabled.hearts{
     color: #800 !important;
 }
+
+/*Video boxes*/
+#video{
+    left:25%;
+    top:40%;
+    position: absolute;
+    width: 280px;
+    height: auto;
+    background-color: #eee;
+}
+
+#my-video{
+    left:25%;
+    top:80%;
+    position: absolute;
+    width: 100px;
+    height: auto;
+    background-color: #eee;
+}
