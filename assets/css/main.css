@@ -176,38 +176,46 @@ body {
     box-shadow: none;
     background: #FFF;
 }
-.total-score,
-.round-score {
+.total-score, .round-score {
     width: 50px;
     display: inline-block;
 }
 .round-score {
     text-align: right;
 }
-.card.disabled{
-    bottom: 0em !important; /*This disables the hover effect*/
+.card.disabled {
+    bottom: 0em !important;
+    /*This disables the hover effect*/
     background: #888;
 }
-.card.disabled.diams,
-.card.disabled.hearts{
+.card.disabled.diams, .card.disabled.hearts {
     color: #800 !important;
 }
-
 /*Video boxes*/
-#video{
-    left:25%;
-    top:40%;
+ #video-top, #video-left, #video-right {
     position: absolute;
-    width: 280px;
-    height: auto;
-    background-color: #eee;
+    width: 187px;
+    height: 140px;
+    background-color: #000;
 }
-
-#my-video{
-    left:25%;
-    top:80%;
+#video-top {
+    left:50%;
+    margin-left: -93.5px;
+    top:0px;
+}
+#video-left {
+    left:70px;
+    top:50%;
+}
+#video-right {
+    right:70px;
+    top:50%;
+}
+#video-local {
+    left:0px;
+    bottom:0px;
     position: absolute;
-    width: 100px;
-    height: auto;
-    background-color: #eee;
+    width: 187px;
+    height: 140px;
+    background-color: #000;
 }

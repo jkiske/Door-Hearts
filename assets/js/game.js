@@ -147,17 +147,17 @@ $(document).ready(function() {
             navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
             navigator.getUserMedia(video_settings, function(stream) {
                 _local_stream = stream;
-                $("#my-video").attr("src", URL.createObjectURL(_local_stream));
+                $("#video-local").attr("src", URL.createObjectURL(_local_stream));
                 socket.send("connectedToChat");
             }, function(err) {
                 console.log('Failed to get local stream', err);
             });
 
             peer.on('call', function(call) {
-                console.log("Answering call from " + call.peer);
                 call.answer(_local_stream);
                 call.on('stream', function(remoteStream) {
-                    $("#video").attr("src", URL.createObjectURL(remoteStream));
+                    var streamer = _players[call.peer];
+                    $('#video-'+streamer.dir).attr("src", URL.createObjectURL(remoteStream));
                 });
             });
         }
@@ -179,7 +179,7 @@ $(document).ready(function() {
     });
 
     socket.on("disconnectChat", function(table) {
-        console.log(table.player_ids);
+        console.log(table);
     });
 
 
