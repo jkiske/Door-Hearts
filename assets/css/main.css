@@ -193,24 +193,11 @@ body {
 }
 /*Video boxes*/
  #video-top, #video-left, #video-right {
-    position: absolute;
     width: 187px;
     height: 140px;
     background-color: #000;
 }
-#video-top {
-    left:50%;
-    margin-left: -93.5px;
-    top:0px;
-}
-#video-left {
-    left:70px;
-    top:50%;
-}
-#video-right {
-    right:70px;
-    top:50%;
-}
+
 #video-local {
     left:0px;
     bottom:0px;

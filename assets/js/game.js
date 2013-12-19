@@ -148,6 +148,7 @@ $(document).ready(function() {
             navigator.getUserMedia(video_settings, function(stream) {
                 _local_stream = stream;
                 $("#video-local").attr("src", URL.createObjectURL(_local_stream));
+                $("#video-local").removeClass("hidden");
                 socket.send("connectedToChat");
             }, function(err) {
                 console.log('Failed to get local stream', err);
@@ -157,7 +158,9 @@ $(document).ready(function() {
                 call.answer(_local_stream);
                 call.on('stream', function(remoteStream) {
                     var streamer = _players[call.peer];
-                    $('#video-'+streamer.dir).attr("src", URL.createObjectURL(remoteStream));
+                    $('#video-' + streamer.dir).attr("src", URL.createObjectURL(remoteStream));
+                    $('#video-' + streamer.dir).removeClass("hidden");
+                    $('#img-' + streamer.dir).addClass("hidden");
                 });
             });
         }

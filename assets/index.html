@@ -87,7 +87,8 @@
               <h3 class="name-box top-name-box">
                 <span id="topname" class="label label-default">Open</span>
               </h3>
-              <img src="images/placeholder_@2X.png" alt="..." class="img-circle placeholder">
+              <img id="img-top" src="images/placeholder_@2X.png" alt="..." class="img-circle placeholder">
+              <video id="video-top" class="hidden" autoplay></video>
             </div>
           </div>
         </div>
@@ -175,7 +176,8 @@
               <h3 class="name-box">
                 <span id="leftname" class="label label-default">Open</span>
               </h3>
-              <img src="images/placeholder_@2X.png" alt="..." class="img-circle placeholder">
+              <img id="img-left" src="images/placeholder_@2X.png" alt="..." class="img-circle placeholder">
+              <video id="video-left" class="hidden" autoplay></video>
             </div>
           </div>
         </div>
@@ -190,7 +192,8 @@
               <h3 class="name-box">
                 <span id="rightname" class="label label-default">Open</span>
               </h3>
-              <img src="images/placeholder_@2X.png" alt="..." class="img-circle placeholder">
+              <img id="img-right" src="images/placeholder_@2X.png" alt="..." class="img-circle placeholder">
+              <video id="video-right" class="hidden" autoplay></video>
             </div>
           </div>
         </div>
@@ -213,11 +216,8 @@
         </div>
       </h3>
 
-       <!-- Video Chat -->
-      <video id="video-top" autoplay></video>
-      <video id="video-left" autoplay></video>
-      <video id="video-right" autoplay></video>
-      <video id="video-local" autoplay muted="true"></video>
+      <!-- Video Chat -->
+      <video id="video-local" class="hidden" autoplay muted="true"></video>
 
       <div id="sidr-right">
         <div class="panel">
