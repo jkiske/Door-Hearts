@@ -201,14 +201,18 @@ primus.on("connection", function(client) {
                     }
                     //If this is the first card, set the suit
                     if (_und.size(table.played_cards) === 0) {
-                        //Can't start with a heart if they aren't broken yet
-                        if (card.suit == "H" && table.hearts_broken === false) {
-                            console.log(player.name + " tried to play H, not broken yet: " + JSON.stringify(card));
-                            return;
-                        } else {
-                            //This is the first card, set the trick suit
-                            table.trick_suit = card.suit;
+                        //Checks to see if we only have hearts left
+                        if (card.suit == "H") {
+                            var have_other_suits = player.hasSuit("S") || player.hasSuit("C") || player.hasSuit("D");
+                            //Can't start with a heart if they aren't broken yet,
+                            //but can if the player only has hearts left
+                            if (table.hearts_broken === false && have_other_suits === true) {
+                                console.log(player.name + " tried to play H, not broken yet: " + JSON.stringify(card));
+                                return;
+                            }
                         }
+                        //This is the first card, set the trick suit
+                        table.trick_suit = card.suit;
                     }
                     //Check if this card is allowed to be played (outliers taken care of above)
                     var isValidSuit = (card.suit == table.trick_suit) || !player.hasSuit(table.trick_suit);

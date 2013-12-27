@@ -477,29 +477,37 @@ $(document).ready(function() {
 
     function enableAllowedCards() {
         var $bc = $("#bottomcards");
+        var $hearts = $bc.find(".card.hearts");
+        var $diams = $bc.find(".card.diams");
+        var $clubs = $bc.find(".card.clubs");
+        var $spades = $bc.find(".card.spades");
+        var $all_cards = $bc.find(".card");
+        var $queen_of_spades = $bc.find(".card.rank-q.spades");
+
         console.log("Trick suit: " + _trick_suit);
 
         //If we are the first person
         if (_trick_suit === null) {
-            //If we can start with hearts
-            if (_hearts_broken === true) {
-                $bc.find(".card.hearts").removeClass("disabled");
+            //We can start with hearts if they are broken or if we only have hearts left
+            if (_hearts_broken === true || ($hearts.length == $all_cards.length)) {
+                $hearts.removeClass("disabled");
             }
-            $bc.find(".card.diams").removeClass("disabled");
-            $bc.find(".card.clubs").removeClass("disabled");
-            $bc.find(".card.spades").removeClass("disabled");
+            $diams.removeClass("disabled");
+            $clubs.removeClass("disabled");
+            $spades.removeClass("disabled");
         } else {
             var suit_class = suit_map[_trick_suit];
             var $playable_cards = $bc.find('.card.' + suit_class);
+            //If we don't have the trick suit, allow every card
             if ($playable_cards.length === 0) {
                 $playable_cards = $bc.find('.card');
             }
             $playable_cards.removeClass("disabled");
         }
         //Finally re-disable cards if this is the first trick
-        if ($bc.find(".card").length == 13) {
-            $bc.find(".card.rank-q.spades").addClass("disabled");
-            $bc.find(".card.hearts").addClass("disabled");
+        if ($all_cards.length == 13) {
+            $queen_of_spades.addClass("disabled");
+            $hearts.addClass("disabled");
         }
     }
 
