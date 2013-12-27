@@ -109,9 +109,9 @@ $(document).ready(function() {
     });
 
     var alertDialog = $("#name-taken");
-    alertDialog.parent().hide();
+    alertDialog.parent().addClass("hidden");
     $(".alert .close").on("click", function() {
-        $(this).parent().hide();
+        $(this).parent().addClass("hidden");
     });
 
     socket.on("duplicateName", function(name) {
@@ -119,7 +119,7 @@ $(document).ready(function() {
         alertDialog.text("");
         alertDialog.append("<strong>" + name +
             "</strong> is already playing. Please choose another name");
-        alertDialog.parent().show();
+        alertDialog.parent().removeClass("hidden");
     });
 
     // -------------------------------- Switching Views ----------------------------- //
