@@ -20,9 +20,6 @@ $(document).ready(function() {
     var rightCard = $("#right-played-card");
     var topCard = $("#top-played-card");
 
-    // Hide the game at the start
-    $("#game").hide();
-
     $('#score-menu-btn').sidr({
         name: 'sidr-right',
         side: 'right',
@@ -129,8 +126,8 @@ $(document).ready(function() {
     //Switch views to the table view
     socket.on("joinTable", function(table) {
         document.title = _name + ": Door Hearts";
-        $("#tableslist").hide();
-        $("#game").show();
+        $("#tableslist").addClass("hidden");
+        $("#game").removeClass("hidden");
     });
 
     socket.on("connectToChat", function(table) {
@@ -176,8 +173,8 @@ $(document).ready(function() {
 
     $("#leave-table").click(function() {
         document.title = "Door Hearts";
-        $("#game").hide();
-        $("#tableslist").show();
+        $("#game").addClass("hidden");
+        $("#tableslist").removeClass("hidden");
         socket.send("leaveTable");
     });
 
