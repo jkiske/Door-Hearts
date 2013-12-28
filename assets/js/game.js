@@ -2,7 +2,6 @@ $(document).ready(function() {
     var socket = Primus.connect(document.URL);
     var peer = null;
     var _local_stream;
-    var _connected_peers = []; //list of all peer names
 
     var _state = "waiting"; // waiting, trading, playing, start_playing
     var _round = 0;
@@ -140,38 +139,44 @@ $(document).ready(function() {
                 video: true,
                 audio: true
             };
-
             navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
             navigator.getUserMedia(video_settings, function(stream) {
                 _local_stream = stream;
                 $("#video-local").attr("src", URL.createObjectURL(_local_stream));
                 $("#video-local").removeClass("hidden");
+
+                //Answer any call we recieve with our own stream
+                peer.on("call", function(call) {
+                    call.answer(_local_stream);
+                    call.on('stream', answerCall);
+                });
+
                 socket.send("connectedToChat");
             }, function(err) {
                 console.log('Failed to get local stream', err);
             });
-
-            peer.on('call', function(call) {
-                call.answer(_local_stream);
-                call.on('stream', function(remoteStream) {
-                    var streamer = _players[call.peer];
-                    $('#video-' + streamer.dir).attr("src", URL.createObjectURL(remoteStream));
-                    $('#video-' + streamer.dir).removeClass("hidden");
-                    $('#img-' + streamer.dir).addClass("hidden");
-                    console.log("Answering " + call.peer);
-                });
-            });
         }
     });
 
-    socket.on("addPeer", function(peer_name) {
-        if (!(peer_name in _connected_peers) && peer_name !== peer.id) {
-            _connected_peers = _.union(_connected_peers, [peer_name]);
-            console.log(_connected_peers);
-            peer.call(peer_name, _local_stream);
-            console.log("Calling " + peer_name);
-        }
+    socket.on("callPeer", function(peer_name) {
+        //Call the other player
+        var call = peer.call(peer_name, _local_stream);
+        //When the other person answers, show us their stream
+        call.on('stream', answerCall);
+        console.log(_name + " calling " + peer_name);
     });
+
+    function answerCall(remoteStream) {
+        if (remoteStream !== null) {
+            //'this' is the MediaConnection object from the call
+            var streamer = _players[this.peer];
+            $('#video-' + streamer.dir).attr("src", URL.createObjectURL(remoteStream));
+            $('#video-' + streamer.dir).removeClass("hidden");
+            $('#img-' + streamer.dir).addClass("hidden");
+            console.log(_name + " answering " + this.peer);
+            //Set up disconnection/error handling here
+        }
+    }
 
     $("#video-local, #video-local-overlay").click(function() {
         $(".mic").toggleClass("off");

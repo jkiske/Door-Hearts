@@ -286,14 +286,19 @@ primus.on("connection", function(client) {
         }
     });
 
+    /*
+     *The most recent player to join has the responsibility to call
+     * all other players at the table
+     */
     client.on("connectedToChat", function() {
         var player = players[client.id];
         if (player !== undefined) {
             var table = tables[player.table];
             if (table !== undefined) {
                 _und.each(table.safe().players, function(name) {
-                    console.log("Connecting table to " + name);
-                    primus.room(table.id).send("addPeer", name);
+                    if (name != player.name) {
+                        client.send("callPeer", name);
+                    }
                 });
 
             }
