@@ -158,6 +158,7 @@ $(document).ready(function() {
                     $('#video-' + streamer.dir).attr("src", URL.createObjectURL(remoteStream));
                     $('#video-' + streamer.dir).removeClass("hidden");
                     $('#img-' + streamer.dir).addClass("hidden");
+                    console.log("Answering " + call.peer);
                 });
             });
         }
@@ -168,8 +169,31 @@ $(document).ready(function() {
             _connected_peers = _.union(_connected_peers, [peer_name]);
             console.log(_connected_peers);
             peer.call(peer_name, _local_stream);
+            console.log("Calling " + peer_name);
         }
     });
+
+    $("#video-local, #video-local-overlay").click(function() {
+        $(".mic").toggleClass("off");
+        if (_local_stream !== null) {
+            var audioTracks = _local_stream.getAudioTracks();
+            for (var i = 0, l = audioTracks.length; i < l; i++) {
+                audioTracks[i].enabled = !audioTracks[i].enabled;
+            }
+        }
+    });
+
+    $("#video-local, #video-local-overlay").hover(
+        function() { //Hover-over
+            $("#video-local-overlay").removeClass("hidden");
+        },
+        function() { //Hover-off
+            if ($(".mic").hasClass("off") === false) {
+                $("#video-local-overlay").addClass("hidden");
+            }
+        }
+    );
+
 
     $("#leave-table").click(function() {
         document.title = "Door Hearts";

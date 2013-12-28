@@ -47,10 +47,6 @@ body {
     min-width: 25em;
     /*Need this to be big to fit the traded cards */
 }
-#play {
-    margin-left:-34.5px
-    /* 69px/2 */
-}
 /* Middle cards style and margins */
  #played-cards {
     font-size: 1.1em;
@@ -197,12 +193,32 @@ body {
     height: 140px;
     background-color: #000;
 }
-
 #video-local {
+    position: absolute;
     left:0px;
     bottom:0px;
-    position: absolute;
     width: 187px;
     height: 140px;
     background-color: #000;
 }
+#video-local-overlay {
+    position: absolute;
+    left: 43.5px;
+    bottom: 20px;
+    height: 100px;
+    width: 100px;
+    border-radius: 20px 20px 20px 20px;
+    background-color: rgba(0, 0, 0, .5);
+}
+.mic {
+    background: url('../images/mic_on_@2X.png');
+    background-size: 60px 60px;
+    width: 60px;
+    height: 60px;
+    position: relative;
+    top:20px;
+    left:20px;
+}
+.mic.off {
+    background: url('../images/mic_off_@2X.png');
+    background-size: 60px 60px;
