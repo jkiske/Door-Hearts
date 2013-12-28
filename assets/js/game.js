@@ -13,6 +13,7 @@ $(document).ready(function() {
     var _hearts_broken = false;
     var _skip_trade = false;
     var _clear_trick_delay = 1500;
+    var _calls = {};
 
     var bottomCard = $("#bottom-played-card");
     var leftCard = $("#left-played-card");
@@ -148,7 +149,7 @@ $(document).ready(function() {
                 //Answer any call we recieve with our own stream
                 peer.on("call", function(call) {
                     call.answer(_local_stream);
-                    call.on('stream', answerCall);
+                    call.on("stream", answerCall);
                 });
 
                 socket.send("connectedToChat");
@@ -162,7 +163,7 @@ $(document).ready(function() {
         //Call the other player
         var call = peer.call(peer_name, _local_stream);
         //When the other person answers, show us their stream
-        call.on('stream', answerCall);
+        call.on("stream", answerCall);
         console.log(_name + " calling " + peer_name);
     });
 
@@ -170,11 +171,19 @@ $(document).ready(function() {
         if (remoteStream !== null) {
             //'this' is the MediaConnection object from the call
             var streamer = _players[this.peer];
+            _calls[this.peer] = this;
             $('#video-' + streamer.dir).attr("src", URL.createObjectURL(remoteStream));
             $('#video-' + streamer.dir).removeClass("hidden");
             $('#img-' + streamer.dir).addClass("hidden");
             console.log(_name + " answering " + this.peer);
+            console.log(_calls);
+
             //Set up disconnection/error handling here
+            this.on("close", function() {
+                console.log("Connection closed with " + this.peer);
+                delete _calls[this.peer];
+                console.log(_calls);
+            });
         }
     }
 
