@@ -133,7 +133,7 @@ $(document).ready(function() {
     socket.on("connectToChat", function(table) {
         if (peer === null) {
             peer = new Peer(_name, {
-                key: '2kddwxi4hfcrf6r'
+                key: "2kddwxi4hfcrf6r"
             });
 
             var video_settings = {
