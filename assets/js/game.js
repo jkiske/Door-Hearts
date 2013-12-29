@@ -38,6 +38,7 @@ $(document).ready(function() {
         if (isValid) {
             buttons.removeClass("disabled");
             _name = namedom.val();
+            $("#playername").parent().removeClass("has-error");
         } else {
             buttons.addClass("disabled");
         }
@@ -118,10 +119,11 @@ $(document).ready(function() {
 
     socket.on("duplicateName", function(name) {
         //Clear the text
-        alertDialog.text("");
-        alertDialog.append("<strong>" + name +
-            "</strong> is already playing. Please choose another name");
-        alertDialog.parent().removeClass("hidden");
+        $("#playername").popover("show");
+        $("#playername").parent().addClass("has-error");
+        _.delay(function() {
+            $("#playername").popover("hide");
+        }, 3000);
     });
 
     // -------------------------------- Switching Views ----------------------------- //
