@@ -123,7 +123,7 @@ $(document).ready(function() {
         $("#playername").parent().addClass("has-error");
         _.delay(function() {
             $("#playername").popover("hide");
-        }, 3000);
+        }, 5000);
     });
 
     // -------------------------------- Switching Views ----------------------------- //
