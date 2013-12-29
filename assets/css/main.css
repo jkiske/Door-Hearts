@@ -12,12 +12,31 @@ body {
     z-index: -1;
     top: 0;
     left: 0;
+}
+
+#game, #tableslist{
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+.navbar {
+    background: rgba(0, 0, 0, .2);
+    box-shadow: 0px 2px 3px rgba(0, 0, 0, .3);
+    border: none;
+}
+.navbar-default .navbar-brand, .navbar-default .navbar-brand:hover {
+    text-shadow: 2px 2px 3px rgba(0, 0, 0, .1);
+    color: #FFF;
+    font-size: 2em;
+}
+.navbar-default .navbar-text {
+    color: #FFF;
+}
+#tableslist {
+    margin-top: 30px;
 }
 .rotate90 {
     transform:rotate(90deg);
@@ -40,14 +59,9 @@ body {
     -webkit-transform:rotate(-90deg);
     /* Safari and Chrome */
 }
-
-#welcome-label {
-    font-size: 36px;
-    color: #FFF;
-    text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
-    text-align: center;
+.navbar-form {
+    padding-right: 0px;
 }
-
 /* Middle stack positioning */
  #center {
     position: absolute;

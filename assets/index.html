@@ -15,35 +15,41 @@
 <body>
   <div class="container">
 
-    <div id="login-list">
+    <div id="login-view">
       <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
         <div class="container">
           <div class="navbar-header">
-            <div class="navbar-brand">Hearts</div>
+            <div class="navbar-brand">
+              <strong>Hearts
+                <strong>
+            </div>
           </div>
-          <ul class="nav navbar-nav navbar-right">
+          <ul id="login-forms" class="nav navbar-nav navbar-right">
             <li>
               <div class="navbar-form">
-                <input id="playername" class="form-control" placeholder="Enter Name" type="text" autofocus>
+                <div class="form-group">
+                  <input id="playername" class="form-control" placeholder="Enter Name" type="text" autofocus data-toggle="popover" data-content="Error: Name already in use" data-placement="bottom" data-trigger="manual">
+                </div>
+                <button type="button" class="btn btn-default">Go</button>
               </div>
             </li>
             <li>
-              <p class="navbar-text">or</p>
+              <p class="navbar-text text-center">or</p>
             </li>
             <li>
-              <button type="button" class="btn btn-primary navbar-btn">
+              <button type="button" class="btn btn-primary navbar-btn disabled">
                 Login with Facebook
               </button>
             </li>
           </ul>
+          <ul id="Signed-in" class="nav navbar-nav navbar-right hidden">
+            <li>
+              <p class="navbar-text">Signed in as Jeff</p>
+              <a class="navbar-text">Logout</a>
+            </li>
+          </ul>
         </div>
       </nav>
-      <div class="jumbotron">
-        <h1>Video Hearts Game</h1>
-        <p>...</p>
-        <p><a class="btn btn-primary btn-lg" role="button">Learn more</a>
-        </p>
-      </div>
     </div>
 
     <div id="tableslist">
@@ -55,14 +61,6 @@
               <div class="alert alert-dismissable alert-warning fade in hidden">
                 <span id="name-taken"></span>
                 <button type="button" class="close" aria-hidden="true">&times;</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="form">
-              <div class="col-xs-12 col-md-8 col-md-offset-2">
-                <div id="welcome-label">Welcome, Jeff</div>
               </div>
             </div>
           </div>

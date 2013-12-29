@@ -27,6 +27,8 @@ $(document).ready(function() {
         displace: true
     });
 
+    $("#playername").popover();
+
     // -------------------------------- Name logic ----------------------------- //
 
     function validateName() {
@@ -127,6 +129,7 @@ $(document).ready(function() {
     socket.on("joinTable", function(table) {
         document.title = _name + ": Door Hearts";
         $("#tableslist").addClass("hidden");
+        $("#login-view").addClass("hidden");
         $("#game").removeClass("hidden");
     });
 
@@ -213,6 +216,7 @@ $(document).ready(function() {
         document.title = "Door Hearts";
         $("#game").addClass("hidden");
         $("#tableslist").removeClass("hidden");
+        $("#login-view").removeClass("hidden");
         socket.send("leaveTable");
     });
 
