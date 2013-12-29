@@ -4,6 +4,7 @@ var _deck = require("./deck");
 var Table = function() {
     //Name to player object
     var players = {};
+    var disconnected_players = {};
     //Position to player name
     var positions = {
         "N": null,
@@ -221,6 +222,7 @@ var Table = function() {
     return {
         //Instance Vars
         players: players,
+        disconnected_players: disconnected_players,
         id: id,
         round: round,
         turn: turn,

@@ -325,6 +325,13 @@ function leaveTable(client) {
         if (table !== undefined) {
             table.positions[player.position] = null;
 
+            if (table.round > 0) {
+                /* If the game has already started,
+                 * give disconnected players a chance to rejoin
+                 * Move the player from players -> disconnected players */
+                table.disconnected_players[player.name] = table.players[player.name];
+                console.log(table.disconnected_players);
+            }
             delete table.players[player.name];
             client.leave(table.id);
 
