@@ -50,64 +50,81 @@ primus.on("connection", function(client) {
         if (_und.size(table.players) < 4) {
             client.send("addTableRow", table.safe());
         }
+        //TODO: if we are in the list of disconnected players
     });
 
-    function joinTable(table_id, playerName) {
+    client.on("newPlayer", function(player_name) {
         var all_names = _und.pluck(_und.values(players), "name");
-        if (_und.contains(all_names, playerName)) {
+        if (_und.contains(all_names, player_name)) {
             //Don't allow duplicate players
-            client.send("duplicateName", playerName);
-            return false;
+            client.send("duplicateName", player_name);
         } else {
-            if (table_id in tables) {
-                var player = makePlayer(client, playerName);
-                var table = tables[table_id];
-
-                player.table = table.id;
-                table.players[playerName] = player;
-
-                player.position = table.firstOpenPosition();
-                table.positions[player.position] = player.name;
-
-                client.join(table.id);
-                client.leave(waiting_room);
-
-                //Tell this client to join the table
-                client.send("joinTable", table.safe());
-
-                //Start the video chat - TODO: disconnection
-                client.send("connectToChat", table.safe());
-
-                updatePlayerPositions(table);
-                if (_und.size(table.players) >= 4) {
-                    //Do this to initialize scores
-                    table.updateScores();
-                    //Set the round to 1
-                    table.nextRound();
-                    primus.room(table.id).send("nextRound", table.safe());
-                    primus.room(waiting_room).send("removeTableRow", table.id);
-                }
-                return true;
-            }
+            //This will add the player to the global list of players
+            makePlayer(client, player_name);
+            client.send("loggedIn", player_name);
+            console.log(player_name + " (" + client.id + ") logged in");
         }
-        return false;
-    }
+    });
+
+    client.on("deletePlayer", function(player_name) {
+        var all_names = _und.pluck(_und.values(players), "name");
+        if (_und.contains(all_names, player_name)) {
+            delete players[client.id];
+            client.send("loggedOut", player_name);
+            console.log(player_name + " (" + client.id + ") logged out");
+        }
+    });
 
     client.on("joinTable", joinTable);
 
-    client.on("newTable", function(playerName) {
+    client.on("newTable", function(player_name) {
         var table = makeTable();
         //Tell all the clients in the waiting room that there is an update
         primus.room(waiting_room).send("addTableRow", table.safe());
 
         //Check to see if we successfully joined
-        var did_join = joinTable(table.id, playerName);
+        var did_join = joinTable(table.id, player_name);
         if (did_join === false) {
             primus.room(waiting_room).send("removeTableRow", table.id);
             //Delete the table if there was an error
             delete tables[table.id];
         }
     });
+
+    function joinTable(table_id, player_name) {
+        var player = players[client.id];
+        if (player !== undefined && (table_id in tables)) {
+            var table = tables[table_id];
+
+            player.table = table.id;
+            table.players[player_name] = player;
+
+            player.position = table.firstOpenPosition();
+            table.positions[player.position] = player.name;
+
+            client.join(table.id);
+            client.leave(waiting_room);
+
+            //Tell this client to join the table
+            client.send("joinTable", table.safe());
+
+            //Start the video chat - TODO: disconnection
+            client.send("connectToChat", table.safe());
+
+            updatePlayerPositions(table);
+            if (_und.size(table.players) >= 4) {
+                //Do this to initialize scores
+                table.updateScores();
+                //Set the round to 1
+                table.nextRound();
+                primus.room(table.id).send("nextRound", table.safe());
+                primus.room(waiting_room).send("removeTableRow", table.id);
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     // Individual table logic
     client.on("dealCards", function() {
@@ -339,6 +356,7 @@ function leaveTable(client) {
             if (_und.size(table.players) === 0) {
                 delete tables[table.id];
                 primus.room(waiting_room).send("removeTableRow", table.id);
+                console.log("Table " + table.id + " deleted");
             } else {
                 //Otherwise, remove the username from the row
                 primus.room(waiting_room).send("updateTableRow", table.safe());

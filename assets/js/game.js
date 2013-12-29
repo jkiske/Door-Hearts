@@ -31,45 +31,85 @@ $(document).ready(function() {
 
     // -------------------------------- Name logic ----------------------------- //
 
-    if ($.cookie("name") !== undefined) {
-        logIn();
+    function logIn() {
+        // If we have logged in before, use the cookie
+        if ($.cookie("name") !== undefined) {
+            socket.send("newPlayer", $.cookie("name"));
+        } else {
+            //Otherwise, use the name input value
+            var name = $("#playername").val();
+            if (name.length > 0) {
+                socket.send("newPlayer", name);
+            }
+        }
     }
 
-    $("#log-in").click(function() {
-        $.cookie("name", $("#playername").val());
-        logIn();
-    });
-    $("#log-out").click(logOut);
+    socket.on("loggedIn", function(player_name) {
+        $.cookie("name", player_name);
+        $("#current-user-name").text(player_name);
+        _name = player_name;
+        showLogout();
+        enableJoinButtons();
 
-    function logIn() {
-        var name = $.cookie("name");
-        $("#current-user-name").text(name);
-        _name = name;
-        $("#login-container-forms .input-group").addClass("hidden");
-        $("#login-container-forms .current-user").removeClass("hidden");
-        validateName();
+    });
+
+    socket.on("duplicateName", function() {
+        $.removeCookie("name");
+        showLogin();
+        disableJoinButtons();
+        //Clear the text
+        $("#playername").popover("show");
+        _.delay(function() {
+            $("#playername").popover("hide");
+        }, 5000);
+    });
+
+    $("#log-in").click(logIn);
+    //Try to log in when we load the page
+    if ($.cookie("name") !== undefined) {
+        logIn();
+    } else {
+        showLogin();
     }
 
     function logOut() {
-        $.removeCookie("name");
-        _name = undefined;
-        $("#login-container-forms .input-group").removeClass("hidden");
-        $("#login-container-forms .current-user").addClass("hidden");
-        validateName();
+        if (_name !== undefined) {
+            socket.send("deletePlayer", _name);
+        }
     }
 
-    function validateName() {
-        var namedom = $("#playername");
-        var buttons = $(".joinbtn, #newtable");
-        var isValid = $.cookie("name") !== undefined
-        if (isValid) {
-            buttons.removeClass("disabled");
-        } else {
-            buttons.addClass("disabled");
-        }
-        return isValid;
+    socket.on("loggedOut", function() {
+        $.removeCookie("name");
+        _name = undefined;
+        showLogin();
+        disableJoinButtons();
+    });
+
+    $("#log-out").click(logOut);
+
+    function enableJoinButtons() {
+        var $tableJoinButtons = $(".joinbtn, #newtable");
+        $tableJoinButtons.removeClass("disabled");
     }
-    validateName();
+
+    function disableJoinButtons() {
+        var $tableJoinButtons = $(".joinbtn, #newtable");
+        $tableJoinButtons.addClass("disabled");
+    }
+
+    function showLogin() {
+        $("#login-container-forms .input-group").removeClass("hidden");
+        $("#login-container-forms .current-user").addClass("hidden");
+    }
+
+    function showLogout() {
+        $("#login-container-forms .input-group").addClass("hidden");
+        $("#login-container-forms .current-user").removeClass("hidden");
+    }
+
+    function isLoggedIn() {
+        return $.cookie("name") !== undefined;
+    }
     // -------------------------------- Joining Tables ----------------------------- //
 
     function tableRowHtml(table) {
@@ -88,11 +128,11 @@ $(document).ready(function() {
 
     }
     $("#newtable").click(function() {
-        if (validateName() === true) {
+        if (isLoggedIn() === true) {
             //Prevent being able to double-click new game
             var buttons = $(".joinbtn,#newtable");
             buttons.addClass("disabled");
-            socket.send("newTable", $("#playername").val());
+            socket.send("newTable", _name);
         }
     });
 
@@ -102,7 +142,11 @@ $(document).ready(function() {
     function addTableRow(table) {
         $("#tabletable-id tbody").append(tableRowHtml(table));
         //When we add a new table, check to see if we should make links inactive
-        validateName();
+        if (isLoggedIn() === true) {
+            enableJoinButtons();
+        } else {
+            disableJoinButtons();
+        }
         // If we click the button, join that table
         $("#" + table.id).click(joinTableClick);
     }
@@ -113,17 +157,21 @@ $(document).ready(function() {
             addTableRow(table);
         } else {
             row.replaceWith(tableRowHtml(table));
-            validateName();
+            if (isLoggedIn() === true) {
+                enableJoinButtons();
+            } else {
+                disableJoinButtons();
+            }
             $("#" + table.id).click(joinTableClick);
         }
     });
 
     function joinTableClick() {
         var id = $(this).attr("id");
-        if (validateName() === true) {
+        if (isLoggedIn() === true) {
             var buttons = $(".joinbtn,#newtable");
             buttons.addClass("disabled");
-            socket.send("joinTable", id, $("#playername").val());
+            socket.send("joinTable", id, _name);
         }
     }
 
@@ -135,15 +183,6 @@ $(document).ready(function() {
     alertDialog.parent().addClass("hidden");
     $(".alert .close").on("click", function() {
         $(this).parent().addClass("hidden");
-    });
-
-    socket.on("duplicateName", function(name) {
-        logOut();
-        //Clear the text
-        $("#playername").popover("show");
-        _.delay(function() {
-            $("#playername").popover("hide");
-        }, 5000);
     });
 
     // -------------------------------- Switching Views ----------------------------- //
@@ -240,6 +279,8 @@ $(document).ready(function() {
         $("#tableslist").removeClass("hidden");
         $("#login-view").removeClass("hidden");
         socket.send("leaveTable");
+        //We need to re-login because leaving the table is just like disconnecting
+        logIn();
     });
 
     socket.on("disconnectChat", function(table) {
