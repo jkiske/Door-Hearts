@@ -31,25 +31,45 @@ $(document).ready(function() {
 
     // -------------------------------- Name logic ----------------------------- //
 
+    if ($.cookie("name") !== undefined) {
+        logIn();
+    }
+
+    $("#log-in").click(function() {
+        $.cookie("name", $("#playername").val());
+        logIn();
+    });
+    $("#log-out").click(logOut);
+
+    function logIn() {
+        var name = $.cookie("name");
+        $("#current-user-name").text(name);
+        _name = name;
+        $("#login-container-forms .input-group").addClass("hidden");
+        $("#login-container-forms .current-user").removeClass("hidden");
+        validateName();
+    }
+
+    function logOut() {
+        $.removeCookie("name");
+        _name = undefined;
+        $("#login-container-forms .input-group").removeClass("hidden");
+        $("#login-container-forms .current-user").addClass("hidden");
+        validateName();
+    }
+
     function validateName() {
         var namedom = $("#playername");
-        var buttons = $(".joinbtn,#newtable");
-        var isValid = namedom.val().length > 0;
+        var buttons = $(".joinbtn, #newtable");
+        var isValid = $.cookie("name") !== undefined
         if (isValid) {
             buttons.removeClass("disabled");
-            _name = namedom.val();
-            $("#playername").parent().removeClass("has-error");
         } else {
             buttons.addClass("disabled");
         }
         return isValid;
     }
-    // When we start, check see if we should disable links
     validateName();
-
-    //When we change the name field, disable/enable links
-    $("#playername").on("input", validateName);
-
     // -------------------------------- Joining Tables ----------------------------- //
 
     function tableRowHtml(table) {
@@ -118,9 +138,9 @@ $(document).ready(function() {
     });
 
     socket.on("duplicateName", function(name) {
+        logOut();
         //Clear the text
         $("#playername").popover("show");
-        $("#playername").parent().addClass("has-error");
         _.delay(function() {
             $("#playername").popover("hide");
         }, 5000);

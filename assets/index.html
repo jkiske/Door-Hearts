@@ -26,12 +26,16 @@
             <div class="input-group">
               <input id="playername" class="form-control" placeholder="Enter Name" type="text" autofocus data-toggle="popover" data-content="Error: Name already in use" data-placement="bottom" data-trigger="manual">
               <span class="input-group-btn">
-                <button type="button" class="btn btn-primary">Log in</button>
+                <button id="log-in" type="button" class="btn btn-primary">Log in</button>
               </span>
             </div>
             <div class="current-user pull-right hidden">
               Signed in as
-              <span id="current-user-name">Jeff</span>| <a id="logout">Logout</a>
+              <strong>
+                <span id="current-user-name"></span>
+              </strong>
+              &nbsp;|&nbsp;
+              <a id="log-out">Logout</a>
             </div>
           </div>
         </div>
