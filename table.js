@@ -19,7 +19,7 @@ var Table = function() {
         "W": null
     };
     var played_cards = {};
-    var trick_suit = "";
+    var trick_suit = null;
     var state = "waiting";
     var turn = "";
     var id = _und.uniqueId("tableid_");
@@ -180,7 +180,7 @@ var Table = function() {
 
     function resetPlayedCards() {
         this.played_cards = {};
-        this.trick_suit = "";
+        this.trick_suit = null;
     }
 
     function getWinner() {
