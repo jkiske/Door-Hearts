@@ -74,7 +74,6 @@ var Table = function() {
             player.score = 0;
         });
         this.scores = _und.union(this.scores, [round_scores]);
-        console.log(this.scores);
     }
 
     /* Returns the table with 'safe' values */

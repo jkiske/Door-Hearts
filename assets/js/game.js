@@ -50,7 +50,6 @@ $(document).ready(function() {
         _name = player_name;
         showLogout();
         enableJoinButtons();
-
     });
 
     socket.on("duplicateName", function() {
@@ -192,14 +191,14 @@ $(document).ready(function() {
 
     // -------------------------------- Switching Views ----------------------------- //
     //Switch views to the table view
-    socket.on("joinTable", function(table) {
+    socket.on("joinTable", function() {
         document.title = _name + ": Door Hearts";
         $("#tableslist").addClass("hidden");
         $("#login-view").addClass("hidden");
         $("#game").removeClass("hidden");
     });
 
-    socket.on("connectToChat", function(table) {
+    socket.on("connectToChat", function() {
         if (peer === null) {
             peer = new Peer(_name, {
                 key: "2kddwxi4hfcrf6r"
@@ -298,17 +297,20 @@ $(document).ready(function() {
     socket.on("restoreState", function(table, played_cards, player) {
         _state = table.state;
         _round = table.round;
-        _turn = table.turn;
-        _trick_suit = table.trick_suit;
-        _hearts_broken = table.hearts_broken;
-
+        if (_state == "trading") {
+            setInfoText("Select cards to trade (passing " + table.trade_dir + ")", color_grey);
+        } else if (_state == "playing") {
+            setupTurn(table.turn);
+            _trick_suit = table.trick_suit;
+            _hearts_broken = table.hearts_broken;
+        }
         showCards(player.hand);
     });
 
     socket.on("nextRound", function(table) {
-        console.log(table);
         if (_.size(_players) == 4) {
             _state = table.state;
+            _round = table.round;
             if (table.state == "trading") {
                 _skip_trade = false;
                 setInfoText("Select cards to trade (passing " + table.trade_dir + ")", color_grey);
@@ -383,9 +385,10 @@ $(document).ready(function() {
                 $score_table_head[score_index].innerText = "Open";
             }
         });
-
-        var remaining_player_count = 4 - _.size(all_pos);
-        setInfoText("Waiting for " + remaining_player_count + " more players", color_grey);
+        if (_round === 0) {
+            var remaining_player_count = 4 - _.size(all_pos);
+            setInfoText("Waiting for " + remaining_player_count + " more players", color_grey);
+        }
     });
 
     socket.on("updateRemainingTrades", function(pass_dir, remaining_trades) {
@@ -573,7 +576,9 @@ $(document).ready(function() {
         }
     }
 
-    socket.on("nextPlayer", function(player_name) {
+    socket.on("nextPlayer", setupTurn);
+
+    function setupTurn(player_name) {
         _turn = player_name;
         if (_name == player_name) {
             disableAllCards();
@@ -584,9 +589,8 @@ $(document).ready(function() {
             disableAllCards();
             setInfoText("It is " + player_name + "'s turn to play", _players[player_name].color);
             document.title = _name + ": Door Hearts";
-
         }
-    });
+    }
 
     function disableAllCards() {
         $("#bottomcards .card").addClass("disabled");

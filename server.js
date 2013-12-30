@@ -56,6 +56,7 @@ primus.on("connection", function(client) {
 
     client.on("newPlayer", function(player_name) {
         var all_names = _und.pluck(_und.values(players), "name");
+        console.log(all_names);
         if (_und.contains(all_names, player_name)) {
             //Don't allow duplicate players
             client.send("duplicateName", player_name);
@@ -115,16 +116,12 @@ primus.on("connection", function(client) {
             if (player_name in table.disconnected_players) {
                 var old_player = table.disconnected_players[player_name];
                 old_player.id = player.id;
-                players[client] = old_player;
+                players[client.id] = old_player;
 
                 table.players[player_name] = old_player;
                 table.positions[old_player.position] = player_name;
                 delete table.disconnected_players[player_name];
 
-                console.log("--------------");
-                console.log(table);
-                console.log("--------------");
-                console.log(player);
                 console.log("--------------");
                 console.log(old_player);
                 console.log("--------------");
@@ -362,6 +359,7 @@ primus.on("disconnection", leaveTable);
 
 function leaveTable(client) {
     console.log("Client disconnected: " + client.id);
+    console.log("Players: " + JSON.stringify(_und.keys(players)));
     if (client.id in players) {
         var player = players[client.id];
         delete players[client.id];
@@ -377,6 +375,9 @@ function leaveTable(client) {
                 table.disconnected_players[player.name] = table.players[player.name];
                 console.log(table.disconnected_players);
             }
+            console.log("deleting player " + player.name + " round: " + table.round);
+            var all_names = _und.pluck(_und.values(players), "name");
+            console.log(all_names);
             delete table.players[player.name];
             client.leave(table.id);
 
@@ -388,7 +389,7 @@ function leaveTable(client) {
             } else {
                 //Otherwise, remove the username from the row
                 primus.room(waiting_room).send("updateTableRow", table.safe());
-                //And let everone in the room know that person left
+                //And let everone in the room know that a person left
                 updatePlayerPositions(table);
             }
         }
@@ -408,8 +409,10 @@ function updatePlayerPositions(table) {
         primus.connections[id].send("updatePositions", client_pos, other_pos);
     });
 
-    //Tell all the clients in the waiting room that there is an update
-    primus.room(waiting_room).send("updateTableRow", table.safe());
+    if (table.round === 0) {
+        //Tell all the clients in the waiting room that there is an update
+        primus.room(waiting_room).send("updateTableRow", table.safe());
+    }
 }
 
 /**
