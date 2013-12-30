@@ -399,8 +399,9 @@ $(document).ready(function() {
 
     socket.on("restoringPlayState", function(table) {
         setupTurn(table.turn);
-        console.log(table.played_cards);
-        console.log(_players);
+        _.each(table.played_cards, function(card, name) {
+            cardPlayed(name, card, _trick_suit);
+        });
     });
 
     socket.on("updateRemainingTrades", function(pass_dir, remaining_trades) {
@@ -644,7 +645,9 @@ $(document).ready(function() {
         }
     }
 
-    socket.on("cardPlayed", function(opponent_name, card, trick_suit) {
+    socket.on("cardPlayed", cardPlayed);
+
+    function cardPlayed(opponent_name, card, trick_suit) {
         _trick_suit = trick_suit;
         var opponent = _players[opponent_name];
         if (opponent !== undefined) {
@@ -657,7 +660,7 @@ $(document).ready(function() {
                 showMiddleCard(played_card_spot, card);
             }
         }
-    });
+    }
 
     socket.on("heartsBroken", function() {
         _hearts_broken = true;
