@@ -47,9 +47,8 @@ primus.on("connection", function(client) {
     console.log("Tables: " + JSON.stringify(_und.pluck(_und.values(tables), "id")));
     console.log("Clients: " + JSON.stringify(_und.pluck(primus.connections, "id")));
     _und.each(_und.values(tables), function(table) {
-        var connected = _und.size(table.players);
-        var disconnected = _und.size(table.disconnected_players);
-        if (connected + disconnected < 4) {
+        console.log("Table round = " + table.round);
+        if (table.round === 0) {
             client.send("addTableRow", table.safe());
         }
     });
@@ -137,12 +136,17 @@ primus.on("connection", function(client) {
             }
 
             updatePlayerPositions(table);
-            if (_und.size(table.players) >= 4 && table.round === 0) {
-                //Do this to initialize scores
-                table.updateScores();
-                //Set the round to 1
-                table.nextRound();
-                primus.room(table.id).send("nextRound", table.safe());
+            if (_und.size(table.players) >= 4) {
+                //Start the round
+                //We need to check here because players can disconnect and rejoin
+                if (table.round === 0) {
+                    //Do this to initialize scores
+                    table.updateScores();
+                    //Set the round to 1
+                    table.nextRound();
+                    primus.room(table.id).send("nextRound", table.safe());
+                }
+                //Remove the table from the list
                 primus.room(waiting_room).send("removeTableRow", table.id);
             }
             return true;
@@ -387,8 +391,11 @@ function leaveTable(client) {
                 primus.room(waiting_room).send("removeTableRow", table.id);
                 console.log("Table " + table.id + " deleted");
             } else {
-                //Otherwise, remove the username from the row
-                primus.room(waiting_room).send("updateTableRow", table.safe());
+                //Update waiting room if the game has not started
+                if (table.round === 0) {
+                    //Otherwise, remove the username from the row
+                    primus.room(waiting_room).send("updateTableRow", table.safe());
+                }
                 //And let everone in the room know that a person left
                 updatePlayerPositions(table);
             }
