@@ -295,6 +295,16 @@ $(document).ready(function() {
 
     // -------------------------------- Game ----------------------------- //
 
+    socket.on("restoreState", function(table, played_cards, player) {
+        _state = table.state;
+        _round = table.round;
+        _turn = table.turn;
+        _trick_suit = table.trick_suit;
+        _hearts_broken = table.hearts_broken;
+
+        showCards(player.hand);
+    });
+
     socket.on("nextRound", function(table) {
         console.log(table);
         if (_.size(_players) == 4) {

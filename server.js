@@ -47,10 +47,11 @@ primus.on("connection", function(client) {
     console.log("Tables: " + JSON.stringify(_und.pluck(_und.values(tables), "id")));
     console.log("Clients: " + JSON.stringify(_und.pluck(primus.connections, "id")));
     _und.each(_und.values(tables), function(table) {
-        if (_und.size(table.players) < 4) {
+        var connected = _und.size(table.players);
+        var disconnected = _und.size(table.disconnected_players);
+        if (connected + disconnected < 4) {
             client.send("addTableRow", table.safe());
         }
-        //TODO: if we are in the list of disconnected players
     });
 
     client.on("newPlayer", function(player_name) {
@@ -62,6 +63,12 @@ primus.on("connection", function(client) {
             //This will add the player to the global list of players
             makePlayer(client, player_name);
             client.send("loggedIn", player_name);
+            //Alert the user to tables that they were disconnected from
+            _und.each(_und.values(tables), function(table) {
+                if (player_name in table.disconnected_players) {
+                    client.send("addTableRow", table.safe());
+                }
+            });
             console.log(player_name + " (" + client.id + ") logged in");
         }
     });
@@ -96,23 +103,44 @@ primus.on("connection", function(client) {
         if (player !== undefined && (table_id in tables)) {
             var table = tables[table_id];
 
-            player.table = table.id;
-            table.players[player_name] = player;
-
-            player.position = table.firstOpenPosition();
-            table.positions[player.position] = player.name;
-
             client.join(table.id);
             client.leave(waiting_room);
 
             //Tell this client to join the table
-            client.send("joinTable", table.safe());
+            client.send("joinTable");
 
             //Start the video chat - TODO: disconnection
-            client.send("connectToChat", table.safe());
+            client.send("connectToChat");
+
+            if (player_name in table.disconnected_players) {
+                var old_player = table.disconnected_players[player_name];
+                old_player.id = player.id;
+                players[client] = old_player;
+
+                table.players[player_name] = old_player;
+                table.positions[old_player.position] = player_name;
+                delete table.disconnected_players[player_name];
+
+                console.log("--------------");
+                console.log(table);
+                console.log("--------------");
+                console.log(player);
+                console.log("--------------");
+                console.log(old_player);
+                console.log("--------------");
+
+                client.send("restoreState", table.safe(), table.played_cards, old_player);
+
+            } else {
+                player.table = table.id;
+                table.players[player_name] = player;
+
+                player.position = table.firstOpenPosition();
+                table.positions[player.position] = player.name;
+            }
 
             updatePlayerPositions(table);
-            if (_und.size(table.players) >= 4) {
+            if (_und.size(table.players) >= 4 && table.round === 0) {
                 //Do this to initialize scores
                 table.updateScores();
                 //Set the round to 1
