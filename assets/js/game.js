@@ -64,7 +64,12 @@ $(document).ready(function() {
         }, 5000);
     });
 
-    $("#log-in").click(logIn);
+    //Disable "submit" event from being fired, use our own login procedure
+    $("#login-container-forms form").submit(function(e) {
+        logIn();
+        e.preventDefault();
+    });
+
     //Try to log in when we load the page
     if ($.cookie("name") !== undefined) {
         logIn();
