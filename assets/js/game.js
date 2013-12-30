@@ -3,6 +3,7 @@ $(document).ready(function() {
     var peer = null;
     var _local_stream;
 
+    var _restoring = false;
     var _state = "waiting"; // waiting, trading, playing, start_playing
     var _round = 0;
     var _players = {};
@@ -294,13 +295,13 @@ $(document).ready(function() {
 
     // -------------------------------- Game ----------------------------- //
 
-    socket.on("restoreState", function(table, played_cards, player) {
+    socket.on("restoreState", function(table, player) {
+        _restoring = true; //Handle this once we have all player info
         _state = table.state;
         _round = table.round;
         if (_state == "trading") {
             setInfoText("Select cards to trade (passing " + table.trade_dir + ")", color_grey);
         } else if (_state == "playing") {
-            setupTurn(table.turn);
             _trick_suit = table.trick_suit;
             _hearts_broken = table.hearts_broken;
         }
@@ -389,6 +390,17 @@ $(document).ready(function() {
             var remaining_player_count = 4 - _.size(all_pos);
             setInfoText("Waiting for " + remaining_player_count + " more players", color_grey);
         }
+        //If we are restoring the state of the game, ask for the played cards
+        if (_restoring === true) {
+            _restoring = false;
+            socket.send("restorePlayState");
+        }
+    });
+
+    socket.on("restoringPlayState", function(table) {
+        setupTurn(table.turn);
+        console.log(table.played_cards);
+        console.log(_players);
     });
 
     socket.on("updateRemainingTrades", function(pass_dir, remaining_trades) {

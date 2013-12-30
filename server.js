@@ -121,11 +121,7 @@ primus.on("connection", function(client) {
                 table.positions[old_player.position] = player_name;
                 delete table.disconnected_players[player_name];
 
-                console.log("--------------");
-                console.log(old_player);
-                console.log("--------------");
-
-                client.send("restoreState", table.safe(), table.played_cards, old_player);
+                client.send("restoreState", table.safe(), old_player);
 
             } else {
                 player.table = table.id;
@@ -135,7 +131,7 @@ primus.on("connection", function(client) {
                 table.positions[player.position] = player.name;
             }
 
-            updatePlayerPositions(table);
+            updateClientView(table);
             if (_und.size(table.players) >= 4) {
                 //Start the round
                 //We need to check here because players can disconnect and rejoin
@@ -154,6 +150,16 @@ primus.on("connection", function(client) {
             return false;
         }
     }
+
+    client.on("restorePlayState", function() {
+        var player = players[client.id];
+        if (player !== undefined) {
+            var table = tables[player.table];
+            if (table !== undefined) {
+                client.send("restoringPlayState", table.safe(), table.played_cards);
+            }
+        }
+    });
 
     // Individual table logic
     client.on("dealCards", function() {
@@ -257,6 +263,8 @@ primus.on("connection", function(client) {
                                 return;
                             }
                         }
+                        //Once the first card is played, the table is now in the 'playing' state
+                        table.state = "playing";
                         //This is the first card, set the trick suit
                         table.trick_suit = card.suit;
                     }
@@ -397,13 +405,13 @@ function leaveTable(client) {
                     primus.room(waiting_room).send("updateTableRow", table.safe());
                 }
                 //And let everone in the room know that a person left
-                updatePlayerPositions(table);
+                updateClientView(table);
             }
         }
     }
 }
 
-function updatePlayerPositions(table) {
+function updateClientView(table) {
     // Put all of the other players into a map - position:{name: ?, score: ?}
     var table_players = _und.values(table.players);
     var other_pos = _und.filterAndIndexBy(table_players, "position", ["name", "score"]);

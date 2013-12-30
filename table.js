@@ -90,7 +90,9 @@ var Table = function() {
             turn: this.turn,
             trade_dir: this.tradeDir(),
             scores: this.scores,
-            hearts_broken: hearts_broken
+            hearts_broken: this.hearts_broken,
+            trick_suit: this.trick_suit,
+            played_cards: this.played_cards
         };
     }
 
