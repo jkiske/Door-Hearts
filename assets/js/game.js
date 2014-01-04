@@ -1,4 +1,6 @@
 $(document).ready(function() {
+    $(document).on("touchmove", false);
+
     var socket = Primus.connect(document.URL);
     var peer = null;
     var _local_stream;
