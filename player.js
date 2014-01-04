@@ -1,7 +1,8 @@
 var _und = require("underscore");
 
 var Player = function(name, socket_id) {
-    var name = name;
+    var name = name; //This is what we will call the player at the table
+    var login_name = name; //This is the player's permanent login name
     var id = socket_id;
     var session = name + "_" + _und.uniqueId();
     var table;
@@ -63,12 +64,14 @@ var Player = function(name, socket_id) {
 
     return {
         name: name,
+        login_name: login_name,
         id: id,
         session: session,
         table: table,
         score: score,
         hand: hand,
         position: position,
+
         removeCards: removeCards,
         addCards: addCards,
         hasCard: hasCard,

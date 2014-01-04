@@ -63,11 +63,9 @@ primus.on("connection", function(client) {
             player = makePlayer(client, player_name);
             //Keep the same session
             player.session = old_player.session;
-            console.log("Player " + player.name + " (" + player.session + ") is logging in again");
         } else {
             //This will add the player to the global list of players
             player = makePlayer(client, player_name);
-            console.log("Player " + player.name + " (" + player.session + ") was created");
         }
         client.send("loggedIn", player.name, player.session);
         //Alert the user to tables that they were disconnected from
@@ -76,9 +74,7 @@ primus.on("connection", function(client) {
                 client.send("addTableRow", table.safe());
             }
         });
-        console.log(player_name + " (" + client.id + ") logged in");
-        console.log(players);
-
+        console.log("Player " + player.name + " (" + player.session + ") logged in");
     });
 
     client.on("deletePlayer", function(player_name) {
@@ -133,7 +129,13 @@ primus.on("connection", function(client) {
 
             } else {
                 player.table = table.id;
-                table.players[player_name] = player;
+                //check to see if there is another player with the same name
+                for (var i = 2; i <= 4; i++) {
+                    if (player.name in table.players) {
+                        player.name = player.login_name + " (" + i + ")";
+                    }
+                }
+                table.players[player.name] = player;
 
                 player.position = table.firstOpenPosition();
                 table.positions[player.position] = player.name;
