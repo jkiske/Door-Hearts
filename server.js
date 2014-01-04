@@ -53,24 +53,30 @@ primus.on("connection", function(client) {
         }
     });
 
-    client.on("newPlayer", function(player_name) {
-        var all_names = _und.pluck(_und.values(players), "name");
-        console.log(all_names);
-        if (_und.contains(all_names, player_name)) {
-            //Don't allow duplicate players
-            client.send("duplicateName", player_name);
+    client.on("newPlayer", function(player_name, session) {
+        var all_disconnected_players = _und.pluck(_und.values(tables), "disconnected_players");
+        var player;
+        _und.each(all_disconnected_players, function(disconnected_players) {
+            player = _und.find(disconnected_players, function(player) {
+                console.log(player.session);
+                return player.session == session;
+            });
+        });
+        console.log(player);
+        if (player !== undefined) {
+            console.log("Player " + player.name + " is trying to reconnect");
         } else {
             //This will add the player to the global list of players
-            makePlayer(client, player_name);
-            client.send("loggedIn", player_name);
-            //Alert the user to tables that they were disconnected from
-            _und.each(_und.values(tables), function(table) {
-                if (player_name in table.disconnected_players) {
-                    client.send("addTableRow", table.safe());
-                }
-            });
-            console.log(player_name + " (" + client.id + ") logged in");
+            player = makePlayer(client, player_name);
         }
+        client.send("loggedIn", player.name, player.session);
+        //Alert the user to tables that they were disconnected from
+        _und.each(_und.values(tables), function(table) {
+            if (player_name in table.disconnected_players) {
+                client.send("addTableRow", table.safe());
+            }
+        });
+        console.log(player_name + " (" + client.id + ") logged in");
     });
 
     client.on("deletePlayer", function(player_name) {

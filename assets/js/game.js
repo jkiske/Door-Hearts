@@ -32,10 +32,20 @@ $(document).ready(function() {
 
     // -------------------------------- Name logic ----------------------------- //
 
+    //Try to log in when we load the page
+    if ($.cookie("session") !== undefined) {
+        logIn();
+    } else {
+        showLogin();
+    }
+
     function logIn() {
+        var c_name = $.cookie("name");
+        var c_sess = $.cookie("session");
+        console.log(c_sess);
         // If we have logged in before, use the cookie
-        if ($.cookie("name") !== undefined) {
-            socket.send("newPlayer", $.cookie("name"));
+        if (c_name !== undefined && c_sess !== undefined) {
+            socket.send("newPlayer", $.cookie("name"), $.cookie("session"));
         } else {
             //Otherwise, use the name input value
             var name = $("#playername").val();
@@ -45,8 +55,9 @@ $(document).ready(function() {
         }
     }
 
-    socket.on("loggedIn", function(player_name) {
+    socket.on("loggedIn", function(player_name, session) {
         $.cookie("name", player_name);
+        $.cookie("session", session);
         $("#current-user-name").text(player_name);
         _name = player_name;
         showLogout();
@@ -70,13 +81,6 @@ $(document).ready(function() {
         e.preventDefault();
     });
 
-    //Try to log in when we load the page
-    if ($.cookie("name") !== undefined) {
-        logIn();
-    } else {
-        showLogin();
-    }
-
     function logOut() {
         if (_name !== undefined) {
             socket.send("deletePlayer", _name);
@@ -85,6 +89,7 @@ $(document).ready(function() {
 
     socket.on("loggedOut", function() {
         $.removeCookie("name");
+        $.removeCookie("session");
         _name = undefined;
         showLogin();
         disableJoinButtons();
@@ -677,7 +682,6 @@ $(document).ready(function() {
             _.each(dir_card_map, function(card, dir) {
                 hideMiddleCard(card);
                 socket.send("nextTrick");
-                //TODO: Enable clicking the cards
             });
         }, _clear_trick_delay);
     });

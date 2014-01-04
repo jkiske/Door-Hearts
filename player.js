@@ -3,6 +3,7 @@ var _und = require("underscore");
 var Player = function(name, socket_id) {
     var name = name;
     var id = socket_id;
+    var session = name + "_" + _und.uniqueId();
     var table;
     var hand = [];
     var score = 0;
@@ -63,6 +64,7 @@ var Player = function(name, socket_id) {
     return {
         name: name,
         id: id,
+        session: session,
         table: table,
         score: score,
         hand: hand,
