@@ -47,7 +47,6 @@ primus.on("connection", function(client) {
     console.log("Tables: " + JSON.stringify(_und.pluck(_und.values(tables), "id")));
     console.log("Clients: " + JSON.stringify(_und.pluck(primus.connections, "id")));
     _und.each(_und.values(tables), function(table) {
-        console.log("Table round = " + table.round);
         if (table.round === 0) {
             client.send("addTableRow", table.safe());
         }
@@ -70,7 +69,13 @@ primus.on("connection", function(client) {
         client.send("loggedIn", player.name, player.session);
         //Alert the user to tables that they were disconnected from
         _und.each(_und.values(tables), function(table) {
-            if (player_name in table.disconnected_players) {
+            var disconnected_players = _und.values(table.disconnected_players);
+            var same_name = player_name in disconnected_players;
+            var same_session = _und.where(disconnected_players, {
+                "session": session
+            }).length > 0;
+            console.log(disconnected_players);
+            if (same_name || same_session) {
                 client.send("addTableRow", table.safe());
             }
         });
@@ -116,25 +121,28 @@ primus.on("connection", function(client) {
             //Start the video chat - TODO: disconnection
             client.send("connectToChat");
 
-            if (player_name in table.disconnected_players) {
-                var old_player = table.disconnected_players[player_name];
+            //check to see if there is another player with the same name
+            for (var i = 2; i <= 4; i++) {
+                if (player.name in table.players) {
+                    player.name = player.login_name + " (" + i + ")";
+                }
+            }
+            console.log("disconnected players:");
+            console.log(_und.keys(table.disconnected_players));
+            if (player.name in table.disconnected_players) {
+                var old_player = table.disconnected_players[player.name];
                 old_player.id = player.id;
                 players[client.id] = old_player;
 
-                table.players[player_name] = old_player;
-                table.positions[old_player.position] = player_name;
-                delete table.disconnected_players[player_name];
+                table.players[player.name] = old_player;
+                table.positions[old_player.position] = player.name;
+                delete table.disconnected_players[player.name];
 
                 client.send("restoreState", table.safe(), old_player);
 
             } else {
                 player.table = table.id;
-                //check to see if there is another player with the same name
-                for (var i = 2; i <= 4; i++) {
-                    if (player.name in table.players) {
-                        player.name = player.login_name + " (" + i + ")";
-                    }
-                }
+
                 table.players[player.name] = player;
 
                 player.position = table.firstOpenPosition();
@@ -395,9 +403,10 @@ function leaveTable(client) {
                  * give disconnected players a chance to rejoin
                  * Move the player from players -> disconnected players */
                 table.disconnected_players[player.name] = table.players[player.name];
+                console.log("disconnected players:");
                 console.log(table.disconnected_players);
             }
-            console.log("deleting player " + player.name + " round: " + table.round);
+            console.log("deleting player " + player.name);
             var all_names = _und.pluck(_und.values(players), "name");
             console.log(all_names);
             delete table.players[player.name];

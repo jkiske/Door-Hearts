@@ -51,7 +51,7 @@ $(document).ready(function() {
         } else {
             //Otherwise, use the name input value
             var name = $("#playername").val();
-            if (name.length > 0) {
+            if (name.length > 0 && name.indexOf("(") === -1) {
                 socket.send("newPlayer", name);
             }
         }
