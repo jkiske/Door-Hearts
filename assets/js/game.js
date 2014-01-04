@@ -43,8 +43,8 @@ $(document).ready(function() {
         var c_name = $.cookie("name");
         var c_sess = $.cookie("session");
         console.log(c_sess);
-        // If we have logged in before, use the cookie
         if (c_name !== undefined && c_sess !== undefined) {
+            // If we have logged in before, use the cookie
             socket.send("newPlayer", $.cookie("name"), $.cookie("session"));
         } else {
             //Otherwise, use the name input value
@@ -56,6 +56,7 @@ $(document).ready(function() {
     }
 
     socket.on("loggedIn", function(player_name, session) {
+        //Set the session and name to what the server says it should be
         $.cookie("name", player_name);
         $.cookie("session", session);
         $("#current-user-name").text(player_name);

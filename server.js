@@ -54,20 +54,20 @@ primus.on("connection", function(client) {
     });
 
     client.on("newPlayer", function(player_name, session) {
-        var all_disconnected_players = _und.pluck(_und.values(tables), "disconnected_players");
-        var player;
-        _und.each(all_disconnected_players, function(disconnected_players) {
-            player = _und.find(disconnected_players, function(player) {
-                console.log(player.session);
-                return player.session == session;
-            });
+        var all_players = _und.values(players);
+        //Search through all players and try to find one with the same session
+        var old_player = _und.find(all_players, function(player) {
+            return player.session == session;
         });
-        console.log(player);
-        if (player !== undefined) {
-            console.log("Player " + player.name + " is trying to reconnect");
+        if (old_player !== undefined) {
+            player = makePlayer(client, player_name);
+            //Keep the same session
+            player.session = old_player.session;
+            console.log("Player " + player.name + " (" + player.session + ") is logging in again");
         } else {
             //This will add the player to the global list of players
             player = makePlayer(client, player_name);
+            console.log("Player " + player.name + " (" + player.session + ") was created");
         }
         client.send("loggedIn", player.name, player.session);
         //Alert the user to tables that they were disconnected from
@@ -77,6 +77,8 @@ primus.on("connection", function(client) {
             }
         });
         console.log(player_name + " (" + client.id + ") logged in");
+        console.log(players);
+
     });
 
     client.on("deletePlayer", function(player_name) {
