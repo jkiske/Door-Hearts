@@ -115,18 +115,19 @@ primus.on("connection", function(client) {
             client.join(table.id);
             client.leave(waiting_room);
 
-            //Tell this client to join the table
-            client.send("joinTable");
-
-            //Start the video chat - TODO: disconnection
-            client.send("connectToChat");
-
             //check to see if there is another player with the same name
             for (var i = 2; i <= 4; i++) {
                 if (player.name in table.players) {
                     player.name = player.login_name + " (" + i + ")";
                 }
             }
+
+            //Tell this client to join the table
+            client.send("joinTable");
+
+            //Start the video chat - TODO: disconnection
+            client.send("connectToChat", player.id);
+
             console.log("disconnected players:");
             console.log(_und.keys(table.disconnected_players));
             if (player.name in table.disconnected_players) {
@@ -367,9 +368,9 @@ primus.on("connection", function(client) {
         if (player !== undefined) {
             var table = tables[player.table];
             if (table !== undefined) {
-                _und.each(table.safe().players, function(name) {
-                    if (name != player.name) {
-                        client.send("callPeer", name);
+                _und.each(table.players, function(other_player, name) {
+                    if (other_player.name != player.name) {
+                        client.send("callPeer", other_player.id);
                     }
                 });
 
@@ -433,7 +434,7 @@ function leaveTable(client) {
 function updateClientView(table) {
     // Put all of the other players into a map - position:{name: ?, score: ?}
     var table_players = _und.values(table.players);
-    var other_pos = _und.filterAndIndexBy(table_players, "position", ["name", "score"]);
+    var other_pos = _und.filterAndIndexBy(table_players, "position", ["name", "score", "id"]);
 
     //Tell all the clients at the table that there is a new player
     var clients = primus.room(table.id).clients();

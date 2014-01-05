@@ -207,10 +207,14 @@ $(document).ready(function() {
         $("#game").removeClass("hidden");
     });
 
-    socket.on("connectToChat", function() {
+    socket.on("connectToChat", function(id) {
         if (peer === null) {
-            peer = new Peer(_name, {
+            console.log("my rtc name: " + id);
+            peer = new Peer(id, {
                 key: "2kddwxi4hfcrf6r"
+            });
+            peer.on('error', function(err) {
+                console.log(err);
             });
 
             var video_settings = {
@@ -241,15 +245,18 @@ $(document).ready(function() {
         var call = peer.call(peer_name, _local_stream);
         //When the other person answers, show us their stream
         call.on("stream", answerCall);
-        console.log(_name + " calling " + peer_name);
+        console.log(peer.id + " calling " + peer_name);
     });
 
-    function answerCall(remoteStream) {
-        if (remoteStream !== null) {
+    function answerCall(remote_stream) {
+        if (remote_stream !== null) {
             //'this' is the MediaConnection object from the call
-            var streamer = _players[this.peer];
+            var remote_id = this.peer;
+            var streamer = _.find(_players, function(player) {
+                return player.id === remote_id;
+            });
             _calls[this.peer] = this;
-            $('#video-' + streamer.dir).attr("src", URL.createObjectURL(remoteStream));
+            $('#video-' + streamer.dir).attr("src", URL.createObjectURL(remote_stream));
             $('#video-' + streamer.dir).removeClass("hidden");
             $('#img-' + streamer.dir).addClass("hidden");
             console.log(_name + " answering " + this.peer);
@@ -373,6 +380,7 @@ $(document).ready(function() {
             _players[name] = {
                 dir: rel_dir,
                 pos: pos,
+                id: player.id,
                 score_div: name_div.find(".score-label"),
                 color: color_map[pos]
             };
