@@ -292,7 +292,7 @@ $(document).ready(function() {
     }
 
     $("#video-local, #video-local-overlay").click(function() {
-        $(".mic").toggleClass("off");
+        $("#video-local-mic").toggleClass("off");
         if (_local_stream !== null) {
             var audioTracks = _local_stream.getAudioTracks();
             for (var i = 0, l = audioTracks.length; i < l; i++) {
@@ -306,7 +306,7 @@ $(document).ready(function() {
             $("#video-local-overlay").removeClass("hidden");
         },
         function() { //Hover-off
-            if ($(".mic").hasClass("off") === false) {
+            if ($("#video-local-mic").hasClass("off") === false) {
                 $("#video-local-overlay").addClass("hidden");
             }
         }
