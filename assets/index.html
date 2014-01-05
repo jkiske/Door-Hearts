@@ -15,12 +15,10 @@
 <body>
   <div id="login-view">
     <div class="container">
-
       <div class="row">
         <div class="login-title col-xs-3">
           <strong>Hearts</strong>
         </div>
-
         <div class="col-xs-9 login-container">
           <div id="login-container-forms" class="col-xs-9 col-md-5 pull-right">
             <form class="input-group hidden">
@@ -43,9 +41,9 @@
       </div>
     </div>
   </div>
-  <div class="container">
 
-    <div id="tableslist">
+  <div id="list-view">
+    <div class="container">
       <div class="row">
         <div class="col-xs-12 col-md-6 col-md-offset-3 user-box">
 
@@ -66,13 +64,14 @@
                   <h3>Games</h3>
                 </div>
               </div>
-              <table class="table table-hover" id="tabletable-id">
+              <table id="game-list-table" class="table table-hover">
                 <thead>
                   <tr>
                     <th>Players</th>
                     <th>Round</th>
-                    <th style="width:50px">
-                      <div class="text-center btn btn-sm btn-success" id="newtable">
+                    <th>
+                      <div class="text-center btn btn-md btn-success" id="newtable">
+                        <strong>New Game</strong>&nbsp;
                         <span class="glyphicon glyphicon-plus"></span>
                       </div>
                     </th>
@@ -87,8 +86,10 @@
         </div>
       </div>
     </div>
+  </div>
 
-    <div id="game" class="hidden">
+  <div id="game-view" class="hidden">
+    <div class="container">
       <div class="nav">
         <h3>
           <div id="leave-table" class="nav-back btn btn-default">
@@ -262,6 +263,7 @@
         </div>
       </div>
     </div>
+  </div>
 
   </div>
 

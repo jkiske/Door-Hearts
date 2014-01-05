@@ -134,7 +134,8 @@ $(document).ready(function() {
             '<td>' + player_names + '</td>' +
             '<td>' + round + '</td>' +
             '<td><div  id = "' + t_id + '" class=' +
-            '"joinbtn text-center btn btn-sm btn-primary">' +
+            '"joinbtn text-center btn btn-md btn-primary">' +
+            '<strong>Join</strong>&nbsp;' +
             '<span class="glyphicon glyphicon-chevron-right"></span>' +
             '</div></td>' +
             '</tr>';
@@ -143,7 +144,7 @@ $(document).ready(function() {
     $("#newtable").click(function() {
         if (isLoggedIn() === true) {
             //Prevent being able to double-click new game
-            var buttons = $(".joinbtn,#newtable");
+            var buttons = $(".joinbtn, #newtable");
             buttons.addClass("disabled");
             socket.send("newTable", _name);
         }
@@ -153,7 +154,7 @@ $(document).ready(function() {
     socket.on("addTableRow", addTableRow);
 
     function addTableRow(table) {
-        $("#tabletable-id tbody").append(tableRowHtml(table));
+        $("#game-list-table tbody").append(tableRowHtml(table));
         //When we add a new table, check to see if we should make links inactive
         if (isLoggedIn() === true) {
             enableJoinButtons();
@@ -202,9 +203,9 @@ $(document).ready(function() {
     //Switch views to the table view
     socket.on("joinTable", function() {
         document.title = _name + ": Door Hearts";
-        $("#tableslist").addClass("hidden");
+        $("#list-view").addClass("hidden");
         $("#login-view").addClass("hidden");
-        $("#game").removeClass("hidden");
+        $("#game-view").removeClass("hidden");
         $("#leave-table").removeClass("hidden");
     });
 
@@ -311,8 +312,8 @@ $(document).ready(function() {
 
     $("#leave-table").click(function() {
         document.title = "Door Hearts";
-        $("#game").addClass("hidden");
-        $("#tableslist").removeClass("hidden");
+        $("#game-view").addClass("hidden");
+        $("#list-view").removeClass("hidden");
         $("#login-view").removeClass("hidden");
         socket.send("leaveTable");
         //We need to re-login because leaving the table is just like disconnecting

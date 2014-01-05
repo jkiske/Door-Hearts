@@ -16,7 +16,7 @@ body {
 a {
     cursor: pointer;
 }
-#game, #tableslist {
+#game-view, #list-view {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -44,9 +44,24 @@ a {
     margin-top: 0.5em;
     color: #FFF;
 }
-#tableslist {
+#list-view {
     margin-top: 20px;
 }
+
+#newtable{
+    position: relative;
+    top: -58px;
+}
+#game-list-table tbody tr td{
+    vertical-align: middle;
+}
+
+#game-list-table tbody tr td:last-child,
+#game-list-table thead tr th:last-child {
+    text-align: right;
+    width: 150px;
+}
+
 .rotate90 {
     transform:rotate(90deg);
     -ms-transform:rotate(90deg);
