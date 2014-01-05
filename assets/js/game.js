@@ -40,6 +40,7 @@ $(document).ready(function() {
         logIn();
     } else {
         showLogin();
+        disableJoinButtons();
     }
 
     function logIn() {
