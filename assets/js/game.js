@@ -1,6 +1,4 @@
 $(document).ready(function() {
-    $(document).on("touchmove", false);
-
     var socket = Primus.connect(document.URL);
     var peer = null;
     var _local_stream = null;
@@ -32,6 +30,9 @@ $(document).ready(function() {
     });
 
     $("#playername").popover();
+
+    $(document).on("touchmove", false);
+    var IS_IPAD = navigator.userAgent.match(/iPad/i) != null;
 
     // -------------------------------- Name logic ----------------------------- //
 
@@ -481,6 +482,21 @@ $(document).ready(function() {
         }
 
         centerBottomCards();
+
+        //Hovering over the cards should pop them up
+        $("#bottomcards .card").hover(
+            function() {
+                //In handler
+                if (!$(this).hasClass("disabled") && !IS_IPAD) {
+                    $("#bottomcards .card").removeClass("hover");
+                    $(this).addClass("hover");
+                }
+            },
+            function() {
+                //Out handler
+                $("#bottomcards .card").removeClass("hover");
+            }
+        );
 
         $("#bottomcards .card").click(function() {
             if (_state == "trading") {

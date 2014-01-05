@@ -35,12 +35,7 @@
 .playingCards a.card {
     text-decoration: none;
 }
-/* selected and hover state */
-.playingCards a.card:hover, .playingCards a.card:active, .playingCards a.card:focus,
-.playingCards label.card:hover,
-.playingCards strong .card {
-    bottom: 0.5em;
-}
+
 .playingCards label.card {
     cursor: pointer;
 }

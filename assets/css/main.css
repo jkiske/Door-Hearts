@@ -23,7 +23,7 @@ a {
     margin-left: -229px;
     z-index: -1;
 }
-#game-view, #list-view {
+#game-view, #list-view, .big-heart {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -226,6 +226,9 @@ a {
     bottom: 0em !important;
     /*This disables the hover effect*/
     background: #888;
+}
+.card.hover{
+    bottom: 0.5em;
 }
 .card.disabled.diams, .card.disabled.hearts {
     color: #800 !important;
