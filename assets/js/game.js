@@ -219,8 +219,13 @@ $(document).ready(function() {
             });
 
             var video_settings = {
-                video: true,
-                audio: true
+                audio: true,
+                video: {
+                    mandatory: {
+                        maxWidth: 320,
+                        maxHeight: 240
+                    }
+                }
             };
             navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
             navigator.getUserMedia(video_settings, function(stream) {
