@@ -11,6 +11,7 @@ $(document).ready(function() {
     var _players = {};
     var _cards = [];
     var _turn = "";
+    var _login_name = "";
     var _name = "";
     var _trick_suit = "";
     var _hearts_broken = false;
@@ -62,7 +63,7 @@ $(document).ready(function() {
         $.cookie("name", player_name);
         $.cookie("session", session);
         $("#current-user-name").text(player_name);
-        _name = player_name;
+        _login_name = player_name;
         showLogout();
         enableJoinButtons();
     });
@@ -85,15 +86,15 @@ $(document).ready(function() {
     });
 
     function logOut() {
-        if (_name !== undefined) {
-            socket.send("deletePlayer", _name);
+        if (_login_name !== undefined) {
+            socket.send("deletePlayer", _login_name);
         }
     }
 
     socket.on("loggedOut", function() {
         $.removeCookie("name");
         $.removeCookie("session");
-        _name = undefined;
+        _login_name = undefined;
         showLogin();
         disableJoinButtons();
     });
@@ -146,7 +147,7 @@ $(document).ready(function() {
             //Prevent being able to double-click new game
             var buttons = $(".joinbtn, #newtable");
             buttons.addClass("disabled");
-            socket.send("newTable", _name);
+            socket.send("newTable", _login_name);
         }
     });
 
@@ -185,7 +186,7 @@ $(document).ready(function() {
         if (isLoggedIn() === true) {
             var buttons = $(".joinbtn,#newtable");
             buttons.addClass("disabled");
-            socket.send("joinTable", id, _name);
+            socket.send("joinTable", id, _login_name);
         }
     }
 
@@ -201,7 +202,8 @@ $(document).ready(function() {
 
     // -------------------------------- Switching Views ----------------------------- //
     //Switch views to the table view
-    socket.on("joinTable", function() {
+    socket.on("joinTable", function(name) {
+        _name = name;
         document.title = _name + ": Door Hearts";
         $("#list-view").addClass("hidden");
         $("#login-view").addClass("hidden");

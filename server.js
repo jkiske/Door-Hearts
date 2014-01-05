@@ -123,7 +123,7 @@ primus.on("connection", function(client) {
             }
 
             //Tell this client to join the table
-            client.send("joinTable");
+            client.send("joinTable", player.name);
 
             //Start the video chat - TODO: disconnection
             client.send("connectToChat", player.id);
