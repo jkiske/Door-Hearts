@@ -205,6 +205,7 @@ $(document).ready(function() {
         $("#tableslist").addClass("hidden");
         $("#login-view").addClass("hidden");
         $("#game").removeClass("hidden");
+        $("#leave-table").removeClass("hidden");
     });
 
     socket.on("connectToChat", function(id) {
@@ -321,12 +322,16 @@ $(document).ready(function() {
             _restore_play_state = true; //Handle this once we have all player info
         }
         showCards(player.hand);
+        $("#leave-table").addClass("hidden");
     });
 
     socket.on("nextRound", function(table) {
         if (_.size(_players) == 4) {
             _state = table.state;
             _round = table.round;
+            if (_round === 1) {
+                $("#leave-table").addClass("hidden");
+            }
             if (table.state == "trading") {
                 _skip_trade = false;
                 setInfoText("Select cards to trade (passing " + table.trade_dir + ")", color_grey);
