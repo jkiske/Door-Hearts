@@ -230,8 +230,7 @@ $(document).ready(function() {
             navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
             navigator.getUserMedia(video_settings, function(stream) {
                 _local_stream = stream;
-                $("#video-local").attr("src", URL.createObjectURL(_local_stream));
-                $("#video-local").removeClass("hidden");
+                showVideo("local", _local_stream);
 
                 //Answer any call we recieve with our own stream
                 peer.on("call", function(call) {
@@ -262,19 +261,30 @@ $(document).ready(function() {
                 return player.id === remote_id;
             });
             _calls[this.peer] = this;
-            $('#video-' + streamer.dir).attr("src", URL.createObjectURL(remote_stream));
-            $('#video-' + streamer.dir).removeClass("hidden");
-            $('#img-' + streamer.dir).addClass("hidden");
+            showVideo(streamer.dir, remote_stream);
             console.log(_name + " answering " + this.peer);
             console.log(_calls);
 
             //Set up disconnection/error handling here
             this.on("close", function() {
-                console.log("Connection closed with " + this.peer);
+                console.log("Connection closed with " + streamer.id);
+                hideVideo(streamer.dir);
                 delete _calls[this.peer];
                 console.log(_calls);
             });
         }
+    }
+
+    function hideVideo(dir) {
+        $('#video-' + dir).removeAttr("src");
+        $('#video-' + dir).addClass("hidden");
+        $('#img-' + dir).removeClass("hidden");
+    }
+
+    function showVideo(dir, stream) {
+        $('#img-' + dir).addClass("hidden");
+        $('#video-' + dir).attr("src", URL.createObjectURL(stream));
+        $('#video-' + dir).removeClass("hidden");
     }
 
     $("#video-local, #video-local-overlay").click(function() {
@@ -407,6 +417,7 @@ $(document).ready(function() {
                 open_div.removeClass(color_map[pos]);
                 open_div.addClass(color_grey);
 
+                hideVideo(rel_dir);
                 //Update the score table's title
                 var score_index = score_order.indexOf(pos);
                 $score_table_head[score_index].innerText = "Open";
