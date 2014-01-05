@@ -128,8 +128,6 @@ primus.on("connection", function(client) {
             //Start the video chat - TODO: disconnection
             client.send("connectToChat", player.id);
 
-            console.log("disconnected players:");
-            console.log(_und.keys(table.disconnected_players));
             if (player.name in table.disconnected_players) {
                 var old_player = table.disconnected_players[player.name];
                 old_player.id = player.id;
@@ -404,10 +402,9 @@ function leaveTable(client) {
                  * give disconnected players a chance to rejoin
                  * Move the player from players -> disconnected players */
                 table.disconnected_players[player.name] = table.players[player.name];
-                console.log("disconnected players:");
-                console.log(table.disconnected_players);
+                console.log("Saving " + player.name + "'s state at the table");
             }
-            console.log("deleting player " + player.name);
+            console.log("Deleting player " + player.name);
             var all_names = _und.pluck(_und.values(players), "name");
             console.log(all_names);
             delete table.players[player.name];

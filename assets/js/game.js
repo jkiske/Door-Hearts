@@ -213,7 +213,6 @@ $(document).ready(function() {
 
     socket.on("connectToChat", function(id) {
         if (peer === null) {
-            console.log("my rtc name: " + id);
             peer = new Peer(id, {
                 key: "2kddwxi4hfcrf6r"
             });
@@ -265,13 +264,14 @@ $(document).ready(function() {
             });
             _calls[this.peer] = this;
             showVideo(streamer.dir, remote_stream);
-            console.log(_name + " answering " + this.peer);
+            console.log(peer.id + " answering " + this.peer);
             console.log(_calls);
 
             //Set up disconnection/error handling here
             this.on("close", function() {
                 console.log("Connection closed with " + streamer.id);
                 hideVideo(streamer.dir);
+                //TODO: Add a re-call button
                 delete _calls[this.peer];
                 console.log(_calls);
             });
