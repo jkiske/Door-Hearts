@@ -377,6 +377,7 @@ primus.on("connection", function(client) {
     });
 
     client.on("leaveTable", function() {
+        client.send("disconnectChat");
         client.leaveAll();
         client.join(waiting_room);
         leaveTable(client);

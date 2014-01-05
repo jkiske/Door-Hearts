@@ -3,7 +3,7 @@ $(document).ready(function() {
 
     var socket = Primus.connect(document.URL);
     var peer = null;
-    var _local_stream;
+    var _local_stream = null;
 
     var _restore_play_state = false;
     var _state = "waiting"; // waiting, trading, playing, start_playing
@@ -323,8 +323,18 @@ $(document).ready(function() {
         logIn();
     });
 
-    socket.on("disconnectChat", function(table) {
-        console.log(table);
+    socket.on("disconnectChat", function() {
+        if (peer !== null) {
+            peer.disconnect();
+            _.each(_calls, function(call) {
+                call.close();
+            });
+            peer = null;
+        }
+        if (_local_stream !== null) {
+            _local_stream.stop();
+        }
+        hideVideo("local");
     });
 
 
