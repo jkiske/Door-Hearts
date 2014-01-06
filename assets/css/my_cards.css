@@ -105,6 +105,10 @@
     position: relative;
     top: -.45em;
 }
+.playing-cards .card.hearts,
+.playing-cards .card.diams{
+    color: #DD0000;
+}
 /**
 * Card icons
 */
