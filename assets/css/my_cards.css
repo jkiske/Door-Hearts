@@ -24,13 +24,33 @@
 /*
  * Played are the middle cards
  */
- .playing-cards .played {
+.playing-cards .played {
     font-size: 1.1em;
     cursor: default;
+    width: 265px;
+    height: 265px;
+    position: absolute;
+    left: 50%;
+    margin-left: -132.5px;
 }
-.playing-cards .played .card {
-    /*margin-right:-2em;*/
-    margin-right:1em;
+.playing-cards .played .card:nth-of-type(1) {
+    position: absolute;
+    top: 1em;
+    left: .65em;
+}
+.playing-cards .played .card:nth-of-type(2) {
+    position: absolute;
+    left: 2.65em;
+}
+.playing-cards .played .card:nth-of-type(3) {
+    position: absolute;
+    left: 2.65em;
+    top: 3em;
+}
+.playing-cards .played .card:nth-of-type(4) {
+    position: absolute;
+    left: 4.65em;
+    top: 1em;
 }
 /**
  * Card shape and animations
@@ -49,8 +69,7 @@
     -moz-transition: -moz-transform 0.1s linear;
     transition: transform 0.1s linear;
 }
-.playing-cards .card .front,
-.playing-cards .card .back {
+.playing-cards .card .front, .playing-cards .card .back {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -109,44 +128,32 @@
     position: relative;
     top: -.45em;
 }
-.playing-cards .card.hearts,
-.playing-cards .card.diams{
+.playing-cards .card.hearts, .playing-cards .card.diams {
     color: #DD0000;
 }
 /**
 * Small fixes
 */
-.playing-cards .card.hearts.rank-a .front .icon{
+ .playing-cards .card.hearts.rank-a .front .icon {
     margin-top: .1em;
     font-size: 2.7em;
 }
 /**
 * Card icons
 */
-.playing-cards .card.rank-10 .suit,
-.playing-cards .card.rank-9 .suit,
-.playing-cards .card.rank-8 .suit,
-.playing-cards .card.rank-7 .suit,
-.playing-cards .card.rank-6 .suit,
-.playing-cards .card.rank-5 .suit,
-.playing-cards .card.rank-4 .suit,
-.playing-cards .card.rank-3 .suit,
-.playing-cards .card.rank-2 .suit {
+ .playing-cards .card.rank-10 .suit, .playing-cards .card.rank-9 .suit, .playing-cards .card.rank-8 .suit, .playing-cards .card.rank-7 .suit, .playing-cards .card.rank-6 .suit, .playing-cards .card.rank-5 .suit, .playing-cards .card.rank-4 .suit, .playing-cards .card.rank-3 .suit, .playing-cards .card.rank-2 .suit {
     height: 0px;
 }
 /*High Packing*/
-.playing-cards .card.rank-10 .icon {
+ .playing-cards .card.rank-10 .icon {
     margin-top: 10%;
     height: 75%;
     font-size: .75em;
     letter-spacing: -.1em;
     word-spacing: -.2em;
 }
-
 /*Medium Packing*/
-.playing-cards .card.rank-9 .icon,
-.playing-cards .card.rank-8 .icon,
-.playing-cards .card.rank-7 .icon {
+ .playing-cards .card.rank-9 .icon, .playing-cards .card.rank-8 .icon, .playing-cards .card.rank-7 .icon {
     margin-top: 10%;
     height: 75%;
     font-size: .75em;
@@ -154,11 +161,7 @@
     word-spacing: -.2em;
 }
 /*Low Packing*/
-.playing-cards .card.rank-6 .icon,
-.playing-cards .card.rank-5 .icon,
-.playing-cards .card.rank-4 .icon,
-.playing-cards .card.rank-3 .icon,
-.playing-cards .card.rank-2 .icon {
+ .playing-cards .card.rank-6 .icon, .playing-cards .card.rank-5 .icon, .playing-cards .card.rank-4 .icon, .playing-cards .card.rank-3 .icon, .playing-cards .card.rank-2 .icon {
     margin-top: 10%;
     height: 75%;
     font-size: .75em;
@@ -168,7 +171,7 @@
 /**
  * Rotations
  */
-.playing-cards .card.rotate90 {
+ .playing-cards .card.rotate90 {
     transform:rotate(90deg);
     -moz-transform:rotate(90deg);
     -webkit-transform:rotate(90deg);
