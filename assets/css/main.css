@@ -67,24 +67,18 @@ a {
 }
 .rotate90 {
     transform:rotate(90deg);
-    -ms-transform:rotate(90deg);
-    /* IE 9 */
+    -moz-transform:rotate(90deg);
     -webkit-transform:rotate(90deg);
-    /* Safari and Chrome */
 }
 .rotate180 {
     transform:rotate(180deg);
-    -ms-transform:rotate(180deg);
-    /* IE 9 */
+    -moz-transform:rotate(180deg);
     -webkit-transform:rotate(180deg);
-    /* Safari and Chrome */
 }
 .rotate270 {
     transform:rotate(-90deg);
-    -ms-transform:rotate(-90deg);
-    /* IE 9 */
+    -moz-transform:rotate(-90deg);
     -webkit-transform:rotate(-90deg);
-    /* Safari and Chrome */
 }
 .navbar-form {
     padding-right: 0px;
@@ -227,7 +221,7 @@ a {
     /*This disables the hover effect*/
     background: #888;
 }
-.card.hover{
+.card.hover {
     bottom: 0.5em;
 }
 .card.disabled.diams, .card.disabled.hearts {

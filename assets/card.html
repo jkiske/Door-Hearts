@@ -13,19 +13,132 @@
 </head>
 
 <body>
-  <div id="test-card" class="playing-cards">
-    <div class="hand">
-      <div class="card rank-k spades">
-        <div class="front">
-          <span class="rank">K</span>
-          <span class="suit">♠</span>
-          <span class="icon">&#9818;</span>
-        </div>
-        <div class="back">
+  <div class="container">
+    <div class="row">
+
+      <div class="playing-cards">
+        <div class="hand">
+          <div class="card rank-k spades">
+            <div class="front">
+              <div class="rank">K</div>
+              <div class="suit">♠</div>
+              <div class="icon">&#9818;</div>
+            </div>
+            <div class="back">
+            </div>
+          </div>
+
+          <div class="card rank-k spades">
+            <div class="front">
+              <div class="rank">K</div>
+              <div class="suit">♠</div>
+              <div class="icon">&#9818;</div>
+            </div>
+            <div class="back">
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
+    <!-- row -->
+    <div class="row">
+
+      <div class="playing-cards">
+        <div class="table">
+          <div class="card rank-k spades">
+            <div class="front">
+              <div class="rank">K</div>
+              <div class="suit">♠</div>
+              <div class="icon">&#9818;</div>
+            </div>
+            <div class="back">
+            </div>
+          </div>
+
+          <div class="card rank-k spades">
+            <div class="front">
+              <div class="rank">K</div>
+              <div class="suit">♠</div>
+              <div class="icon">&#9818;</div>
+            </div>
+            <div class="back">
+            </div>
+          </div>
+
+          <div class="card rank-k spades">
+            <div class="front">
+              <div class="rank">K</div>
+              <div class="suit">♠</div>
+              <div class="icon">&#9818;</div>
+            </div>
+            <div class="back">
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <!-- row -->
+    <div class="row">
+
+      <div class="playing-cards">
+        <div class="played">
+
+          <div class="card rank-k spades rotate270">
+            <div class="front">
+              <div class="rank">K</div>
+              <div class="suit">♠</div>
+              <div class="icon">&#9818;</div>
+            </div>
+            <div class="back">
+            </div>
+          </div>
+
+          <div class="card rank-k spades">
+            <div class="front">
+              <div class="rank">K</div>
+              <div class="suit">♠</div>
+              <div class="icon">&#9818;</div>
+            </div>
+            <div class="back">
+            </div>
+          </div>
+
+          <div class="card rank-k spades rotate180">
+            <div class="front">
+              <div class="rank">K</div>
+              <div class="suit">♠</div>
+              <div class="icon">&#9818;</div>
+            </div>
+            <div class="back">
+            </div>
+          </div>
+
+          <div class="card rank-k spades rotate90">
+            <div class="front">
+              <div class="rank">K</div>
+              <div class="suit">♠</div>
+              <div class="icon">&#9818;</div>
+            </div>
+            <div class="back">
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <!-- row -->
   </div>
+  <!-- container -->
+  <script src="js/jquery-2.0.3.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+  $(document).ready(function() {
+    $(".playing-cards .hand .card").click(function() {
+      $(this).toggleClass("flipped");
+    });
+  });
+  </script>
 </body>
 
 </html>
