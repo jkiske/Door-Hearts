@@ -45,9 +45,9 @@
     -webkit-transform-style: preserve-3d;
     -moz-transform-style: preserve-3d;
     transform-style: preserve-3d;
-    -webkit-transition: -webkit-transform 0.3s linear;
-    -moz-transition: -moz-transform 0.3s linear;
-    transition: transform 0.3s linear;
+    -webkit-transition: -webkit-transform 0.1s linear;
+    -moz-transition: -moz-transform 0.1s linear;
+    transition: transform 0.1s linear;
 }
 .playing-cards .card .front,
 .playing-cards .card .back {
