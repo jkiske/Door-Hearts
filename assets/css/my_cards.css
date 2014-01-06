@@ -3,9 +3,11 @@
  */
  .playing-cards .hand {
     cursor: pointer;
+    text-align: center;
 }
 .playing-cards .hand .card {
-    margin-right: -1em;
+    margin-right: -.5em;
+    margin-left: -.5em;
 }
 /**
  * Tables are the traded cards
@@ -13,8 +15,10 @@
  .playing-cards .table {
     font-size: 1.1em;
     cursor: default;
+    text-align: center;
 }
 .playing-cards .table .card {
+    margin-right: 2em;
     margin-right: 2em;
 }
 /*
@@ -108,6 +112,13 @@
 .playing-cards .card.hearts,
 .playing-cards .card.diams{
     color: #DD0000;
+}
+/**
+* Small fixes
+*/
+.playing-cards .card.hearts.rank-a .front .icon{
+    margin-top: .1em;
+    font-size: 2.7em;
 }
 /**
 * Card icons

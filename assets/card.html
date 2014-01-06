@@ -732,8 +732,16 @@
   </div>
   <!-- container -->
   <script src="js/jquery-2.0.3.min.js" type="text/javascript"></script>
+  <script src="js/underscore.min.js" type="text/javascript"></script>
+
   <script type="text/javascript">
   $(document).ready(function() {
+    _.each($(".playing-cards .hand .card"), function(card, i){
+      _.delay(function(){
+        $(card).toggleClass("flipped");
+      }, i*300);
+    });
+
     $(".playing-cards .hand .card").click(function() {
       $(this).toggleClass("flipped");
     });
