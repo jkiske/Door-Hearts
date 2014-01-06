@@ -2,6 +2,7 @@
  * Hands are the players hand
  */
  .playing-cards .hand {
+    cursor: pointer;
 }
 .playing-cards .hand .card {
     margin-right: -1em;
@@ -11,6 +12,7 @@
  */
  .playing-cards .table {
     font-size: 1.1em;
+    cursor: default;
 }
 .playing-cards .table .card {
     margin-right: 2em;
@@ -20,9 +22,11 @@
  */
  .playing-cards .played {
     font-size: 1.1em;
+    cursor: default;
 }
 .playing-cards .played .card {
-    margin-right:-2em;
+    /*margin-right:-2em;*/
+    margin-right:1em;
 }
 /*
  * Card shape and animations
@@ -33,6 +37,7 @@
     width: 3.3em;
     height: 4.6em;
     position: relative;
+    font-family: monospace;
     -webkit-transform-style: preserve-3d;
     -moz-transform-style: preserve-3d;
     transform-style: preserve-3d;
@@ -72,11 +77,25 @@
 /**
  * Card look
  */
- .playing-cards .card .front .rank, .playing-cards .card .front .suit {
+ .playing-cards .card .front .rank {
+    height: 25%;
     text-align: left;
+    position: relative;
+    top: -.3em;
+}
+.playing-cards .card .front .suit {
+    text-align: left;
+    font-size: .7em;
+    height: 25%;
+    position: relative;
+    top: -.3em;
 }
 .playing-cards .card .front .icon {
     text-align: center;
+    font-size: 2.9em;
+    height: 50%;
+    position: relative;
+    top: -.45em;
 }
 /*
  * Rotations
