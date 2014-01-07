@@ -115,51 +115,36 @@
     transform: rotateY(-180deg) translateZ(1px);
 }
 @-webkit-keyframes anim-left {
-    99% {
+    100% {
          -webkit-transform: translateX(-300px) scale(.75,.75);
         opacity: 0;
-   }
-   100% {
-        margin-left: -132.5px;
-        opacity: 1;
    }
 }
 .playing-cards .played.anim-left{
     -webkit-animation-name: anim-left;
 }
-@-webkit-keyframes anim-up {
-    99% {
+@-webkit-keyframes anim-top {
+    100% {
          -webkit-transform: translateY(-300px) scale(.75,.75);
         opacity: 0;
    }
-   100% {
-        margin-left: -132.5px;
-        opacity: 1;
-   }
 }
-.playing-cards .played.anim-up{
-    -webkit-animation-name: anim-up;
+.playing-cards .played.anim-top{
+    -webkit-animation-name: anim-top;
 }
-@-webkit-keyframes anim-down {
-    99% {
+@-webkit-keyframes anim-bottom {
+    100% {
          -webkit-transform: translateY(300px) scale(.75,.75);
         opacity: 0;
    }
-   100% {
-        margin-left: -132.5px;
-        opacity: 1;
-   }
 }
-.playing-cards .played.anim-down{
-    -webkit-animation-name: anim-down;
+.playing-cards .played.anim-bottom{
+    -webkit-animation-name: anim-bottom;
 }
 @-webkit-keyframes anim-right {
-    99% {
+    100% {
         -webkit-transform: translateX(300px) scale(.75,.75);
         opacity: 0;
-   }
-   100% {
-        opacity: 1;
    }
 }
 .playing-cards .played.anim-right{

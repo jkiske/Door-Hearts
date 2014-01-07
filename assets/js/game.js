@@ -741,18 +741,22 @@ $(document).ready(function() {
         //TODO: Maybe an animation?
     });
 
-    socket.on("clearTrick", function() {
+    socket.on("clearTrick", function(winner) {
         //TODO: Disable clicking the cards
         //Clear the cards after a delay
         _trick_suit = null;
         //Disable cards before starting the next trick
         disableAllCards();
-        _.delay(function() {
-            _.each(dir_card_map, function(card, dir) {
-                hideMiddleCard(card);
-                socket.send("nextTrick");
-            });
-        }, _clear_trick_delay);
+        var winner = _players[winner];
+        if (winner !== undefined) {
+            $(".playing-cards .played").addClass("anim-" + winner.dir);
+        }
+    });
+
+    $(".playing-cards .played").on("webkitAnimationEnd", function() {
+        socket.send("nextTrick");
+        $(this).removeClass("anim-left anim-right anim-top anim-bottom");
+        $(this).children().remove();
     });
 
     socket.on("updateScore", function(name, score) {

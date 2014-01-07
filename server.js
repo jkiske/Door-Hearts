@@ -302,7 +302,8 @@ primus.on("connection", function(client) {
                         }
                         //If this is the last card, tell the clients to clear the trick
                         if (_und.size(table.played_cards) == 4) {
-                            primus.room(table.id).send("clearTrick");
+                            var winner = table.getWinner();
+                            primus.room(table.id).send("clearTrick", winner);
                         } else {
                             //If this is not the last card, move to the next player
                             primus.room(table.id).send("nextPlayer", table.nextTurn());
