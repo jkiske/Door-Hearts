@@ -143,39 +143,79 @@
           <!-- Center Stack -->
           <div id="center">
 
+            <!-- Play Stack -->
+            <div id="played-cards" class="playing-cards">
+              <div class="played">
+
+                <div id="left-played-card" class="card">
+                  <div class="front">
+                    <div class="rank"></div>
+                    <div class="suit"></div>
+                    <div class="icon"></div>
+                  </div>
+                  <div class="back"></div>
+                </div>
+
+                <div id="top-played-card" class="card">
+                  <div class="front">
+                    <div class="rank"></div>
+                    <div class="suit"></div>
+                    <div class="icon"></div>
+                  </div>
+                  <div class="back"></div>
+                </div>
+
+                <div id="bottom-played-card" class="card">
+                  <div class="front">
+                    <div class="rank"></div>
+                    <div class="suit"></div>
+                    <div class="icon"></div>
+                  </div>
+                  <div class="back"></div>
+                </div>
+
+                <div id="right-played-card" class="card">
+                  <div class="front">
+                    <div class="rank"></div>
+                    <div class="suit"></div>
+                    <div class="icon"></div>
+                  </div>
+                  <div class="back"></div>
+                </div>
+
+              </div>
+            </div>
+
             <!-- Trade Stack -->
             <div id="traded-cards" class="playing-cards">
               <div class="table">
-                <span id="left-traded-card" class="empty-card-slot">
-                  <div class="card">
-                    <div class="front">
-                      <div class="rank"></div>
-                      <div class="suit"></div>
-                      <div class="icon"></div>
-                    </div>
-                    <div class="back"></div>
+
+                <div id="left-traded-card" class="card empty-card-slot hide">
+                  <div class="front">
+                    <div class="rank"></div>
+                    <div class="suit"></div>
+                    <div class="icon"></div>
                   </div>
-                </span>
-                <span id="center-traded-card" class="empty-card-slot">
-                  <div class="card">
-                    <div class="front">
-                      <div class="rank"></div>
-                      <div class="suit"></div>
-                      <div class="icon"></div>
-                    </div>
-                    <div class="back"></div>
+                  <div class="back"></div>
+                </div>
+
+                <div id="center-traded-card" class="card empty-card-slot hide">
+                  <div class="front">
+                    <div class="rank"></div>
+                    <div class="suit"></div>
+                    <div class="icon"></div>
                   </div>
-                </span>
-                <span id="right-traded-card" class="empty-card-slot">
-                  <div class="card">
-                    <div class="front">
-                      <div class="rank"></div>
-                      <div class="suit"></div>
-                      <div class="icon"></div>
-                    </div>
-                    <div class="back"></div>
+                  <div class="back"></div>
+                </div>
+
+                <div id="right-traded-card" class="card empty-card-slot hide">
+                  <div class="front">
+                    <div class="rank"></div>
+                    <div class="suit"></div>
+                    <div class="icon"></div>
                   </div>
-                </span>
+                  <div class="back"></div>
+                </div>
 
               </div>
             </div>
@@ -183,59 +223,59 @@
 
         </div>
 
-      <!-- Right Hand -->
-      <div class="col-xs-3" id="rightplayer">
-        <div class="pull-right">
-          <div class="text-center user-box">
-            <h3 class="name-box">
-              <span id="rightname" class="label label-default">Open</span>
-            </h3>
-            <img id="img-right" src="images/placeholder_@2X.png" alt="..." class="img-circle placeholder">
-            <video id="video-right" class="hidden" autoplay></video>
+        <!-- Right Hand -->
+        <div class="col-xs-3" id="rightplayer">
+          <div class="pull-right">
+            <div class="text-center user-box">
+              <h3 class="name-box">
+                <span id="rightname" class="label label-default">Open</span>
+              </h3>
+              <img id="img-right" src="images/placeholder_@2X.png" alt="..." class="img-circle placeholder">
+              <video id="video-right" class="hidden" autoplay></video>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- My cards -->
-    <div class="row text-center">
-      <h3 class="name-box my-name-box">
-        <span id="bottomname" class="label label-default"></span>
+      <!-- My cards -->
+      <div class="row text-center">
+        <h3 class="name-box my-name-box">
+          <span id="bottomname" class="label label-default"></span>
+        </h3>
+      </div>
+      <div class="row">
+        <div class="playingCards">
+          <ul id="bottomcards" class="table"></ul>
+        </div>
+      </div>
+      <h3>
+        <div id="score-menu-btn" class="btn btn-default rotate270">
+          <strong>Score</strong>
+        </div>
       </h3>
-    </div>
-    <div class="row">
-      <div class="playingCards">
-        <ul id="bottomcards" class="table"></ul>
-      </div>
-    </div>
-    <h3>
-      <div id="score-menu-btn" class="btn btn-default rotate270">
-        <strong>Score</strong>
-      </div>
-    </h3>
 
-    <!-- Video Chat -->
-    <video id="video-local" class="hidden" autoplay muted="true"></video>
-    <div id="video-local-overlay" class="hidden">
-      <div id="video-local-mic" class="mic"></div>
-    </div>
-    <div id="sidr-right">
-      <div class="panel">
-        <table class="table table-bordered table-striped" id="score-table">
-          <thead>
-            <tr>
-              <th>Player 1</th>
-              <th>Player 2</th>
-              <th>Player 3</th>
-              <th>Player 4</th>
-            </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
+      <!-- Video Chat -->
+      <video id="video-local" class="hidden" autoplay muted="true"></video>
+      <div id="video-local-overlay" class="hidden">
+        <div id="video-local-mic" class="mic"></div>
+      </div>
+      <div id="sidr-right">
+        <div class="panel">
+          <table class="table table-bordered table-striped" id="score-table">
+            <thead>
+              <tr>
+                <th>Player 1</th>
+                <th>Player 2</th>
+                <th>Player 3</th>
+                <th>Player 4</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-  </div>
   </div>
 
   </div>
