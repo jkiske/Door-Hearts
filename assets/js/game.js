@@ -475,10 +475,7 @@ $(document).ready(function() {
 
         for (var i in _cards) {
             var card = _cards[i];
-            bottomCards.append('<li>' +
-                createCard(card.suit, card.rank, 'a') +
-                '</li>'
-            );
+            bottomCards.append(createCard(card.suit, card.rank));
         }
 
         centerBottomCards();
@@ -593,13 +590,13 @@ $(document).ready(function() {
 
     function showMiddleCard(middleCard, card) {
         //Replace the middle card with the deck card
-        middleCard.find(".card").replaceWith(createCard(card.suit, card.rank, "div"));
+        middleCard.find(".card").replaceWith(createCard(card.suit, card.rank));
         middleCard.removeClass("hide-card");
     }
 
     function hideMiddleCard(middleCard) {
         //Hide the middle card
-        middleCard.find(".card").replaceWith(createCard("", "", "div"));
+        middleCard.find(".card").replaceWith(createCard());
         middleCard.addClass("hide-card");
     }
 
@@ -610,7 +607,7 @@ $(document).ready(function() {
         var rank = card_obj.rank;
 
         _cards[_cards.length] = card_obj;
-        card.replaceWith(createCard("", "", "div"));
+        card.replaceWith(createCard());
 
         showCards(_cards);
     }
@@ -640,7 +637,7 @@ $(document).ready(function() {
             tradeSlots.addClass("empty-card-slot");
             tradeSlots.addClass("hide-card");
             tradeSlots.removeClass("filled-card-slot");
-            tradeSlots.find(".card").replaceWith(createCard("", "", "div"));
+            tradeSlots.find(".card").replaceWith(createCard());
 
             showCards(new_hand);
 
@@ -851,30 +848,20 @@ $(document).ready(function() {
         return suit + rank;
     }
 
-    function createCard(suit, rank) {
-        if (suit === "" && rank === "") {
+    function createCard() {
+        if (suit === undefined || rank === undefined) {
             return '<div class="card">' +
                 '<div class="front"></div>' +
                 '<div class="back"></div>' +
                 '</div>';
         }
 
-        var full_suit = suit_map[suit];
-        var includeSuit = true;
-
-        if (rank in rank_map) {
-            rank = rank_map[rank];
-        } else {
-            rank = rank.toString();
-            includeSuit = false;
-        }
-        return '<' + tag + ' id="' + suit + rank + '" ' +
-            'class="card rank-' + rank + ' ' + full_suit + '">\n' +
-            '<span class="rank">' + rank.toUpperCase() + '</span>' +
-            '<span class="suit">' +
-            (includeSuit ? ('&' + full_suit + ';') : '') +
-            '</span>' +
-            '</' + tag + '>';
+        return new EJS({
+            url: 'templates/card.ejs'
+        }, {
+            suit: suit_map[suit],
+            rank: rank.toString()
+        });
     }
 
     function sortValue(card) {
