@@ -26,9 +26,6 @@ a {
 #game-view, #list-view, .big-heart {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
     user-select: none;
 }
 #login-view {
@@ -140,7 +137,6 @@ a {
     margin-right: -3em;
     width:100px !important;
     transform:rotate(-90deg);
-    -moz-transform:rotate(-90deg);
     -webkit-transform:rotate(-90deg);
 }
 #sidr-right {
@@ -191,3 +187,4 @@ a {
 .mic.off {
     background: url('../images/mic_off_@2X.png');
     background-size: 60px 60px;
+}

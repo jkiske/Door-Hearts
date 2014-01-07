@@ -1,7 +1,6 @@
 .playing-cards{
     -webkit-touch-callout: none;
     -webkit-user-select: none;
-    -moz-user-select: none;
     user-select: none;
 }
 /**
@@ -47,7 +46,6 @@
     top: 1.65em;
     left: 0.65em;
     transform: rotate(270deg) translate3d(0, 0, 0);
-    -moz-transform: rotate(270deg) translate3d(0, 0, 0);;
     -webkit-transform: rotate(270deg) translate3d(0, 0, 0);;
 }
 .playing-cards .played .card:nth-of-type(2) {
@@ -59,7 +57,6 @@
     left: 2.65em;
     top: 3.65em;
     transform: rotate(180deg) translate3d(0, 0, 0);
-    -moz-transform: rotate(180deg) translate3d(0, 0, 0);
     -webkit-transform: rotate(180deg) translate3d(0, 0, 0);
 }
 .playing-cards .played .card:nth-of-type(4) {
@@ -67,7 +64,6 @@
     left: 4.65em;
     top: 1.65em;
     transform: rotate(90deg) translate3d(0, 0, 0);
-    -moz-transform: rotate(90deg) translate3d(0, 0, 0);
     -webkit-transform: rotate(90deg) translate3d(0, 0, 0);
 }
 /**
@@ -81,10 +77,8 @@
     position: relative;
     font-family: monospace;
     -webkit-transform-style: preserve-3d;
-    -moz-transform-style: preserve-3d;
     transform-style: preserve-3d;
     -webkit-transition: -webkit-transform 0.1s;
-    -moz-transition: -moz-transform 0.1s;
     transition: transform 0.1s;
 }
 .playing-cards .card .front, .playing-cards .card .back {
@@ -94,18 +88,14 @@
     padding: .25em;
     background: #FFF;
     -webkit-border-radius: .3em;
-    -moz-border-radius: .3em;
     border-radius: .3em;
     -webkit-box-shadow: .1em .1em .3em #444;
-    -moz-box-shadow: .1em .1em .3em #444;
     box-shadow: .1em .1em .3em #444;
     -webkit-backface-visibility: hidden;
-    -moz-backface-visibility: hidden;
     backface-visibility: hidden;
 }
 .playing-cards .card.flipped {
     -webkit-transform: rotateY(180deg);
-    -moz-transform: rotateY(180deg);
     transform: rotateY(180deg);
 }
 .playing-cards .card.hide{
@@ -115,22 +105,18 @@
 .playing-cards .card .front {
     background-color: #fff;
     -webkit-transform: translateZ(1px);
-    -moz-transform: translateZ(1px);
     transform: translateZ(1px);
 }
 .playing-cards .card.hover {
     -webkit-transform: translateY(-0.5em);
-    -moz-transform: translateY(-0.5em);
     transform: translateY(-0.5em);
 }
 .playing-cards .card .back {
     background: -webkit-radial-gradient(rgba(0,0,0,.1), rgba(0,0,0,.1)), url("../images/norwegian_rose_@2X.png");
     background-size: 48px;
     -webkit-box-shadow: inset 0 0 0px .2em #FFF, .1em .1em .3em #444;
-    -moz-box-shadow: inset 0 0 0px .2em #FFF, .1em .1em .3em #444;
     -box-shadow: inset 0 0 0px .2em #FFF, .1em .1em .3em #444;
     -webkit-transform: rotateY(-180deg) translateZ(1px);
-    -moz-transform: rotateY(-180deg) translateZ(1px);
     transform: rotateY(-180deg) translateZ(1px);
 }
 @-webkit-keyframes anim-left {
