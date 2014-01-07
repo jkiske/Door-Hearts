@@ -126,7 +126,7 @@
 
       <div class="row">
         <!-- Left Hand-->
-        <div class="col-xs-3" id="leftplayer">
+        <div class="col-xs-2" id="leftplayer">
           <div class="pull-left">
             <div class="text-center user-box">
               <h3 class="name-box">
@@ -138,93 +138,88 @@
           </div>
         </div>
 
-        <!-- filler space for cards and play button -->
-        <div class="col-xs-6">
-          <!-- Center Stack -->
-          <div id="center">
+        <!-- Center Stacks -->
+        <div class="col-xs-8">
+          <!-- Play Stack -->
+          <div id="played-cards" class="playing-cards">
+            <div class="played">
 
-            <!-- Play Stack -->
-            <div id="played-cards" class="playing-cards">
-              <div class="played">
-
-                <div id="left-played-card" class="card">
-                  <div class="front">
-                    <div class="rank"></div>
-                    <div class="suit"></div>
-                    <div class="icon"></div>
-                  </div>
-                  <div class="back"></div>
+              <div id="left-played-card" class="card hide">
+                <div class="front">
+                  <div class="rank"></div>
+                  <div class="suit"></div>
+                  <div class="icon"></div>
                 </div>
-
-                <div id="top-played-card" class="card">
-                  <div class="front">
-                    <div class="rank"></div>
-                    <div class="suit"></div>
-                    <div class="icon"></div>
-                  </div>
-                  <div class="back"></div>
-                </div>
-
-                <div id="bottom-played-card" class="card">
-                  <div class="front">
-                    <div class="rank"></div>
-                    <div class="suit"></div>
-                    <div class="icon"></div>
-                  </div>
-                  <div class="back"></div>
-                </div>
-
-                <div id="right-played-card" class="card">
-                  <div class="front">
-                    <div class="rank"></div>
-                    <div class="suit"></div>
-                    <div class="icon"></div>
-                  </div>
-                  <div class="back"></div>
-                </div>
-
+                <div class="back"></div>
               </div>
-            </div>
 
-            <!-- Trade Stack -->
-            <div id="traded-cards" class="playing-cards">
-              <div class="table">
-
-                <div id="left-traded-card" class="card empty-card-slot hide">
-                  <div class="front">
-                    <div class="rank"></div>
-                    <div class="suit"></div>
-                    <div class="icon"></div>
-                  </div>
-                  <div class="back"></div>
+              <div id="top-played-card" class="card hide">
+                <div class="front">
+                  <div class="rank"></div>
+                  <div class="suit"></div>
+                  <div class="icon"></div>
                 </div>
-
-                <div id="center-traded-card" class="card empty-card-slot hide">
-                  <div class="front">
-                    <div class="rank"></div>
-                    <div class="suit"></div>
-                    <div class="icon"></div>
-                  </div>
-                  <div class="back"></div>
-                </div>
-
-                <div id="right-traded-card" class="card empty-card-slot hide">
-                  <div class="front">
-                    <div class="rank"></div>
-                    <div class="suit"></div>
-                    <div class="icon"></div>
-                  </div>
-                  <div class="back"></div>
-                </div>
-
+                <div class="back"></div>
               </div>
+
+              <div id="bottom-played-card" class="card hide">
+                <div class="front">
+                  <div class="rank"></div>
+                  <div class="suit"></div>
+                  <div class="icon"></div>
+                </div>
+                <div class="back"></div>
+              </div>
+
+              <div id="right-played-card" class="card hide">
+                <div class="front">
+                  <div class="rank"></div>
+                  <div class="suit"></div>
+                  <div class="icon"></div>
+                </div>
+                <div class="back"></div>
+              </div>
+
             </div>
           </div>
 
+          <!-- Trade Stack -->
+          <div id="traded-cards" class="playing-cards">
+            <div class="table">
+
+              <div id="left-traded-card" class="card hide empty-card-slot">
+                <div class="front">
+                  <div class="rank"></div>
+                  <div class="suit"></div>
+                  <div class="icon"></div>
+                </div>
+                <div class="back"></div>
+              </div>
+
+              <div id="center-traded-card" class="card hide empty-card-slot">
+                <div class="front">
+                  <div class="rank"></div>
+                  <div class="suit"></div>
+                  <div class="icon"></div>
+                </div>
+                <div class="back"></div>
+              </div>
+
+              <div id="right-traded-card" class="card hide empty-card-slot">
+                <div class="front">
+                  <div class="rank"></div>
+                  <div class="suit"></div>
+                  <div class="icon"></div>
+                </div>
+                <div class="back"></div>
+              </div>
+
+            </div>
+          </div>
         </div>
 
         <!-- Right Hand -->
-        <div class="col-xs-3" id="rightplayer">
+        <div class="col-xs-2" id="rightplayer">
           <div class="pull-right">
             <div class="text-center user-box">
               <h3 class="name-box">
