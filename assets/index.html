@@ -14,9 +14,20 @@
 
 <body>
   <img class="big-heart" src="../images/bigheart_@2X.png">
-  <div class="hidden mic-image-preload">
+  <!-- Preload Background Images -->
+  <div class="image-preload">
+    <!-- Mic Preload -->
     <div class="mic"></div>
     <div class="mic off"></div>
+    <!-- Card Preload -->
+    <div class="playing-cards">
+      <div id="played-cards" class="played">
+        <div class="card">
+          <div class="front"></div>
+          <div class="back"></div>
+        </div>
+      </div>
+    </div>
   </div>
   <div id="login-view">
     <div class="container">
@@ -141,29 +152,8 @@
         <!-- Center Stacks -->
         <div class="col-xs-8">
           <!-- Play Stack -->
-          <div id="played-cards" class="playing-cards">
-            <div class="played">
-
-              <div id="left-played-card" class="card hide">
-                <div class="front"></div>
-                <div class="back"></div>
-              </div>
-
-              <div id="top-played-card" class="card hide">
-                <div class="front"></div>
-                <div class="back"></div>
-              </div>
-
-              <div id="bottom-played-card" class="card hide">
-                <div class="front"></div>
-                <div class="back"></div>
-              </div>
-
-              <div id="right-played-card" class="card hide">
-                <div class="front"></div>
-                <div class="back"></div>
-              </div>
-
+          <div class="playing-cards">
+            <div id="played-cards" class="played">
             </div>
           </div>
 
@@ -172,6 +162,7 @@
             <div id="traded-cards" class="table">
             </div>
           </div>
+
         </div>
 
         <!-- Right Hand -->

@@ -15,6 +15,11 @@ body {
 a {
     cursor: pointer;
 }
+.image-preload{
+    position: absolute;
+    left: -1000px;
+    top: -1000px;
+}
 .big-heart {
     position: absolute;
     left:50%;
