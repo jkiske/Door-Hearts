@@ -65,25 +65,13 @@ a {
     text-align: right;
     width: 150px;
 }
-
 .navbar-form {
     padding-right: 0px;
 }
-/* Middle stack positioning */
- #center {
-   
-}
 /* Middle cards style and margins */
  #played-cards {
-    
 }
-
-/* Use these to hide cards without hiding space */
- .hide-card {
-    visibility: hidden;
-}
-.show-card {
-    visibility: visible;
+#traded-cards {
 }
 /* Bottom cards */
  #bottomcards {
@@ -93,10 +81,6 @@ a {
     margin-top: 10px;
     width:900px;
 }
-#traded-cards {
-
-}
-
 /* Player name and picture */
  .user-box {
     padding: 10px;
@@ -151,7 +135,6 @@ a {
     padding-bottom: 20px;
     margin-right: -3em;
     width:100px !important;
-
     transform:rotate(-90deg);
     -moz-transform:rotate(-90deg);
     -webkit-transform:rotate(-90deg);
@@ -168,17 +151,6 @@ a {
 }
 .round-score {
     text-align: right;
-}
-.card.disabled {
-    bottom: 0em !important;
-    /*This disables the hover effect*/
-    background: #888;
-}
-.card.hover {
-    bottom: 0.5em;
-}
-.card.disabled.diams, .card.disabled.hearts {
-    color: #800 !important;
 }
 /*Video boxes*/
  #video-top, #video-left, #video-right {

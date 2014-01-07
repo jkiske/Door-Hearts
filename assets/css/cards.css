@@ -105,6 +105,10 @@
     -moz-transform: rotateY(180deg);
     transform: rotateY(180deg);
 }
+.playing-cards .card.hide{
+     visibility: hidden;
+}
+.playing-cards .card.
 .playing-cards .card .front {
     background-color: #fff;
     -webkit-transform: translateZ(1px);
@@ -210,6 +214,15 @@
 }
 .playing-cards .card.clubs, .playing-cards .card.spades {
     color: #333;
+}
+ .card.disabled{
+    /*This disables the hover effect*/
+    bottom: 0em !important;
+    background: #888;
+}
+.playing-cards .card.disabled.diams,
+.playing-cards .card.disabled.hearts {
+    color: #550000 !important;
 }
 /**
 * Small fixes
