@@ -461,9 +461,11 @@ $(document).ready(function() {
     });
 
     //Deal the cards to each player
-    socket.on("showCards", showCards);
+    socket.on("showCards", function(cards) {
+        showCards(cards, !IS_IPAD);
+    });
 
-    function showCards(cards) {
+    function showCards(cards, animate) {
         _hand = _.sortBy(cards, function(card) {
             return sortValue(card);
         });
@@ -475,14 +477,25 @@ $(document).ready(function() {
 
         for (var i in _hand) {
             var card = _hand[i];
-            var $card = $player_hand.append(createCard(card.suit, card.rank));
+            var $card = $(createCard(card.suit, card.rank));
+            if (animate) {
+                $card.addClass("flipped");
+            }
+            $player_hand.append($card);
+        }
+        if (animate) {
+            _.each($(".playing-cards .hand .card.flipped"), function(card, i) {
+                _.delay(function() {
+                    $(card).removeClass("flipped");
+                }, i * 100);
+            });
         }
 
         //Hovering over the cards should pop them up
         $("#player-hand .card").hover(
             function() {
                 //In handler
-                if (!$(this).hasClass("disabled") && !IS_IPAD) {
+                if (!$(this).hasClass("disabled") && !$(this).hasClass("flipped") && !IS_IPAD) {
                     $("#player-hand .card").removeClass("hover");
                     $(this).addClass("hover");
                 }
