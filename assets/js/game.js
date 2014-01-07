@@ -7,7 +7,7 @@ $(document).ready(function() {
     var _state = "waiting"; // waiting, trading, playing, start_playing
     var _round = 0;
     var _players = {};
-    var _cards = [];
+    var _hand = [];
     var _turn = "";
     var _login_name = "";
     var _name = "";
@@ -464,72 +464,65 @@ $(document).ready(function() {
     socket.on("showCards", showCards);
 
     function showCards(cards) {
-        _cards = _.sortBy(cards, function(card) {
+        _hand = _.sortBy(cards, function(card) {
             return sortValue(card);
         });
 
-        var bottomCards = $("#player_hand");
+        var $player_hand = $("#player-hand");
 
         //Delete the children and replace them
-        bottomCards.children().remove();
+        $player_hand.children().remove();
 
-        for (var i in _cards) {
-            var card = _cards[i];
-            var $card = bottomCards.append(createCard(card.suit, card.rank));
+        for (var i in _hand) {
+            var card = _hand[i];
+            var $card = $player_hand.append(createCard(card.suit, card.rank));
         }
 
         //Hovering over the cards should pop them up
-        $("#player_hand .card").hover(
+        $("#player-hand .card").hover(
             function() {
                 //In handler
                 if (!$(this).hasClass("disabled") && !IS_IPAD) {
-                    $("#player_hand .card").removeClass("hover");
+                    $("#player-hand .card").removeClass("hover");
                     $(this).addClass("hover");
                 }
             },
             function() {
                 //Out handler
-                $("#player_hand .card").removeClass("hover");
+                $("#player-hand .card").removeClass("hover");
             }
         );
 
-        $("#player_hand .card").click(function() {
+        $("#player-hand .card").click(function() {
             if (_state == "trading") {
-                var openSlots = $(".open-card-slot");
-                if (openSlots.length > 0) {
-                    var slot = $(openSlots[0]);
-                    moveCardToCenter(slot, $(this));
-
-                    slot.removeClass("open-card-slot");
-                    slot.removeClass("hide");
-                    slot.addClass("filled-card-slot");
+                var $tradedCards = $("#traded-cards");
+                var tradeCount = $tradedCards.children().length;
+                if (tradeCount < 3) {
+                    var $traded_card = $tradedCards.append(createCard(getSuit($(this)), getRank($(this))));
+                    removeFromHand($(this));
+                    tradeCount++;
 
                     // Add a click handler to return card back to deck
-                    slot.click(function() {
-                        if ($(this).hasClass("filled-card-slot")) {
-                            moveCardToHand($(this).find(".card"));
+                    $("#traded-cards .card").click(function() {
+                        addToHand($(this));
+                        var tradeCount = $tradedCards.children().length;
 
-                            slot.addClass("open-card-slot");
-                            slot.addClass("hide");
-                            slot.removeClass("filled-card-slot");
-
-                            openSlots = $(".open-card-slot");
-                            if (openSlots.length > 0) {
-                                //Tell the server that we aren't ready yet
-                                socket.send("passCards", null);
-                            }
+                        if (tradeCount == 2) {
+                            console.log("not trading");
+                            //Tell the server that we aren't ready yet
+                            socket.send("passCards", null);
                         }
-                    });
 
-                    if (openSlots.length == 1) {
+                    });
+                    if (tradeCount == 3) {
                         _.delay(function() {
                             /*Wait 2 seconds before making trade final
                              * This is buggy:
                              * If you deselct a card then quickly reselct another,
                              * the event will still fire
                              */
-                            var openSlots = $(".open-card-slot");
-                            if (openSlots.length === 0) {
+                            var tradeCount = $tradedCards.children().length;
+                            if (tradeCount.length === 3) {
                                 emitTradedCards();
                             }
                         }, 1000);
@@ -550,8 +543,33 @@ $(document).ready(function() {
         }
     }
 
+    function removeFromHand($card) {
+        // Remove the card from the hand
+        var card = {
+            rank: getRank($card),
+            suit: getSuit($card)
+        };
+        var index = cardIndex(card);
+        if (index >= 0) {
+            //Remove the card and flatten the array
+            delete _hand[index];
+            _hand = _.compact(_hand);
+        }
+        $card.remove();
+    }
+
+    function addToHand($card) {
+        // Add the card back to the hand
+        _hand[_hand.length] = {
+            rank: getRank($card),
+            suit: getSuit($card)
+        };
+        showCards(_hand);
+        $card.remove();
+    }
+
     function emitTradedCards() {
-        var selected_cards = $(".filled-card-slot .card");
+        var selected_cards = $("#traded-cards .card");
         if (selected_cards.length == 3) {
             var selected_cards_ids = selected_cards.map(function() {
                 return idToCard(this.id);
@@ -570,8 +588,8 @@ $(document).ready(function() {
         handCard.closest("li").remove();
         if (index >= 0) {
             //Remove the card and flatten the array
-            delete _cards[index];
-            _cards = _.compact(_cards);
+            delete _hand[index];
+            _hand = _.compact(_hand);
         }
 
         //Only show after we delete so the ids do not repeat
@@ -596,15 +614,15 @@ $(document).ready(function() {
         var suit = card_obj.suit;
         var rank = card_obj.rank;
 
-        _cards[_cards.length] = card_obj;
+        _hand[_hand.length] = card_obj;
         card.replaceWith(createCard());
 
-        showCards(_cards);
+        showCards(_hand);
     }
 
     function cardIndex(card) {
         var hand_index = -1;
-        _.each(_cards, function(hand_card, index) {
+        _.each(_hand, function(hand_card, index) {
             if (card.rank == hand_card.rank && card.suit == hand_card.suit) {
                 hand_index = index;
             }
@@ -655,11 +673,11 @@ $(document).ready(function() {
     }
 
     function disableAllCards() {
-        $("#player_hand .card").addClass("disabled");
+        $("#player-hand .card").addClass("disabled");
     }
 
     function enableAllowedCards() {
-        var $bc = $("#player_hand");
+        var $bc = $("#player-hand");
         var $hearts = $bc.find(".card.hearts");
         var $diams = $bc.find(".card.diams");
         var $clubs = $bc.find(".card.clubs");
@@ -853,7 +871,7 @@ $(document).ready(function() {
     }
 
     function getSuit($card) {
-        for (suit in _keys(inv_suit_map)) {
+        for (suit in inv_suit_map) {
             if ($card.hasClass(suit)) {
                 return inv_suit_map[suit];
             }
@@ -865,7 +883,8 @@ $(document).ready(function() {
         var rank = _.find(classes, function(c) {
             return (c.indexOf("rank-") === 0);
         });
-        return rank.slice(-1);
+        rank = rank.slice(-1);
+        return (rank in inv_rank_map) ? inv_rank_map[rank] : rank;
     }
 
     function sortValue(card) {
