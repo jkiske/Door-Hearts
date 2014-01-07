@@ -552,7 +552,10 @@ $(document).ready(function() {
             } else if (_state == "playing") {
                 if (_turn == _name && $(this).hasClass("disabled") === false) {
                     //Try to play the card
-                    var played_card = idToCard($(this).attr("id"));
+                    var played_card = {
+                        rank: getRank($(this)),
+                        suit: getSuit($(this))
+                    };
                     socket.send("playCard", played_card);
                 }
             }
@@ -717,13 +720,19 @@ $(document).ready(function() {
         _trick_suit = trick_suit;
         var opponent = _players[opponent_name];
         if (opponent !== undefined) {
-            var opponent_dir = opponent.dir;
-            var played_card_spot = dir_card_map[opponent_dir];
+            $card = $(createCard(card.suit, card.rank));
             if (opponent_name == _name) {
-                moveCardToCenter(bottomCard, $('#' + cardToId(card)));
+                // This creates a css selector for the card
+                // ex) ".card.rank-6.spades"
+                var selector = "." + $card.attr("class").replace(/\s/g, '.');
+                $hand_card = $("#player-hand").find(selector);
+                removeFromHand($hand_card);
+
+                $card.addClass("bottom");
             } else {
-                showMiddleCard(played_card_spot, card);
+                $card.addClass(opponent.dir);
             }
+            $("#played-cards").append($card);
         }
     }
 
