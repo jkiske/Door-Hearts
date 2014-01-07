@@ -71,21 +71,17 @@ a {
     padding-right: 0px;
 }
 /* Middle cards style and margins */
- #played-cards {
-    position: relative;
+#center-cards {
+    position:relative;
+}
+#center-cards .playing-cards {
+    width: 100%;
+}
+#played-cards {
     top: -18px;
 }
 #traded-cards {
-    position: relative;
     top: 32px;
-}
-/* Bottom cards */
- #bottomcards {
-    position: absolute;
-    left: 50%;
-    /* Calculate margin-left in js */
-    margin-top: 10px;
-    width:900px;
 }
 /* Player name and picture */
  .user-box {
