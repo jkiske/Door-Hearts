@@ -201,10 +201,8 @@
 .playing-cards .card.clubs, .playing-cards .card.spades {
     color: #333;
 }
- .card.disabled{
-    /*This disables the hover effect*/
-    bottom: 0em !important;
-    background: #888;
+.card.disabled .front{
+    background: #888 !important;
 }
 .playing-cards .card.disabled.diams,
 .playing-cards .card.disabled.hearts {
