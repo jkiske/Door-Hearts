@@ -508,37 +508,43 @@ $(document).ready(function() {
 
         $("#player-hand .card").click(function() {
             if (_state == "trading") {
-                var $tradedCards = $("#traded-cards");
-                var tradeCount = $tradedCards.children().length;
-                if (tradeCount < 3) {
+                var $traded_cards = $("#traded-cards");
+                var trade_count = $traded_cards.children().length;
+                if (trade_count < 3) {
                     var $traded_card = $(createCard(getSuit($(this)), getRank($(this))))
-                    $tradedCards.append($traded_card);
-                    console.log($traded_card);
+                    $traded_cards.append($traded_card);
                     removeFromHand($(this));
-                    tradeCount++;
+                    trade_count++;
 
                     // Add a click handler to return card back to deck
                     $traded_card.click(function() {
                         addToHand($(this));
-                        var tradeCount = $tradedCards.children().length;
+                        var trade_count = $("#traded-cards .card").length;
 
-                        if (tradeCount == 2) {
-                            console.log("not trading");
+                        if (trade_count == 2) {
                             //Tell the server that we aren't ready yet
                             socket.send("passCards", null);
                         }
 
                     });
-                    if (tradeCount == 3) {
+                    if (trade_count == 3) {
+                        $("#player-hand .card").addClass("disabled");
                         _.delay(function() {
-                            /*Wait 2 seconds before making trade final
+                            /* Wait 1 seconds before making trade final
                              * This is buggy:
                              * If you deselct a card then quickly reselct another,
                              * the event will still fire
                              */
-                            var tradeCount = $tradedCards.children().length;
-                            if (tradeCount.length === 3) {
-                                emitTradedCards();
+                            var $selected_cards = $("#traded-cards .card");
+                            if ($selected_cards.length == 3) {
+                                var selected_cards = $selected_cards.map(function() {
+                                    var $this = $(this);
+                                    return {
+                                        rank: getRank($this),
+                                        suit: getSuit($this)
+                                    }
+                                });
+                                socket.send("passCards", $.makeArray(selected_cards));
                             }
                         }, 1000);
                     }
@@ -583,16 +589,6 @@ $(document).ready(function() {
         $card.remove();
     }
 
-    function emitTradedCards() {
-        var selected_cards = $("#traded-cards .card");
-        if (selected_cards.length == 3) {
-            var selected_cards_ids = selected_cards.map(function() {
-                return idToCard(this.id);
-            });
-            socket.send("passCards", $.makeArray(selected_cards_ids));
-        }
-    }
-
     function moveCardToCenter(middleCard, handCard) {
         //Get the rank/suit information
         var id = handCard.attr("id");
@@ -623,18 +619,6 @@ $(document).ready(function() {
         middleCard.addClass("hide");
     }
 
-    function moveCardToHand(card) {
-        id = card.attr("id");
-        card_obj = idToCard(id);
-        var suit = card_obj.suit;
-        var rank = card_obj.rank;
-
-        _hand[_hand.length] = card_obj;
-        card.replaceWith(createCard());
-
-        showCards(_hand);
-    }
-
     function cardIndex(card) {
         var hand_index = -1;
         _.each(_hand, function(hand_card, index) {
@@ -656,8 +640,8 @@ $(document).ready(function() {
         if (_state == "start_playing") {
             _state = "playing";
             //Hide and clear the traded cards
-
-            showCards(new_hand);
+            $("#traded-cards .card").remove();
+            showCards(new_hand, !IS_IPAD);
 
             //Select the person to go first
             var two_of_clubs = {
