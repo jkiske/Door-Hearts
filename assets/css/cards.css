@@ -43,28 +43,23 @@
 }
 .playing-cards .played .card.left {
     position: absolute;
-    top: 1.65em;
-    left: 0.65em;
-    transform: rotate(270deg) translate3d(0, 0, 0);
-    -webkit-transform: rotate(270deg) translate3d(0, 0, 0);;
+    transform: translateX(0.65em) translateY(1.65em) rotate(270deg);
+    -webkit-transform: translateX(0.65em) translateY(1.65em) rotate(270deg);;
 }
 .playing-cards .played .card.top {
     position: absolute;
-    left: 2.65em;
+    transform: translateX(2.65em);
+    -webkit-transform: translateX(2.65em);
 }
 .playing-cards .played .card.bottom {
     position: absolute;
-    left: 2.65em;
-    top: 3.65em;
-    transform: rotate(180deg) translate3d(0, 0, 0);
-    -webkit-transform: rotate(180deg) translate3d(0, 0, 0);
+    transform: translateX(2.65em) translateY(3.65em) rotate(180deg);
+    -webkit-transform: translateX(2.65em) translateY(3.65em) rotate(180deg);
 }
 .playing-cards .played .card.right {
     position: absolute;
-    left: 4.65em;
-    top: 1.65em;
-    transform: rotate(90deg) translate3d(0, 0, 0);
-    -webkit-transform: rotate(90deg) translate3d(0, 0, 0);
+    transform: translateX(4.65em) translateY(1.65em) rotate(90deg);
+    -webkit-transform: translateX(4.65em) translateY(1.65em) rotate(90deg);
 }
 /**
  * Card shape and animations
