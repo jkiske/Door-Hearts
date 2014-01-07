@@ -202,11 +202,15 @@
     color: #333;
 }
 .card.disabled .front{
-    background: #888 !important;
+    background: #808080 !important;
 }
 .playing-cards .card.disabled.diams,
 .playing-cards .card.disabled.hearts {
-    color: #550000 !important;
+    color: #6F0101 !important;
+}
+.playing-cards .card.disabled.spades,
+.playing-cards .card.disabled.clubs {
+    color: #1A1A1A !important;
 }
 /**
 * Small fixes
