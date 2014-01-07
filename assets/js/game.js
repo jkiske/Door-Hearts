@@ -851,12 +851,12 @@ $(document).ready(function() {
         return suit + rank;
     }
 
-    function createCard(suit, rank, tag) {
+    function createCard(suit, rank) {
         if (suit === "" && rank === "") {
-            return '<' + tag + ' class="card">' +
-                '<span class="rank"></span>' +
-                '<span class="suit"></span>' +
-                '</' + tag + '>';
+            return '<div class="card">' +
+                '<div class="front"></div>' +
+                '<div class="back"></div>' +
+                '</div>';
         }
 
         var full_suit = suit_map[suit];
