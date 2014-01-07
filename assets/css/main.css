@@ -77,12 +77,6 @@ a {
     position: relative;
     top: 32px;
 }
-#left-traded-card{
-    margin-left: 0px;
-}
-#right-traded-card{
-    margin-right: 0px;
-}
 /* Bottom cards */
  #bottomcards {
     position: absolute;

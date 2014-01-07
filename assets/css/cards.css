@@ -117,6 +117,9 @@
     -moz-transform: translateZ(1px);
     transform: translateZ(1px);
 }
+.playing-cards .card.hover {
+    margin-bottom: 0.5em;
+}
 .playing-cards .card .back {
     background: -webkit-radial-gradient(rgba(0,0,0,.1), rgba(0,0,0,.1)), url("../images/norwegian_rose_@2X.png");
     background-size: 48px;
@@ -129,7 +132,7 @@
 }
 @-webkit-keyframes anim-left {
     99% {
-         -webkit-transform: translateX(-300px) rotateZ(200deg) scale(.75,.75);
+         -webkit-transform: translateX(-300px) scale(.75,.75);
         opacity: 0;
    }
    100% {
@@ -142,7 +145,7 @@
 }
 @-webkit-keyframes anim-up {
     99% {
-         -webkit-transform: translateY(-300px) rotateZ(200deg) scale(.75,.75);
+         -webkit-transform: translateY(-300px) scale(.75,.75);
         opacity: 0;
    }
    100% {
@@ -155,7 +158,7 @@
 }
 @-webkit-keyframes anim-down {
     99% {
-         -webkit-transform: translateY(300px) rotateZ(200deg) scale(.75,.75);
+         -webkit-transform: translateY(300px) scale(.75,.75);
         opacity: 0;
    }
    100% {
@@ -168,7 +171,7 @@
 }
 @-webkit-keyframes anim-right {
     99% {
-        -webkit-transform: translateX(300px) rotateZ(200deg) scale(.75,.75);
+        -webkit-transform: translateX(300px) scale(.75,.75);
         opacity: 0;
    }
    100% {
