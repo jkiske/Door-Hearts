@@ -9,6 +9,7 @@
  */
  .playing-cards .hand {
     cursor: pointer;
+    font-size: 1.1em;
     text-align: center;
 }
 .playing-cards .hand .card {
@@ -20,7 +21,7 @@
  */
  .playing-cards .table {
     font-size: 1.1em;
-    cursor: default;
+    cursor: pointer;
     text-align: center;
 }
 .playing-cards .table .card {

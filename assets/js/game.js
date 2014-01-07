@@ -498,12 +498,14 @@ $(document).ready(function() {
                 var $tradedCards = $("#traded-cards");
                 var tradeCount = $tradedCards.children().length;
                 if (tradeCount < 3) {
-                    var $traded_card = $tradedCards.append(createCard(getSuit($(this)), getRank($(this))));
+                    var $traded_card = $(createCard(getSuit($(this)), getRank($(this))))
+                    $tradedCards.append($traded_card);
+                    console.log($traded_card);
                     removeFromHand($(this));
                     tradeCount++;
 
                     // Add a click handler to return card back to deck
-                    $("#traded-cards .card").click(function() {
+                    $traded_card.click(function() {
                         addToHand($(this));
                         var tradeCount = $tradedCards.children().length;
 
@@ -884,6 +886,8 @@ $(document).ready(function() {
             return (c.indexOf("rank-") === 0);
         });
         rank = rank.slice(-1);
+        // Only rank with two characters
+        if (rank === "0") rank = 10;
         return (rank in inv_rank_map) ? inv_rank_map[rank] : rank;
     }
 
