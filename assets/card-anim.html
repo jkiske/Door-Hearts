@@ -82,15 +82,20 @@
       $(".btn").click(function() {
         var $this = $(this);
         var anim = $this.attr("id");
-        $(".playing-cards .played").addClass(anim);
+        var $cards = $(".playing-cards .played");
+        clearAnimation($cards);
+        $cards.addClass(anim);
       });
       $(".playing-cards .played").on("webkitAnimationEnd", function() {
-        console.log("animation ended");
-        $(this).removeClass("anim-left");
-        $(this).removeClass("anim-right");
-        $(this).removeClass("anim-up");
-        $(this).removeClass("anim-down");
+        clearAnimation($(this));
       });
+
+      function clearAnimation(cards) {
+        cards.removeClass("anim-left");
+        cards.removeClass("anim-right");
+        cards.removeClass("anim-up");
+        cards.removeClass("anim-down");
+      }
     });
     </script>
 </body>
