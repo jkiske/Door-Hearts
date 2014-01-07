@@ -38,6 +38,8 @@
     position: absolute;
     left: 50%;
     margin-left: -132.5px;
+    -webkit-animation-duration: 0.5s;
+    -webkit-animation-timing-function: ease-in-out;
 }
 .playing-cards .played .card:nth-of-type(1) {
     position: absolute;
@@ -127,7 +129,7 @@
 }
 @-webkit-keyframes anim-left {
     99% {
-         -webkit-transform: translateX(-100%) rotateZ(200deg) scale(.75,.75);
+         -webkit-transform: translateX(-300px) rotateZ(200deg) scale(.75,.75);
         opacity: 0;
    }
    100% {
@@ -137,12 +139,10 @@
 }
 .playing-cards .played.anim-left{
     -webkit-animation-name: anim-left;
-    -webkit-animation-duration: 1s;
-    -webkit-animation-timing-function: ease;
 }
 @-webkit-keyframes anim-up {
     99% {
-         -webkit-transform: translateY(-100%) rotateZ(200deg) scale(.75,.75);
+         -webkit-transform: translateY(-300px) rotateZ(200deg) scale(.75,.75);
         opacity: 0;
    }
    100% {
@@ -152,12 +152,10 @@
 }
 .playing-cards .played.anim-up{
     -webkit-animation-name: anim-up;
-    -webkit-animation-duration: 1s;
-    -webkit-animation-timing-function: ease;
 }
 @-webkit-keyframes anim-down {
     99% {
-         -webkit-transform: translateY(100%) rotateZ(200deg) scale(.75,.75);
+         -webkit-transform: translateY(300px) rotateZ(200deg) scale(.75,.75);
         opacity: 0;
    }
    100% {
@@ -167,12 +165,10 @@
 }
 .playing-cards .played.anim-down{
     -webkit-animation-name: anim-down;
-    -webkit-animation-duration: 1s;
-    -webkit-animation-timing-function: ease;
 }
 @-webkit-keyframes anim-right {
     99% {
-        -webkit-transform: translateX(100%) rotateZ(200deg) scale(.75,.75);
+        -webkit-transform: translateX(300px) rotateZ(200deg) scale(.75,.75);
         opacity: 0;
    }
    100% {
@@ -181,8 +177,6 @@
 }
 .playing-cards .played.anim-right{
     -webkit-animation-name: anim-right;
-    -webkit-animation-duration: 1s;
-    -webkit-animation-timing-function: ease;
 }
 
 
