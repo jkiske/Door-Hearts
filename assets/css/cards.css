@@ -118,7 +118,9 @@
     transform: translateZ(1px);
 }
 .playing-cards .card.hover {
-    margin-bottom: 0.5em;
+    -webkit-transform: translateY(-0.5em);
+    -moz-transform: translateY(-0.5em);
+    transform: translateY(-0.5em);
 }
 .playing-cards .card .back {
     background: -webkit-radial-gradient(rgba(0,0,0,.1), rgba(0,0,0,.1)), url("../images/norwegian_rose_@2X.png");
