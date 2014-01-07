@@ -129,145 +129,166 @@
         <!--div class = "btn btn-primary btn-lg" id="play">Play</div-->
 
         <!-- Play Stack -->
-        <div id="played-cards" class="playingCards">
-          <ul class="table">
-            <li>
-              <div id="top-played-card" class="hide-card">
-                <div class="card">
-                  <span class="rank"></span>
-                  <span class="suit"></span>
+        <div id="played-cards" class="playing-cards">
+          <div class="table">
+
+            <div id="left-played-card" class="hide-card">
+              <div class="card">
+                <div class="front">
+                  <div class="rank"></div>
+                  <div class="suit"></div>
+                  <div class="icon"></div>
                 </div>
+                <div class="back"></div>
               </div>
-            </li>
-            <li>
-              <div id="left-played-card" class="rotate270 hide-card">
-                <div class="card">
-                  <span class="rank"></span>
-                  <span class="suit"></span>
+            </div>
+
+            <div id="top-played-card" class="hide-card">
+              <div class="card">
+                <div class="front">
+                  <div class="rank"></div>
+                  <div class="suit"></div>
+                  <div class="icon"></div>
                 </div>
+                <div class="back"></div>
               </div>
-            </li>
-            <li>
-              <div id="right-played-card" class="rotate90 hide-card">
-                <div class="card">
-                  <span class="rank"></span>
-                  <span class="suit"></span>
+            </div>
+
+            <div id="bottom-played-card" class="hide-card">
+              <div class="card">
+                <div class="front">
+                  <div class="rank"></div>
+                  <div class="suit"></div>
+                  <div class="icon"></div>
                 </div>
+                <div class="back"></div>
               </div>
-            </li>
-            <li>
-              <div id="bottom-played-card" class="rotate180 hide-card">
-                <div class="card">
-                  <span class="rank"></span>
-                  <span class="suit"></span>
+            </div>
+
+            <div id="right-played-card" class="hide-card">
+              <div class="card">
+                <div class="front">
+                  <div class="rank"></div>
+                  <div class="suit"></div>
+                  <div class="icon"></div>
                 </div>
+                <div class="back"></div>
               </div>
-            </li>
-          </ul>
+            </div>
+
+          </div>
         </div>
 
         <!-- Trade Stack -->
-        <div id="traded-cards" class="playingCards">
-          <ul class="table">
-            <li>
-              <div id="left-traded-card" class="empty-card-slot hide-card">
-                <div class="card">
-                  <span class="rank"></span>
-                  <span class="suit"></span>
+        <div id="traded-cards" class="playing-cards">
+          <div class="table">
+            <div id="left-traded-card" class="empty-card-slot hide-card">
+              <div class="card">
+                <div class="front">
+                  <div class="rank"></div>
+                  <div class="suit"></div>
+                  <div class="icon"></div>
                 </div>
+                <div class="back"></div>
               </div>
-            </li>
-            <li>
-              <div id="center-traded-card" class="empty-card-slot hide-card">
-                <div class="card">
-                  <span class="rank"></span>
-                  <span class="suit"></span>
-                </div>
-              </div>
-            </li>
-            <li>
-              <div id="right-traded-card" class="empty-card-slot hide-card">
-                <div class="card">
-                  <span class="rank"></span>
-                  <span class="suit"></span>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
-
-      </div>
-
-      <div class="row">
-        <!-- Left Hand-->
-        <div class="col-xs-3" id="leftplayer">
-          <div class="pull-left">
-            <div class="text-center user-box">
-              <h3 class="name-box">
-                <span id="leftname" class="label label-default">Open</span>
-              </h3>
-              <img id="img-left" src="images/placeholder_@2X.png" alt="..." class="img-circle placeholder">
-              <video id="video-left" class="hidden" autoplay></video>
             </div>
-          </div>
-        </div>
-
-        <!-- filler space for cards and play button -->
-        <div class="col-xs-6"></div>
-
-        <!-- Right Hand -->
-        <div class="col-xs-3" id="rightplayer">
-          <div class="pull-right">
-            <div class="text-center user-box">
-              <h3 class="name-box">
-                <span id="rightname" class="label label-default">Open</span>
-              </h3>
-              <img id="img-right" src="images/placeholder_@2X.png" alt="..." class="img-circle placeholder">
-              <video id="video-right" class="hidden" autoplay></video>
+            <div id="center-traded-card" class="empty-card-slot hide-card">
+              <div class="card">
+                <div class="front">
+                  <div class="rank"></div>
+                  <div class="suit"></div>
+                  <div class="icon"></div>
+                </div>
+                <div class="back"></div>
+              </div>
             </div>
+            <div id="right-traded-card" class="empty-card-slot hide-card">
+              <div class="card">
+                <div class="front">
+                  <div class="rank"></div>
+                  <div class="suit"></div>
+                  <div class="icon"></div>
+                </div>
+                <div class="back"></div>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
 
-      <!-- My cards -->
-      <div class="row text-center">
-        <h3 class="name-box my-name-box">
-          <span id="bottomname" class="label label-default"></span>
-        </h3>
-      </div>
-      <div class="row">
-        <div class="playingCards">
-          <ul id="bottomcards" class="table"></ul>
-        </div>
-      </div>
-      <h3>
-        <div id="score-menu-btn" class="btn btn-default rotate270">
-          <strong>Score</strong>
-        </div>
-      </h3>
+    </div>
 
-      <!-- Video Chat -->
-      <video id="video-local" class="hidden" autoplay muted="true"></video>
-      <div id="video-local-overlay" class="hidden">
-        <div id="video-local-mic" class="mic"></div>
+    <div class="row">
+      <!-- Left Hand-->
+      <div class="col-xs-3" id="leftplayer">
+        <div class="pull-left">
+          <div class="text-center user-box">
+            <h3 class="name-box">
+              <span id="leftname" class="label label-default">Open</span>
+            </h3>
+            <img id="img-left" src="images/placeholder_@2X.png" alt="..." class="img-circle placeholder">
+            <video id="video-left" class="hidden" autoplay></video>
+          </div>
+        </div>
       </div>
-      <div id="sidr-right">
-        <div class="panel">
-          <table class="table table-bordered table-striped" id="score-table">
-            <thead>
-              <tr>
-                <th>Player 1</th>
-                <th>Player 2</th>
-                <th>Player 3</th>
-                <th>Player 4</th>
-              </tr>
-            </thead>
-            <tbody>
-            </tbody>
-          </table>
+
+      <!-- filler space for cards and play button -->
+      <div class="col-xs-6"></div>
+
+      <!-- Right Hand -->
+      <div class="col-xs-3" id="rightplayer">
+        <div class="pull-right">
+          <div class="text-center user-box">
+            <h3 class="name-box">
+              <span id="rightname" class="label label-default">Open</span>
+            </h3>
+            <img id="img-right" src="images/placeholder_@2X.png" alt="..." class="img-circle placeholder">
+            <video id="video-right" class="hidden" autoplay></video>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- My cards -->
+    <div class="row text-center">
+      <h3 class="name-box my-name-box">
+        <span id="bottomname" class="label label-default"></span>
+      </h3>
+    </div>
+    <div class="row">
+      <div class="playingCards">
+        <ul id="bottomcards" class="table"></ul>
+      </div>
+    </div>
+    <h3>
+      <div id="score-menu-btn" class="btn btn-default rotate270">
+        <strong>Score</strong>
+      </div>
+    </h3>
+
+    <!-- Video Chat -->
+    <video id="video-local" class="hidden" autoplay muted="true"></video>
+    <div id="video-local-overlay" class="hidden">
+      <div id="video-local-mic" class="mic"></div>
+    </div>
+    <div id="sidr-right">
+      <div class="panel">
+        <table class="table table-bordered table-striped" id="score-table">
+          <thead>
+            <tr>
+              <th>Player 1</th>
+              <th>Player 2</th>
+              <th>Player 3</th>
+              <th>Player 4</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
   </div>
 
   </div>
