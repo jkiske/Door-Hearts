@@ -65,56 +65,19 @@ a {
     text-align: right;
     width: 150px;
 }
-.rotate90 {
-    transform:rotate(90deg);
-    -moz-transform:rotate(90deg);
-    -webkit-transform:rotate(90deg);
-}
-.rotate180 {
-    transform:rotate(180deg);
-    -moz-transform:rotate(180deg);
-    -webkit-transform:rotate(180deg);
-}
-.rotate270 {
-    transform:rotate(-90deg);
-    -moz-transform:rotate(-90deg);
-    -webkit-transform:rotate(-90deg);
-}
+
 .navbar-form {
     padding-right: 0px;
 }
 /* Middle stack positioning */
  #center {
-    position: absolute;
-    left: 50%;
-    min-width: 25em;
-    /*Need this to be big to fit the traded cards */
+   
 }
 /* Middle cards style and margins */
  #played-cards {
-    font-size: 1.1em;
-    margin-top: -1.3em;
-    min-width: 380px;
-    margin-left:-190px;
-    /* ~380px/2 */
+    
 }
-#top-played-card {
-    margin-top: -0.5em;
-    margin-left: 6.6em;
-}
-#left-played-card {
-    margin-top: 0em;
-    margin-left: -9.5em;
-}
-#right-played-card {
-    margin-top: 0.4em;
-    margin-left: -0.6em;
-    margin-right: -3em;
-}
-#bottom-played-card {
-    margin-top: 3.7em;
-    margin-left: -3.9em;
-}
+
 /* Use these to hide cards without hiding space */
  .hide-card {
     visibility: hidden;
@@ -131,23 +94,9 @@ a {
     width:900px;
 }
 #traded-cards {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    margin-left: -19.25em;
-    margin-top: -6.5em;
-    font-size: 1.1em;
+
 }
-#left-traded-card {
-    margin-left: -6.6em;
-    margin-right: 4em;
-}
-#center-traded-card {
-    margin-right: 4em;
-}
-#right-traded-card {
-    margin-right: 0em;
-}
+
 /* Player name and picture */
  .user-box {
     padding: 10px;
@@ -202,6 +151,10 @@ a {
     padding-bottom: 20px;
     margin-right: -3em;
     width:100px !important;
+
+    transform:rotate(-90deg);
+    -moz-transform:rotate(-90deg);
+    -webkit-transform:rotate(-90deg);
 }
 #sidr-right {
     width:500px;
