@@ -130,16 +130,6 @@ a {
     border-left: 1px solid rgba(0, 0, 0, .1);
     border-radius: 0px 4px 4px 0px;
 }
-#score-menu-btn {
-    position: absolute;
-    top: 200px;
-    right: 0px;
-    padding-bottom: 20px;
-    margin-right: -3em;
-    width:100px !important;
-    transform:rotate(-90deg);
-    -webkit-transform:rotate(-90deg);
-}
 #sidr-right {
     width:500px;
     -webkit-box-shadow: none;

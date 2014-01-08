@@ -22,13 +22,6 @@ $(document).ready(function() {
     var rightCard = $("#right-played-card");
     var topCard = $("#top-played-card");
 
-    $('#score-menu-btn').sidr({
-        name: 'sidr-right',
-        side: 'right',
-        body: "#score-menu-btn",
-        displace: true
-    });
-
     $("#playername").popover();
 
     $(document).on("touchmove", false);
@@ -742,7 +735,6 @@ $(document).ready(function() {
     });
 
     socket.on("clearTrick", function(winner) {
-        //TODO: Disable clicking the cards
         //Clear the cards after a delay
         _trick_suit = null;
         //Disable cards before starting the next trick
@@ -761,6 +753,11 @@ $(document).ready(function() {
 
     socket.on("updateScore", function(name, score) {
         _players[name].score_div.text(score);
+    });
+
+    $("#score-menu-btn").click(function() {
+        var $slider = $(this).closest(".slider");
+        $slider.toggleClass("open");
     });
 
     socket.on("updateScoreTable", function(scores, prev_scores) {
@@ -785,12 +782,11 @@ $(document).ready(function() {
             }
         }
 
-        //Show the scores and close after 3 seconds
-        //TODO: Toggle for auto show
-        $.sidr('open', 'sidr-right');
+        //Pop out the score tab
+        $(".slider").addClass("open");
         _.delay(function() {
-            $.sidr('close', 'sidr-right');
-        }, 3000);
+            $(".slider").removeClass("open");
+        }, 4000);
     });
 
     function scoreTableRow(score, diff) {
