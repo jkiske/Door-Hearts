@@ -17,11 +17,6 @@ $(document).ready(function() {
     var _clear_trick_delay = 1500;
     var _calls = {};
 
-    var bottomCard = $("#bottom-played-card");
-    var leftCard = $("#left-played-card");
-    var rightCard = $("#right-played-card");
-    var topCard = $("#top-played-card");
-
     $("#playername").popover();
 
     $(document).on("touchmove", false);
@@ -525,7 +520,7 @@ $(document).ready(function() {
                         _.delay(function() {
                             /* Wait 1 seconds before making trade final
                              * This is buggy:
-                             * If you deselct a card then quickly reselct another,
+                             * If you deselect a card then quickly reselect another,
                              * the event will still fire
                              */
                             var $selected_cards = $("#traded-cards .card");
@@ -585,36 +580,6 @@ $(document).ready(function() {
         $card.remove();
     }
 
-    function moveCardToCenter(middleCard, handCard) {
-        //Get the rank/suit information
-        var id = handCard.attr("id");
-        var card = idToCard(id);
-        var index = cardIndex(card);
-
-        //If we have the card, remove it
-        handCard.closest("li").remove();
-        if (index >= 0) {
-            //Remove the card and flatten the array
-            delete _hand[index];
-            _hand = _.compact(_hand);
-        }
-
-        //Only show after we delete so the ids do not repeat
-        showMiddleCard(middleCard, card);
-    }
-
-    function showMiddleCard(middleCard, card) {
-        //Replace the middle card with the deck card
-        middleCard.find(".card").replaceWith(createCard(card.suit, card.rank));
-        middleCard.removeClass("hide");
-    }
-
-    function hideMiddleCard(middleCard) {
-        //Hide the middle card
-        middleCard.find(".card").replaceWith(createCard());
-        middleCard.addClass("hide");
-    }
-
     function cardIndex(card) {
         var hand_index = -1;
         _.each(_hand, function(hand_card, index) {
@@ -645,7 +610,6 @@ $(document).ready(function() {
                 rank: 2
             };
             if (_turn == _name) {
-                var two_of_clubs_id = cardToId(two_of_clubs);
                 socket.send("playCard", two_of_clubs);
             }
         }
@@ -797,12 +761,6 @@ $(document).ready(function() {
     }
     // -------------------------------- Helper Functions ----------------------------- //
 
-    var dir_card_map = {
-        "top": topCard,
-        "bottom": bottomCard,
-        "left": leftCard,
-        "right": rightCard
-    };
     var suit_map = {
         "H": "hearts",
         "C": "clubs",
@@ -834,31 +792,6 @@ $(document).ready(function() {
     };
 
     var score_order = ["N", "E", "S", "W"];
-
-    // Converts a card id to an object
-
-    function idToCard(id) {
-        rank = id.slice(1);
-        if (rank in inv_rank_map)
-            rank = inv_rank_map[rank];
-
-        return {
-            suit: id.slice(0, 1),
-            rank: parseInt(rank)
-        };
-    }
-
-    function cardToId(card) {
-        var rank = card.rank;
-        var suit = card.suit;
-
-        if (rank in rank_map) {
-            rank = rank_map[rank];
-        } else {
-            rank = rank.toString();
-        }
-        return suit + rank;
-    }
 
     function createCard(suit, rank) {
         if (suit === undefined || rank === undefined) {
