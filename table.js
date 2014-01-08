@@ -187,7 +187,7 @@ var Table = function() {
         var scores = [];
         var trick_suit = this.trick_suit;
         _und.each(this.played_cards, function(card, name) {
-            player = {
+            var player = {
                 name: name,
                 score: 0
             };

@@ -898,7 +898,7 @@ $(document).ready(function() {
         rank = rank.slice(-1);
         // Only rank with two characters
         if (rank === "0") rank = "10";
-        return (rank in inv_rank_map) ? inv_rank_map[rank] : rank;
+        return (rank in inv_rank_map) ? parseInt(inv_rank_map[rank]) : parseInt(rank);
     }
 
     function sortValue(card) {

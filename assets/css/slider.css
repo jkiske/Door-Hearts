@@ -1,0 +1,34 @@
+.slider {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 330px;
+    height: 100%;
+    background-color: #FFF;
+}
+.slider .tab {
+    position: absolute;
+}
+.slider .tab .btn {
+	transform:rotate(-90deg);
+    -webkit-transform:rotate(-90deg);
+}
+.slider .body {
+    width: 100%;
+}
+@-webkit-keyframes slide-left {
+    100% {
+        -webkit-transform: translateX(-300px);
+    }
+}
+@-webkit-keyframes slide-right {
+    100% {
+        -webkit-transform: translateX(300px);
+    }
+}
+.slider.slide-left {
+    -webkit-animation-name: slide-left;
+}
+.slider.slide-right {
+    -webkit-animation-name: slide-right;
+}
