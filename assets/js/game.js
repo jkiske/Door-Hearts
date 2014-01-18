@@ -194,7 +194,7 @@ $(document).ready(function() {
     //Switch views to the table view
     socket.on("joinTable", function(name) {
         _name = name;
-        document.title = _name + ": Door Hearts";
+        document.title = _name + ": Video Hearts";
         $("#list-view").addClass("hidden");
         $("#login-view").addClass("hidden");
         $("#game-view").removeClass("hidden");
@@ -303,7 +303,7 @@ $(document).ready(function() {
 
 
     $("#leave-table").click(function() {
-        document.title = "Door Hearts";
+        document.title = "Video Hearts";
         $("#game-view").addClass("hidden");
         $("#list-view").removeClass("hidden");
         $("#login-view").removeClass("hidden");
@@ -627,7 +627,7 @@ $(document).ready(function() {
         } else {
             disableAllCards();
             setInfoText("It is " + player_name + "'s turn to play", _players[player_name].color);
-            document.title = _name + ": Door Hearts";
+            document.title = _name + ": Video Hearts";
         }
     }
 
