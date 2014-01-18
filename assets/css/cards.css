@@ -39,6 +39,7 @@
     left: 50%;
     margin-left: -132.5px;
     -webkit-animation-duration: 0.5s;
+    -webkit-animation-delay: 0.5s;
     -webkit-animation-timing-function: ease-in-out;
 }
 .playing-cards .played .card.left {
