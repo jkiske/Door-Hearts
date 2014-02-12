@@ -4,6 +4,7 @@ var fs = require("fs");
 var http = require("http");
 var express = require("express");
 var Primus = require("primus.io");
+var easyrtc = require("easyrtc");
 
 var _deck = require("./deck");
 var _player = require("./player");
@@ -33,6 +34,7 @@ var primus = new Primus(server, {
 });
 console.log("Primus starting");
 
+var easyrtcServer = easyrtc.listen(app, primus);
 
 var players = {};
 var tables = {};
@@ -126,7 +128,7 @@ primus.on("connection", function(client) {
             client.send("joinTable", player.name);
 
             //Start the video chat - TODO: disconnection
-            client.send("connectToChat", player.id);
+            client.send("connectToChat", player.id, table.id);
 
             if (player.name in table.disconnected_players) {
                 var old_player = table.disconnected_players[player.name];
@@ -362,17 +364,14 @@ primus.on("connection", function(client) {
      *The most recent player to join has the responsibility to call
      * all other players at the table
      */
-    client.on("connectedToChat", function() {
+    client.on("connectedToChat", function(rtc_id) {
         var player = players[client.id];
         if (player !== undefined) {
+            player.rtc_id = rtc_id;
             var table = tables[player.table];
             if (table !== undefined) {
-                _und.each(table.players, function(other_player, name) {
-                    if (other_player.name != player.name) {
-                        client.send("callPeer", other_player.id);
-                    }
-                });
-
+                console.log("calling peer " + player.name + " : " + player.rtc_id);
+                primus.room(table.id).send("callPeer", player.name, player.rtc_id);
             }
         }
     });

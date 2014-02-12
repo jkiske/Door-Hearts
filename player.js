@@ -10,6 +10,8 @@ var Player = function(name, socket_id) {
     var score = 0;
     var position; //N, S, E, W
 
+    var rtc_id = null;
+
     function cardIndex(card, hand) {
         var hand_index = -1;
         _und.each(hand, function(hand_card, index) {
@@ -71,6 +73,7 @@ var Player = function(name, socket_id) {
         score: score,
         hand: hand,
         position: position,
+        rtc_id: rtc_id,
 
         removeCards: removeCards,
         addCards: addCards,

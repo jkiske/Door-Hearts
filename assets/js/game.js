@@ -17,6 +17,8 @@ $(document).ready(function() {
     var _clear_trick_delay = 1500;
     var _calls = {};
 
+    var _room = null;
+
     $("#playername").popover();
 
     $(document).on("touchmove", false);
@@ -201,72 +203,67 @@ $(document).ready(function() {
         $("#leave-table").removeClass("hidden");
     });
 
-    socket.on("connectToChat", function(id) {
-        if (peer === null) {
-            peer = new Peer(id, {
-                key: "2kddwxi4hfcrf6r"
-            });
-            peer.on('error', function(err) {
-                console.log(err);
-            });
+    socket.on("connectToChat", function(id, table_id) {
+        easyrtc.setSocketUrl("http://66.49.36.2:8888");
+        easyrtc.setVideoDims(320, 240);
 
-            var video_settings = {
-                audio: true,
-                video: {
-                    mandatory: {
-                        maxWidth: 320,
-                        maxHeight: 240
-                    }
-                }
-            };
-            navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-            navigator.getUserMedia(video_settings, function(stream) {
-                _local_stream = stream;
-                showVideo("local", _local_stream);
+        easyrtc.joinRoom(table_id, null,
+            function(roomName) {
+                console.log("I'm now in room " + roomName);
+            },
+            function(errorCode, errorText, roomName) {
+                console.log("had problems joining " + roomName);
+            }
+        );
 
-                //Answer any call we recieve with our own stream
-                peer.on("call", function(call) {
-                    call.answer(_local_stream);
-                    call.on("stream", answerCall);
-                });
+        easyrtc.setRoomOccupantListener(roomListener);
 
-                socket.send("connectedToChat");
-            }, function(err) {
-                console.log('Failed to get local stream', err);
-            });
+        var connectSuccess = function(myId) {
+            showVideo("local", easyrtc.getLocalStream());
+
+            console.log("My easyrtcid is " + myId);
+            socket.send("connectedToChat", myId);
         }
+        var connectFailure = function(errmesg) {
+            console.log(errmesg);
+        }
+        easyrtc.initMediaSource(
+            function() { // success callback
+                easyrtc.connect("VideoHearts", connectSuccess, connectFailure);
+            },
+            connectFailure
+        );
     });
 
-    socket.on("callPeer", function(peer_name) {
-        //Call the other player
-        var call = peer.call(peer_name, _local_stream);
-        //When the other person answers, show us their stream
-        call.on("stream", answerCall);
-        console.log(peer.id + " calling " + peer_name);
-    });
-
-    function answerCall(remote_stream) {
-        if (remote_stream !== null) {
-            //'this' is the MediaConnection object from the call
-            var remote_id = this.peer;
-            var streamer = _.find(_players, function(player) {
-                return player.id === remote_id;
-            });
-            _calls[this.peer] = this;
-            showVideo(streamer.dir, remote_stream);
-            console.log(peer.id + " answering " + this.peer);
-            console.log(_calls);
-
-            //Set up disconnection/error handling here
-            this.on("close", function() {
-                console.log("Connection closed with " + streamer.id);
-                hideVideo(streamer.dir);
-                //TODO: Add a re-call button
-                delete _calls[this.peer];
-                console.log(_calls);
-            });
-        }
+    function roomListener(roomName, otherPeers) {
+        console.log(roomName);
+        console.log(otherPeers);
+        //performCall(easyrtcid);
     }
+
+    // function performCall(id){}
+
+    socket.on("callPeer", function(player_name, rtc_id) {
+        if (player_name !== _name) {
+            console.log(rtc_id);
+        }
+    });
+
+    function performCall(rtc_id) {
+        easyrtc.call(easyrtcid,
+
+            function(easyrtcid) {
+                console.log("completed call to " + easyrtcid);
+            },
+            function(errorMessage) {
+                console.log("err:" + errorMessage);
+            },
+            function(accepted, bywho) {
+                console.log((accepted ? "accepted" : "rejected") + " by " + bywho);
+            }
+        );
+    }
+
 
     function hideVideo(dir) {
         $('#video-' + dir).removeAttr("src");
