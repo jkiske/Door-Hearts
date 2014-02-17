@@ -1,6 +1,7 @@
 $(document).ready(function() {
     var socket = Primus.connect(document.URL);
     var peer = null;
+    var _rtc_id = "";
     var _local_stream = null;
 
     var _restore_play_state = false;
@@ -206,23 +207,26 @@ $(document).ready(function() {
     socket.on("connectToChat", function(id, table_id) {
         easyrtc.setSocketUrl("http://66.49.36.2:8888");
         easyrtc.setVideoDims(320, 240);
-
-        easyrtc.joinRoom(table_id, null,
-            function(roomName) {
-                console.log("I'm now in room " + roomName);
-            },
-            function(errorCode, errorText, roomName) {
-                console.log("had problems joining " + roomName);
-            }
-        );
-
-        easyrtc.setRoomOccupantListener(roomListener);
+        easyrtc.setStreamAcceptor(acceptCall);
+        easyrtc.setUsername(_name);
 
         var connectSuccess = function(myId) {
             showVideo("local", easyrtc.getLocalStream());
 
             console.log("My easyrtcid is " + myId);
             socket.send("connectedToChat", myId);
+
+            _rtc_id = myId;
+
+            easyrtc.joinRoom(table_id, null,
+                function(roomName) {
+                    console.log("I'm now in room " + roomName);
+                },
+                function(errorCode, errorText, roomName) {
+                    console.log("had problems joining " + roomName);
+                }
+            );
+            easyrtc.setRoomOccupantListener(roomListener);
         }
         var connectFailure = function(errmesg) {
             console.log(errmesg);
@@ -235,21 +239,24 @@ $(document).ready(function() {
         );
     });
 
-    function roomListener(roomName, otherPeers) {
-        console.log(roomName);
-        console.log(otherPeers);
-        //performCall(easyrtcid);
+    function roomListener(room_name, other_peers) {
+        console.log(room_name);
+        console.log(other_peers);
+        _.each(other_peers, function(other_peer, id) {
+            if (_rtc_id < id)
+                performCall(id);
+        });
     }
 
-    // function performCall(id){}
-
-    socket.on("callPeer", function(player_name, rtc_id) {
-        if (player_name !== _name) {
-            console.log(rtc_id);
+    function acceptCall(easyrtcid, stream) {
+        var caller_name = easyrtc.idToName(easyrtcid);
+        if (caller_name in _players) {
+            var player = _players[caller_name];
+            showVideo(player.dir, stream);
         }
-    });
+    }
 
-    function performCall(rtc_id) {
+    function performCall(easyrtcid) {
         easyrtc.call(easyrtcid,
 
             function(easyrtcid) {
@@ -263,6 +270,12 @@ $(document).ready(function() {
             }
         );
     }
+
+    socket.on("callPeer", function(player_name, rtc_id) {
+        if (player_name !== _name) {
+            console.log(rtc_id);
+        }
+    });
 
 
     function hideVideo(dir) {
