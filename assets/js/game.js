@@ -210,6 +210,9 @@ $(document).ready(function() {
         easyrtc.setVideoDims(320, 240);
         easyrtc.setStreamAcceptor(acceptCall);
         easyrtc.setUsername(_name);
+        easyrtc.setOnError(function(errEvent) {
+            console.log(errEvent.errorText);
+        });
 
         var connectSuccess = function(myId) {
             _local_stream = easyrtc.getLocalStream();
