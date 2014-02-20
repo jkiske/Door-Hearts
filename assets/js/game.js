@@ -1,7 +1,6 @@
 $(document).ready(function() {
     var socket = Primus.connect(document.URL);
     var peer = null;
-    var _rtc_id = "";
     var _local_stream = null;
 
     var _restore_play_state = false;
@@ -19,6 +18,7 @@ $(document).ready(function() {
     var _calls = {};
 
     var _room = null;
+    _table_id = null;
 
     $("#playername").popover();
 
@@ -205,18 +205,17 @@ $(document).ready(function() {
     });
 
     socket.on("connectToChat", function(id, table_id) {
+        _table_id = table_id;
         easyrtc.setSocketUrl("http://66.49.36.2:8888");
         easyrtc.setVideoDims(320, 240);
         easyrtc.setStreamAcceptor(acceptCall);
         easyrtc.setUsername(_name);
 
         var connectSuccess = function(myId) {
-            showVideo("local", easyrtc.getLocalStream());
+            _local_stream = easyrtc.getLocalStream();
+            showVideo("local", _local_stream);
 
-            console.log("My easyrtcid is " + myId);
-            socket.send("connectedToChat", myId);
-
-            _rtc_id = myId;
+            console.log("My easyrtcid is " + easyrtc.myEasyrtcid);
 
             easyrtc.joinRoom(table_id, null,
                 function(roomName) {
@@ -237,14 +236,26 @@ $(document).ready(function() {
             },
             connectFailure
         );
+
+        easyrtc.setOnStreamClosed(streamClosed);
     });
 
     function roomListener(room_name, other_peers) {
         console.log(room_name);
         console.log(other_peers);
         _.each(other_peers, function(other_peer, id) {
-            if (_rtc_id < id)
-                performCall(id);
+            if (easyrtc.myEasyrtcid < id)
+                easyrtc.call(id,
+                    function(id) {
+                        console.log("completed call to " + id);
+                    },
+                    function(errorMessage) {
+                        console.log("err:" + errorMessage);
+                    },
+                    function(accepted, bywho) {
+                        console.log((accepted ? "accepted" : "rejected") + " by " + bywho);
+                    }
+                );
         });
     }
 
@@ -256,27 +267,14 @@ $(document).ready(function() {
         }
     }
 
-    function performCall(easyrtcid) {
-        easyrtc.call(easyrtcid,
-
-            function(easyrtcid) {
-                console.log("completed call to " + easyrtcid);
-            },
-            function(errorMessage) {
-                console.log("err:" + errorMessage);
-            },
-            function(accepted, bywho) {
-                console.log((accepted ? "accepted" : "rejected") + " by " + bywho);
-            }
-        );
-    }
-
-    socket.on("callPeer", function(player_name, rtc_id) {
-        if (player_name !== _name) {
-            console.log(rtc_id);
+    function streamClosed(easyrtcid) {
+        var caller_name = easyrtc.idToName(easyrtcid);
+        if (caller_name in _players) {
+            var player = _players[caller_name];
+            hideVideo(player.dir);
         }
-    });
-
+        console.log(easyrtc.idToName(easyrtcid) + " went away");
+    }
 
     function hideVideo(dir) {
         $('#video-' + dir).removeAttr("src");
@@ -318,24 +316,17 @@ $(document).ready(function() {
         $("#list-view").removeClass("hidden");
         $("#login-view").removeClass("hidden");
         socket.send("leaveTable");
-        //We need to re-login because leaving the table is just like disconnecting
-        logIn();
-    });
 
-    socket.on("disconnectChat", function() {
-        if (peer !== null) {
-            peer.disconnect();
-            _.each(_calls, function(call) {
-                call.close();
-            });
-            peer = null;
-        }
+        easyrtc.leaveRoom(_table_id);
+        easyrtc.disconnect();
         if (_local_stream !== null) {
             _local_stream.stop();
         }
         hideVideo("local");
-    });
 
+        //We need to re-login because leaving the table is just like disconnecting
+        logIn();
+    });
 
     // -------------------------------- Game ----------------------------- //
 

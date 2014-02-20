@@ -360,24 +360,7 @@ primus.on("connection", function(client) {
         }
     });
 
-    /*
-     *The most recent player to join has the responsibility to call
-     * all other players at the table
-     */
-    client.on("connectedToChat", function(rtc_id) {
-        var player = players[client.id];
-        if (player !== undefined) {
-            player.rtc_id = rtc_id;
-            var table = tables[player.table];
-            if (table !== undefined) {
-                console.log("calling peer " + player.name + " : " + player.rtc_id);
-                primus.room(table.id).send("callPeer", player.name, player.rtc_id);
-            }
-        }
-    });
-
     client.on("leaveTable", function() {
-        client.send("disconnectChat");
         client.leaveAll();
         client.join(waiting_room);
         leaveTable(client);
