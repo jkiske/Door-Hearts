@@ -23,7 +23,7 @@ $(document).ready(function() {
     $("#playername").popover();
 
     $(document).on("touchmove", false);
-    var IS_IPAD = navigator.userAgent.match(/iPad/i) != null;
+    var IS_IPAD = navigator.userAgent.match(/iPad/i) !== null;
 
     // -------------------------------- Name logic ----------------------------- //
 
@@ -245,6 +245,7 @@ $(document).ready(function() {
 
     function manageError(errEvent) {
         debugger;
+        console.log("!!! ERROR !!!:");
         console.log(errEvent.errorText);
     }
 
@@ -508,7 +509,7 @@ $(document).ready(function() {
                 var $traded_cards = $("#traded-cards");
                 var trade_count = $traded_cards.children().length;
                 if (trade_count < 3) {
-                    var $traded_card = $(createCard(getSuit($(this)), getRank($(this))))
+                    var $traded_card = $(createCard(getSuit($(this)), getRank($(this))));
                     $traded_cards.append($traded_card);
                     removeFromHand($(this));
                     trade_count++;
@@ -539,7 +540,7 @@ $(document).ready(function() {
                                     return {
                                         rank: getRank($this),
                                         suit: getSuit($this)
-                                    }
+                                    };
                                 });
                                 socket.send("passCards", $.makeArray(selected_cards));
                             }
@@ -712,7 +713,7 @@ $(document).ready(function() {
         _trick_suit = null;
         //Disable cards before starting the next trick
         disableAllCards();
-        var winner = _players[winner];
+        winner = _players[winner];
         if (winner !== undefined) {
             $(".playing-cards .played").addClass("anim-" + winner.dir);
         }
@@ -821,7 +822,7 @@ $(document).ready(function() {
     }
 
     function getSuit($card) {
-        for (suit in inv_suit_map) {
+        for (var suit in inv_suit_map) {
             if ($card.hasClass(suit)) {
                 return inv_suit_map[suit];
             }
@@ -868,13 +869,13 @@ $(document).ready(function() {
     (function(i, s, o, g, r, a, m) {
         i['GoogleAnalyticsObject'] = r;
         i[r] = i[r] || function() {
-            (i[r].q = i[r].q || []).push(arguments)
+            (i[r].q = i[r].q || []).push(arguments);
         }, i[r].l = 1 * new Date();
         a = s.createElement(o),
         m = s.getElementsByTagName(o)[0];
         a.async = 1;
         a.src = g;
-        m.parentNode.insertBefore(a, m)
+        m.parentNode.insertBefore(a, m);
     })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
     ga('create', 'UA-48345781-1', 'videohearts.net');
