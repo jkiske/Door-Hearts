@@ -4,7 +4,6 @@ var fs = require("fs");
 var http = require("http");
 var express = require("express");
 var Primus = require("primus.io");
-var easyrtc = require("easyrtc");
 
 var _deck = require("./deck");
 var _player = require("./player");
@@ -33,8 +32,6 @@ var primus = new Primus(server, {
     parser: "JSON"
 });
 console.log("Primus starting");
-
-var easyrtcServer = easyrtc.listen(app, primus);
 
 var players = {};
 var tables = {};
