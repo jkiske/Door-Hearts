@@ -211,6 +211,7 @@ $(document).ready(function() {
         easyrtc.setStreamAcceptor(acceptCall);
         easyrtc.setUsername(_name);
         easyrtc.setOnError(manageError);
+        easyrtc.setDisconnectListener(handleDisconnect);
 
         easyrtc.initMediaSource(
             function() { // success callback
@@ -247,6 +248,11 @@ $(document).ready(function() {
         debugger;
         console.log("!!! ERROR !!!:");
         console.log(errEvent.errorText);
+    }
+
+    function handleDisconnect() {
+        debugger;
+        console.log("!!! Disconnect !!!:");
     }
 
     function roomListener(room_name, other_peers) {
@@ -327,6 +333,7 @@ $(document).ready(function() {
         socket.send("leaveTable");
 
         easyrtc.leaveRoom(_table_id);
+        easyrtc.hangupAll();
         easyrtc.disconnect();
         if (_local_stream !== null) {
             _local_stream.stop();
