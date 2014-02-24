@@ -210,29 +210,8 @@ $(document).ready(function() {
         easyrtc.setVideoDims(320, 240);
         easyrtc.setStreamAcceptor(acceptCall);
         easyrtc.setUsername(_name);
-        easyrtc.setOnError(function(errEvent) {
-            console.log(errEvent.errorText);
-        });
+        easyrtc.setOnError(manageError);
 
-        var connectSuccess = function(myId) {
-            _local_stream = easyrtc.getLocalStream();
-            showVideo("local", _local_stream);
-
-            console.log("My easyrtcid is " + easyrtc.myEasyrtcid);
-
-            easyrtc.joinRoom(table_id, null,
-                function(roomName) {
-                    console.log("I'm now in room " + roomName);
-                },
-                function(errorCode, errorText, roomName) {
-                    console.log("had problems joining " + roomName);
-                }
-            );
-            easyrtc.setRoomOccupantListener(roomListener);
-        }
-        var connectFailure = function(errmesg) {
-            console.log(errmesg);
-        }
         easyrtc.initMediaSource(
             function() { // success callback
                 easyrtc.connect("VideoHearts", connectSuccess, connectFailure);
@@ -242,6 +221,32 @@ $(document).ready(function() {
 
         easyrtc.setOnStreamClosed(streamClosed);
     });
+
+    function connectSuccess(myId) {
+        _local_stream = easyrtc.getLocalStream();
+        showVideo("local", _local_stream);
+
+        console.log("My easyrtcid is " + easyrtc.myEasyrtcid);
+
+        easyrtc.joinRoom(_table_id, null,
+            function(roomName) {
+                console.log("I'm now in room " + roomName);
+            },
+            function(errorCode, errorText, roomName) {
+                console.log("had problems joining " + roomName);
+            }
+        );
+        easyrtc.setRoomOccupantListener(roomListener);
+    }
+
+    function connectFailure(errmesg) {
+        console.log(errmesg);
+    }
+
+    function manageError(errEvent) {
+        debugger;
+        console.log(errEvent.errorText);
+    }
 
     function roomListener(room_name, other_peers) {
         console.log(room_name);
