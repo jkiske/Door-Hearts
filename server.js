@@ -28,10 +28,12 @@ app.configure("production", function() {
 });
 
 app.get('*', function(req, res, next) {
-    if (req.headers['x-forwarded-proto'] != 'https')
-        res.redirect('https://www.videohearts.net' + req.url)
-    else
+    if (req.headers['x-forwarded-proto'] != 'https') {
+        console.log("!!! Forwarding !!!");
+        res.redirect('https://www.videohearts.net' + req.url);
+    } else {
         next(); /* Continue to other routes if we're not redirecting */
+    }
 });
 
 // This is where we initialize the websocket for javascript callbacks
