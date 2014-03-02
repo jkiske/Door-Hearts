@@ -15,25 +15,20 @@ var server = http.createServer(app);
 var port = process.env.PORT || 8888;
 server.listen(port);
 
+app.use(app.router);
 app.use(express.static(__dirname + "/assets"));
-
-app.get("/", function(req, res) {
-    res.sendfile(__dirname + "/assets/index.html");
-});
 
 // production only
 app.configure("production", function() {
     require("newrelic");
-    /* At the top, with other redirect methods before other routes */
+    app.get("*", function(req, res, next) {
+        var reqType = req.headers["x-forwarded-proto"];
+        reqType == 'https' ? next() : res.redirect("https://" + req.headers.host + req.url);
+    });
 });
 
-app.get('*', function(req, res, next) {
-    if (req.headers['x-forwarded-proto'] != 'https') {
-        console.log("!!! Forwarding !!!");
-        res.redirect('https://www.videohearts.net' + req.url);
-    } else {
-        next(); /* Continue to other routes if we're not redirecting */
-    }
+app.get("/", function(req, res) {
+    res.sendfile(__dirname + "/assets/index.html");
 });
 
 // This is where we initialize the websocket for javascript callbacks
