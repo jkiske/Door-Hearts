@@ -25,12 +25,13 @@ app.get("/", function(req, res) {
 app.configure("production", function() {
     require("newrelic");
     /* At the top, with other redirect methods before other routes */
-    app.get('*', function(req, res, next) {
-        if (req.headers['x-forwarded-proto'] != 'https')
-            res.redirect('https://www.videohearts.net' + req.url)
-        else
-            next(); /* Continue to other routes if we're not redirecting */
-    });
+});
+
+app.get('*', function(req, res, next) {
+    if (req.headers['x-forwarded-proto'] != 'https')
+        res.redirect('https://www.videohearts.net' + req.url)
+    else
+        next(); /* Continue to other routes if we're not redirecting */
 });
 
 // This is where we initialize the websocket for javascript callbacks
