@@ -15,7 +15,7 @@ $(document).ready(function() {
     var _hearts_broken = false;
     var _skip_trade = false;
     var _clear_trick_delay = 1500;
-    var _calls = {};
+    var _calls = [];
 
     var _room = null;
     _table_id = null;
@@ -257,33 +257,40 @@ $(document).ready(function() {
 
     function roomListener(room_name, other_peers) {
         console.log(room_name);
-        console.log(other_peers);
-        _.each(other_peers, function(other_peer, id) {
-            if (easyrtc.myEasyrtcid < id)
-                easyrtc.call(id,
-                    function(id) {
-                        console.log("completed call to " + id);
-                    },
-                    function(errorMessage) {
-                        console.log("err:" + errorMessage);
-                    },
-                    function(accepted, bywho) {
-                        console.log((accepted ? "accepted" : "rejected") + " by " + bywho);
-                    }
-                );
-        });
+        if (room_name == _table_id) {
+            console.log(other_peers);
+            _.each(other_peers, function(other_peer, id) {
+                if (easyrtc.myEasyrtcid < id)
+                    easyrtc.call(id,
+                        function(id) {
+                            console.log("completed call to " + id);
+                        },
+                        function(errorMessage) {
+                            console.log("err:" + errorMessage);
+                        },
+                        function(accepted, bywho) {
+                            console.log((accepted ? "accepted" : "rejected") + " by " + bywho);
+                        }
+                    );
+            });
+        }
     }
 
     function acceptCall(easyrtcid, stream) {
-        var caller_name = easyrtc.idToName(easyrtcid);
-        if (caller_name in _players) {
-            var player = _players[caller_name];
-            showVideo(player.dir, stream);
+        if (!(easyrtcid in _calls)) {
+            _calls[_calls.length + 1] = easyrtcid;
+            var caller_name = easyrtc.idToName(easyrtcid);
+
+            if (caller_name in _players) {
+                var player = _players[caller_name];
+                showVideo(player.dir, stream);
+            }
         }
     }
 
     function streamClosed(easyrtcid) {
         var caller_name = easyrtc.idToName(easyrtcid);
+        _calls = _.without(_calls, easyrtcid);
         if (caller_name in _players) {
             var player = _players[caller_name];
             hideVideo(player.dir);
